@@ -15,6 +15,8 @@ cd mcp
 pip install -e .
 ```
 
+The source for the CLI lives in the `bondmcp_cli/` package.
+
 Generate an API key from the [developer portal](https://api.bondmcp.com) and export it (optional):
 
 ```bash
