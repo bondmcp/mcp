@@ -8,3 +8,8 @@
 
 ## 2025-05-19
 - Prompt for API key when missing and store it in ~/.bondmcp_cli. Updated README.
+
+## 2025-05-20
+- Removed unused fonts and images.
+- Renamed CLI package directory to bondmcp_cli for clarity.
+- Updated README instructions.
