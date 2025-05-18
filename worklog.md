@@ -5,3 +5,6 @@
 
 ## 2025-05-18
 - Added API_OVERVIEW.md summarizing endpoints and linked from README.
+
+## 2025-05-19
+- Prompt for API key when missing and store it in ~/.bondmcp_cli. Updated README.
