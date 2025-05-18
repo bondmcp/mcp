@@ -1,0 +1,473 @@
+{
+  "info": {
+    "name": "BondMCP API Collection",
+    "description": "Postman collection for the BondMCP API - One Language for Your Body, Doctors, and AI",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "System",
+      "item": [
+        {
+          "name": "Health Check",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/health",
+              "host": ["{{baseUrl}}"],
+              "path": ["health"]
+            },
+            "description": "Check the operational status of the API"
+          },
+          "response": [
+            {
+              "name": "API is healthy",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/health",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["health"]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"status\": \"ok\",\n  \"message\": \"BondMCP API is healthy\",\n  \"version\": \"0.1.4\",\n  \"timestamp\": \"2025-05-17T12:00:00Z\"\n}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Labs",
+      "item": [
+        {
+          "name": "Lab Interpretation",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"lab_results\": [\n    {\n      \"marker_name\": \"glucose\",\n      \"value\": 95,\n      \"unit\": \"mg/dL\",\n      \"reference_range_low\": 70,\n      \"reference_range_high\": 99\n    },\n    {\n      \"marker_name\": \"total_cholesterol\",\n      \"value\": 185,\n      \"unit\": \"mg/dL\",\n      \"reference_range_low\": 125,\n      \"reference_range_high\": 200\n    },\n    {\n      \"marker_name\": \"hdl\",\n      \"value\": 55,\n      \"unit\": \"mg/dL\",\n      \"reference_range_low\": 40,\n      \"reference_range_high\": 60\n    }\n  ],\n  \"patient_context\": {\n    \"age\": 45,\n    \"gender\": \"male\",\n    \"health_conditions\": [\"hypertension\", \"insomnia\"],\n    \"medications\": [\"lisinopril\", \"atorvastatin\"]\n  }\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/labs/interpret",
+              "host": ["{{baseUrl}}"],
+              "path": ["labs", "interpret"]
+            },
+            "description": "Interpret lab results with AI-powered analysis"
+          },
+          "response": [
+            {
+              "name": "Lab interpretation results",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"lab_results\": [\n    {\n      \"marker_name\": \"glucose\",\n      \"value\": 95,\n      \"unit\": \"mg/dL\",\n      \"reference_range_low\": 70,\n      \"reference_range_high\": 99\n    },\n    {\n      \"marker_name\": \"total_cholesterol\",\n      \"value\": 185,\n      \"unit\": \"mg/dL\",\n      \"reference_range_low\": 125,\n      \"reference_range_high\": 200\n    },\n    {\n      \"marker_name\": \"hdl\",\n      \"value\": 55,\n      \"unit\": \"mg/dL\",\n      \"reference_range_low\": 40,\n      \"reference_range_high\": 60\n    }\n  ],\n  \"patient_context\": {\n    \"age\": 45,\n    \"gender\": \"male\",\n    \"health_conditions\": [\"hypertension\", \"insomnia\"],\n    \"medications\": [\"lisinopril\", \"atorvastatin\"]\n  }\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/labs/interpret",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["labs", "interpret"]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"interpretation_summary\": \"Your lab results are generally within normal ranges. Your glucose level is normal, indicating good blood sugar control. Your total cholesterol is within the normal range, and your HDL (good cholesterol) is at a healthy level.\",\n  \"detailed_marker_analysis\": [\n    {\n      \"marker_name\": \"glucose\",\n      \"value\": 95,\n      \"unit\": \"mg/dL\",\n      \"status\": \"normal\",\n      \"interpretation\": \"Your glucose level is within the normal range, indicating good blood sugar control.\"\n    },\n    {\n      \"marker_name\": \"total_cholesterol\",\n      \"value\": 185,\n      \"unit\": \"mg/dL\",\n      \"status\": \"normal\",\n      \"interpretation\": \"Your total cholesterol is within the normal range, which is good for cardiovascular health.\"\n    },\n    {\n      \"marker_name\": \"hdl\",\n      \"value\": 55,\n      \"unit\": \"mg/dL\",\n      \"status\": \"normal\",\n      \"interpretation\": \"Your HDL (good cholesterol) is at a healthy level, which helps protect against heart disease.\"\n    }\n  ],\n  \"potential_risks\": [],\n  \"follow_up_suggestions\": [\n    \"Continue monitoring blood pressure due to history of hypertension\",\n    \"Consider a complete lipid panel at your next check-up to include LDL and triglycerides\"\n  ],\n  \"trust_score\": 0.95,\n  \"model_consensus\": [\n    {\n      \"model\": \"Claude-3-Opus\",\n      \"confidence\": 0.97\n    },\n    {\n      \"model\": \"GPT-4o\",\n      \"confidence\": 0.95\n    },\n    {\n      \"model\": \"MedLM\",\n      \"confidence\": 0.93\n    }\n  ]\n}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Supplements",
+      "item": [
+        {
+          "name": "Supplement Recommendations",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"health_goals\": [\"energy\", \"immune_support\", \"stress_management\"],\n  \"current_labs\": {\n    \"lab_results\": [\n      {\n        \"marker_name\": \"vitamin_d\",\n        \"value\": 28,\n        \"unit\": \"ng/mL\",\n        \"reference_range_low\": 30,\n        \"reference_range_high\": 100\n      },\n      {\n        \"marker_name\": \"ferritin\",\n        \"value\": 35,\n        \"unit\": \"ng/mL\",\n        \"reference_range_low\": 30,\n        \"reference_range_high\": 400\n      }\n    ]\n  },\n  \"current_supplements\": [\"vitamin_d\", \"magnesium\"],\n  \"dietary_restrictions\": [\"vegetarian\"],\n  \"patient_context\": {\n    \"age\": 45,\n    \"gender\": \"male\",\n    \"health_conditions\": [\"hypertension\", \"insomnia\"],\n    \"medications\": [\"lisinopril\"]\n  }\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/supplement/recommend",
+              "host": ["{{baseUrl}}"],
+              "path": ["supplement", "recommend"]
+            },
+            "description": "Get personalized supplement recommendations based on health goals and lab results"
+          },
+          "response": [
+            {
+              "name": "Supplement recommendations",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"health_goals\": [\"energy\", \"immune_support\", \"stress_management\"],\n  \"current_labs\": {\n    \"lab_results\": [\n      {\n        \"marker_name\": \"vitamin_d\",\n        \"value\": 28,\n        \"unit\": \"ng/mL\",\n        \"reference_range_low\": 30,\n        \"reference_range_high\": 100\n      },\n      {\n        \"marker_name\": \"ferritin\",\n        \"value\": 35,\n        \"unit\": \"ng/mL\",\n        \"reference_range_low\": 30,\n        \"reference_range_high\": 400\n      }\n    ]\n  },\n  \"current_supplements\": [\"vitamin_d\", \"magnesium\"],\n  \"dietary_restrictions\": [\"vegetarian\"],\n  \"patient_context\": {\n    \"age\": 45,\n    \"gender\": \"male\",\n    \"health_conditions\": [\"hypertension\", \"insomnia\"],\n    \"medications\": [\"lisinopril\"]\n  }\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/supplement/recommend",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["supplement", "recommend"]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"recommendations\": [\n    {\n      \"supplement_name\": \"Vitamin B Complex\",\n      \"dosage\": \"One capsule daily with food\",\n      \"reasoning\": \"B vitamins are essential for energy production and stress management. As a vegetarian, you may benefit from supplemental B vitamins, especially B12.\",\n      \"potential_interactions\": [],\n      \"source_references\": [\n        {\n          \"title\": \"B Vitamins and the Brain: Mechanisms, Dose and Efficacy\",\n          \"url\": \"https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4772032/\"\n        }\n      ]\n    },\n    {\n      \"supplement_name\": \"Vitamin D3\",\n      \"dosage\": \"2000 IU daily with a meal containing fat\",\n      \"reasoning\": \"Your vitamin D level is slightly below the reference range. Increasing your current dose may help bring levels into the optimal range, supporting immune function and energy levels.\",\n      \"potential_interactions\": [],\n      \"source_references\": [\n        {\n          \"title\": \"Vitamin D and Immune Function\",\n          \"url\": \"https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3738984/\"\n        }\n      ]\n    },\n    {\n      \"supplement_name\": \"Ashwagandha\",\n      \"dosage\": \"300-500mg daily, preferably in the evening\",\n      \"reasoning\": \"Ashwagandha is an adaptogen that may help manage stress and improve sleep quality, addressing your insomnia concerns.\",\n      \"potential_interactions\": [\n        \"May enhance the blood pressure-lowering effect of lisinopril. Monitor blood pressure if taking together.\"\n      ],\n      \"source_references\": [\n        {\n          \"title\": \"An investigation into the stress-relieving and pharmacological actions of an ashwagandha extract\",\n          \"url\": \"https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6750292/\"\n        }\n      ]\n    }\n  ],\n  \"warnings\": [\n    \"Continue taking your current supplements (Vitamin D and Magnesium) as they support your health goals\",\n    \"Consult with a healthcare provider before starting any new supplement regimen\",\n    \"Monitor blood pressure if adding ashwagandha while taking lisinopril\"\n  ],\n  \"trust_score\": 0.92,\n  \"model_consensus\": [\n    {\n      \"model\": \"Claude-3-Opus\",\n      \"confidence\": 0.94\n    },\n    {\n      \"model\": \"GPT-4o\",\n      \"confidence\": 0.91\n    },\n    {\n      \"model\": \"MedLM\",\n      \"confidence\": 0.90\n    }\n  ]\n}"
+            }
+          ]
+        },
+        {
+          "name": "Supplement Interactions",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"supplements\": [\"vitamin_d\", \"magnesium\", \"ashwagandha\"],\n  \"medications\": [\"lisinopril\", \"atorvastatin\"]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/supplement/interactions",
+              "host": ["{{baseUrl}}"],
+              "path": ["supplement", "interactions"]
+            },
+            "description": "Check for potential interactions between supplements and medications"
+          },
+          "response": [
+            {
+              "name": "Interaction analysis results",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"supplements\": [\"vitamin_d\", \"magnesium\", \"ashwagandha\"],\n  \"medications\": [\"lisinopril\", \"atorvastatin\"]\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/supplement/interactions",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["supplement", "interactions"]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"interactions\": [\n    {\n      \"item1\": \"ashwagandha\",\n      \"item2\": \"lisinopril\",\n      \"severity\": \"moderate\",\n      \"description\": \"Ashwagandha may enhance the blood pressure-lowering effect of lisinopril, potentially causing hypotension (low blood pressure).\",\n      \"recommendation\": \"Monitor blood pressure closely if taking these together. Consider reducing ashwagandha dosage or taking at different times of day.\",\n      \"source_references\": [\n        {\n          \"title\": \"Potential interactions between herbal medicines and conventional drug therapies\",\n          \"url\": \"https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3167615/\"\n        }\n      ]\n    },\n    {\n      \"item1\": \"magnesium\",\n      \"item2\": \"lisinopril\",\n      \"severity\": \"minor\",\n      \"description\": \"Magnesium supplements may slightly enhance the blood pressure-lowering effect of lisinopril.\",\n      \"recommendation\": \"No action needed for most people, but monitor blood pressure if starting or stopping magnesium supplementation.\",\n      \"source_references\": [\n        {\n          \"title\": \"Magnesium and hypertension\",\n          \"url\": \"https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5572442/\"\n        }\n      ]\n    }\n  ],\n  \"summary\": \"One moderate interaction was found between ashwagandha and lisinopril, and one minor interaction between magnesium and lisinopril. No significant interactions were identified with atorvastatin or vitamin D.\",\n  \"trust_score\": 0.89,\n  \"model_consensus\": [\n    {\n      \"model\": \"Claude-3-Opus\",\n      \"confidence\": 0.91\n    },\n    {\n      \"model\": \"GPT-4o\",\n      \"confidence\": 0.88\n    },\n    {\n      \"model\": \"MedLM\",\n      \"confidence\": 0.87\n    }\n  ]\n}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Wearables",
+      "item": [
+        {
+          "name": "Wearable Data Insights",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"wearable_data\": {\n    \"sleep\": [\n      {\n        \"date\": \"2025-05-16\",\n        \"duration\": 7.5,\n        \"deep_sleep\": 1.2,\n        \"rem_sleep\": 1.8,\n        \"light_sleep\": 4.5\n      }\n    ],\n    \"activity\": [\n      {\n        \"date\": \"2025-05-16\",\n        \"steps\": 8500,\n        \"active_calories\": 320,\n        \"active_minutes\": 45\n      }\n    ],\n    \"heart_rate\": {\n      \"resting\": 62,\n      \"max\": 142,\n      \"avg\": 72\n    }\n  },\n  \"wearable_type\": \"oura\",\n  \"timeframe\": \"day\",\n  \"metrics\": [\"sleep\", \"activity\", \"heart_rate\"]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/v1/wearable-data-insights",
+              "host": ["{{baseUrl}}"],
+              "path": ["v1", "wearable-data-insights"]
+            },
+            "description": "Analyze wearable device data for health insights"
+          },
+          "response": [
+            {
+              "name": "Wearable data analysis results",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"wearable_data\": {\n    \"sleep\": [\n      {\n        \"date\": \"2025-05-16\",\n        \"duration\": 7.5,\n        \"deep_sleep\": 1.2,\n        \"rem_sleep\": 1.8,\n        \"light_sleep\": 4.5\n      }\n    ],\n    \"activity\": [\n      {\n        \"date\": \"2025-05-16\",\n        \"steps\": 8500,\n        \"active_calories\": 320,\n        \"active_minutes\": 45\n      }\n    ],\n    \"heart_rate\": {\n      \"resting\": 62,\n      \"max\": 142,\n      \"avg\": 72\n    }\n  },\n  \"wearable_type\": \"oura\",\n  \"timeframe\": \"day\",\n  \"metrics\": [\"sleep\", \"activity\", \"heart_rate\"]\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/v1/wearable-data-insights",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["v1", "wearable-data-insights"]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"insights\": {\n    \"sleep\": {\n      \"summary\": \"Your sleep duration of 7.5 hours is within the recommended range. Your sleep architecture shows a good balance of deep and REM sleep.\",\n      \"recommendations\": [\n        \"Maintain your current sleep schedule for optimal rest\",\n        \"Consider reducing screen time in the hour before bed to potentially increase deep sleep\"\n      ]\n    },\n    \"activity\": {\n      \"summary\": \"Your activity level is good with 8,500 steps and 45 active minutes, meeting recommended guidelines for daily physical activity.\",\n      \"recommendations\": [\n        \"Continue with your current activity level\",\n        \"Consider adding 1-2 strength training sessions per week for balanced fitness\"\n      ]\n    },\n    \"heart_rate\": {\n      \"summary\": \"Your resting heart rate of 62 bpm indicates good cardiovascular fitness. Your heart rate variability is within a healthy range.\",\n      \"recommendations\": [\n        \"Continue with regular cardiovascular exercise to maintain heart health\",\n        \"Consider adding relaxation practices to potentially improve heart rate variability\"\n      ]\n    }\n  },\n  \"overall_assessment\": \"Your overall health metrics from your Oura Ring show good sleep quality, adequate physical activity, and healthy cardiovascular indicators. Continue with your current habits while considering the specific recommendations for each area.\",\n  \"trends\": [\n    {\n      \"metric\": \"deep_sleep\",\n      \"direction\": \"stable\",\n      \"significance\": \"low\",\n      \"description\": \"Your deep sleep has been stable over the past week, which is positive for cognitive function and recovery.\"\n    },\n    {\n      \"metric\": \"steps\",\n      \"direction\": \"increasing\",\n      \"significance\": \"medium\",\n      \"description\": \"Your step count has been gradually increasing over the past week, indicating improved activity levels.\"\n    }\n  ],\n  \"trust_score\": 0.94,\n  \"model_consensus\": [\n    {\n      \"model\": \"Claude-3-Opus\",\n      \"confidence\": 0.96\n    },\n    {\n      \"model\": \"GPT-4o\",\n      \"confidence\": 0.93\n    },\n    {\n      \"model\": \"MedLM\",\n      \"confidence\": 0.92\n    }\n  ]\n}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Medical Records",
+      "item": [
+        {
+          "name": "Medical Record Analysis",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"medical_record_text\": \"Patient is a 45-year-old male with a history of hypertension, controlled with lisinopril 10mg daily. Recent lab work shows total cholesterol of 185 mg/dL and fasting glucose of 95 mg/dL. Patient reports occasional insomnia and stress related to work.\",\n  \"extract_entities\": true,\n  \"confidence_threshold\": 0.7\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/v1/analyze-medical-record",
+              "host": ["{{baseUrl}}"],
+              "path": ["v1", "analyze-medical-record"]
+            },
+            "description": "Analyze medical record text for insights and entity extraction"
+          },
+          "response": [
+            {
+              "name": "Medical record analysis results",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"medical_record_text\": \"Patient is a 45-year-old male with a history of hypertension, controlled with lisinopril 10mg daily. Recent lab work shows total cholesterol of 185 mg/dL and fasting glucose of 95 mg/dL. Patient reports occasional insomnia and stress related to work.\",\n  \"extract_entities\": true,\n  \"confidence_threshold\": 0.7\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/v1/analyze-medical-record",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["v1", "analyze-medical-record"]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"summary\": \"45-year-old male with controlled hypertension on lisinopril. Cholesterol and glucose levels are normal. Patient experiences occasional insomnia and work-related stress.\",\n  \"entities\": [\n    {\n      \"text\": \"hypertension\",\n      \"category\": \"MEDICAL_CONDITION\",\n      \"type\": \"DX_NAME\",\n      \"score\": 0.98,\n      \"begin_offset\": 45,\n      \"end_offset\": 57,\n      \"traits\": [\n        {\n          \"name\": \"DIAGNOSIS\",\n          \"score\": 0.94\n        }\n      ],\n      \"attributes\": [\n        {\n          \"type\": \"SYSTEM_ORGAN_SITE\",\n          \"score\": 0.89,\n          \"relationship_score\": 0.95,\n          \"text\": \"cardiovascular\"\n        }\n      ]\n    },\n    {\n      \"text\": \"lisinopril\",\n      \"category\": \"MEDICATION\",\n      \"type\": \"GENERIC_NAME\",\n      \"score\": 0.99,\n      \"begin_offset\": 79,\n      \"end_offset\": 89,\n      \"traits\": [],\n      \"attributes\": [\n        {\n          \"type\": \"DOSAGE\",\n          \"score\": 0.97,\n          \"relationship_score\": 0.98,\n          \"text\": \"10mg daily\"\n        }\n      ]\n    },\n    {\n      \"text\": \"insomnia\",\n      \"category\": \"MEDICAL_CONDITION\",\n      \"type\": \"DX_NAME\",\n      \"score\": 0.95,\n      \"begin_offset\": 180,\n      \"end_offset\": 188,\n      \"traits\": [\n        {\n          \"name\": \"SYMPTOM\",\n          \"score\": 0.92\n        }\n      ],\n      \"attributes\": []\n    }\n  ],\n  \"key_findings\": [\n    \"Hypertension controlled with medication\",\n    \"Normal cholesterol and glucose levels\",\n    \"Sleep disturbances and stress symptoms present\"\n  ],\n  \"recommendations\": [\n    \"Continue current hypertension management\",\n    \"Consider stress management techniques for insomnia\",\n    \"Follow up in 6 months for routine monitoring\"\n  ],\n  \"icd10_codes\": [\n    {\n      \"code\": \"I10\",\n      \"description\": \"Essential (primary) hypertension\",\n      \"confidence\": 0.96\n    },\n    {\n      \"code\": \"F51.01\",\n      \"description\": \"Primary insomnia\",\n      \"confidence\": 0.85\n    },\n    {\n      \"code\": \"Z73.3\",\n      \"description\": \"Stress, not elsewhere classified\",\n      \"confidence\": 0.82\n    }\n  ],\n  \"trust_score\": 0.93,\n  \"model_consensus\": [\n    {\n      \"model\": \"Claude-3-Opus\",\n      \"confidence\": 0.95\n    },\n    {\n      \"model\": \"GPT-4o\",\n      \"confidence\": 0.92\n    },\n    {\n      \"model\": \"MedLM\",\n      \"confidence\": 0.91\n    }\n  ]\n}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Risk Assessment",
+      "item": [
+        {
+          "name": "Health Risk Assessment",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"age\": 45,\n  \"gender\": \"male\",\n  \"family_history\": [\"diabetes\", \"heart_disease\", \"cancer\"],\n  \"lifestyle_factors\": {\n    \"smoking\": false,\n    \"alcohol\": true,\n    \"exercise\": true,\n    \"diet\": true\n  },\n  \"medical_conditions\": [\"hypertension\", \"insomnia\"],\n  \"lab_results\": [\n    {\n      \"marker_name\": \"glucose\",\n      \"value\": 95,\n      \"unit\": \"mg/dL\",\n      \"reference_range_low\": 70,\n      \"reference_range_high\": 99\n    },\n    {\n      \"marker_name\": \"total_cholesterol\",\n      \"value\": 185,\n      \"unit\": \"mg/dL\",\n      \"reference_range_low\": 125,\n      \"reference_range_high\": 200\n    },\n    {\n      \"marker_name\": \"hdl\",\n      \"value\": 55,\n      \"unit\": \"mg/dL\",\n      \"reference_range_low\": 40,\n      \"reference_range_high\": 60\n    }\n  ]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/v1/health-risk-assessment",
+              "host": ["{{baseUrl}}"],
+              "path": ["v1", "health-risk-assessment"]
+            },
+            "description": "Assess health risks based on patient data and family history"
+          },
+          "response": [
+            {
+              "name": "Health risk assessment results",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"age\": 45,\n  \"gender\": \"male\",\n  \"family_history\": [\"diabetes\", \"heart_disease\", \"cancer\"],\n  \"lifestyle_factors\": {\n    \"smoking\": false,\n    \"alcohol\": true,\n    \"exercise\": true,\n    \"diet\": true\n  },\n  \"medical_conditions\": [\"hypertension\", \"insomnia\"],\n  \"lab_results\": [\n    {\n      \"marker_name\": \"glucose\",\n      \"value\": 95,\n      \"unit\": \"mg/dL\",\n      \"reference_range_low\": 70,\n      \"reference_range_high\": 99\n    },\n    {\n      \"marker_name\": \"total_cholesterol\",\n      \"value\": 185,\n      \"unit\": \"mg/dL\",\n      \"reference_range_low\": 125,\n      \"reference_range_high\": 200\n    },\n    {\n      \"marker_name\": \"hdl\",\n      \"value\": 55,\n      \"unit\": \"mg/dL\",\n      \"reference_range_low\": 40,\n      \"reference_range_high\": 60\n    }\n  ]\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/v1/health-risk-assessment",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["v1", "health-risk-assessment"]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"risk_factors\": [\n    {\n      \"condition\": \"Type 2 Diabetes\",\n      \"risk_level\": \"moderate\",\n      \"risk_score\": 0.35,\n      \"contributing_factors\": [\n        \"Family history of diabetes\",\n        \"Age over 40\"\n      ],\n      \"protective_factors\": [\n        \"Regular exercise\",\n        \"Normal glucose levels\",\n        \"Healthy diet\"\n      ],\n      \"recommendations\": [\n        \"Continue regular physical activity\",\n        \"Maintain healthy diet with limited refined carbohydrates\",\n        \"Annual screening for blood glucose levels\"\n      ]\n    },\n    {\n      \"condition\": \"Cardiovascular Disease\",\n      \"risk_level\": \"moderate\",\n      \"risk_score\": 0.40,\n      \"contributing_factors\": [\n        \"Family history of heart disease\",\n        \"Hypertension\",\n        \"Age over 40\",\n        \"Male gender\"\n      ],\n      \"protective_factors\": [\n        \"Non-smoker\",\n        \"Regular exercise\",\n        \"Normal cholesterol levels\",\n        \"Healthy HDL level\"\n      ],\n      \"recommendations\": [\n        \"Continue blood pressure management\",\n        \"Maintain heart-healthy diet\",\n        \"Regular cardiovascular exercise\",\n        \"Annual lipid panel screening\"\n      ]\n    }\n  ],\n  \"overall_assessment\": \"Based on your profile, you have a moderate risk for Type 2 Diabetes and Cardiovascular Disease, primarily due to family history and age. Your healthy lifestyle choices are providing significant protective benefits.\",\n  \"general_recommendations\": [\n    \"Continue regular exercise of at least 150 minutes per week\",\n    \"Maintain a balanced diet rich in fruits, vegetables, and whole grains\",\n    \"Regular health check-ups including blood pressure, cholesterol, and glucose screening\",\n    \"Stress management techniques to address work-related stress and insomnia\"\n  ],\n  \"screening_schedule\": [\n    {\n      \"test\": \"Fasting Blood Glucose\",\n      \"frequency\": \"Annually\",\n      \"next_due\": \"2026-05-17\"\n    },\n    {\n      \"test\": \"Lipid Panel\",\n      \"frequency\": \"Annually\",\n      \"next_due\": \"2026-05-17\"\n    },\n    {\n      \"test\": \"Blood Pressure Check\",\n      \"frequency\": \"Every 6 months\",\n      \"next_due\": \"2025-11-17\"\n    }\n  ],\n  \"trust_score\": 0.91,\n  \"model_consensus\": [\n    {\n      \"model\": \"Claude-3-Opus\",\n      \"confidence\": 0.93\n    },\n    {\n      \"model\": \"GPT-4o\",\n      \"confidence\": 0.90\n    },\n    {\n      \"model\": \"MedLM\",\n      \"confidence\": 0.89\n    }\n  ]\n}"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "https://api.bondmcp.com/api",
+      "type": "string"
+    },
+    {
+      "key": "token",
+      "value": "YOUR_ACCESS_TOKEN",
+      "type": "string"
+    }
+  ]
+}
