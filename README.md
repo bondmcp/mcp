@@ -15,11 +15,14 @@ cd mcp
 pip install -e .
 ```
 
-Generate an API key from the [developer portal](https://api.bondmcp.com) and export it:
+Generate an API key from the [developer portal](https://api.bondmcp.com) and export it (optional):
 
 ```bash
 export BONDMCP_PUBLIC_API_KEY=your_key
 ```
+
+If the environment variable is omitted, the CLI will ask for the key the first
+time it runs and save it to `~/.bondmcp_cli` for future use.
 
 ## Using the CLI
 
