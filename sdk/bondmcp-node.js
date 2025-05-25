@@ -194,9 +194,7 @@ class BondMCPNetworkError extends BondMCPError {
   }
 }
 
-module.exports = {
-  Client: BondMCPClient,
-  APIError: BondMCPAPIError,
-  NetworkError: BondMCPNetworkError,
-  Error: BondMCPError
-};
+module.exports = BondMCPClient;
+module.exports.APIError = BondMCPAPIError;
+module.exports.NetworkError = BondMCPNetworkError;
+module.exports.Error = BondMCPError;
