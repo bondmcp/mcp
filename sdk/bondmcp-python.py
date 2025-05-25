@@ -29,6 +29,14 @@ class BondMCPClient:
         self.supplements = SupplementsResource(self)
         self.wearables = WearablesResource(self)
         self.medical_records = MedicalRecordsResource(self)
+        self.ask = AskResource(self)
+        self.insights = InsightsResource(self)
+        self.api_keys = APIKeysResource(self)
+        self.payments = PaymentsResource(self)
+        self.orchestrate = OrchestrateResource(self)
+        self.tools = ToolsResource(self)
+        self.imports = ImportResource(self)
+        self.chat = ChatResource(self)
 
     def request(
         self,
@@ -281,6 +289,136 @@ class MedicalRecordsResource:
         return self.client.request("post", "/v1/analyze-medical-record", data=data)
 
 
+class AskResource:
+    def __init__(self, client: BondMCPClient):
+        self.client = client
+
+    def query(self, query: str, conversation_id: Optional[str] = None) -> Dict:
+        """Query the LLM using the /ask endpoint.
+
+        Args:
+            query: The question for the model.
+            conversation_id: Optional conversation identifier.
+
+        Returns:
+            Model response data.
+        """
+        data = {"query": query}
+        if conversation_id:
+            data["conversation_id"] = conversation_id
+
+        return self.client.request("post", "/ask", data=data)
+
+
+class InsightsResource:
+    def __init__(self, client: BondMCPClient):
+        self.client = client
+
+    def generate(self, payload: Dict, insight_type: Optional[str] = None) -> Dict:
+        """Generate health insights.
+
+        Args:
+            payload: Input data for insight generation.
+            insight_type: Optional insight type to request.
+
+        Returns:
+            Insight generation results.
+        """
+        path = "/insights" if not insight_type else f"/insights/{insight_type}"
+        return self.client.request("post", path, data=payload)
+
+
+class APIKeysResource:
+    def __init__(self, client: BondMCPClient):
+        self.client = client
+
+    def list(self) -> Dict:
+        """List API keys for the authenticated user."""
+        return self.client.request("get", "/api-keys")
+
+    def create(self, name: str, scopes: Optional[List[str]] = None) -> Dict:
+        """Create a new API key.
+
+        Args:
+            name: Human readable name.
+            scopes: Optional list of scopes for the key.
+        """
+        data = {"name": name}
+        if scopes:
+            data["scopes"] = scopes
+        return self.client.request("post", "/api-keys", data=data)
+
+    def update(
+        self, key_id: str, name: Optional[str] = None, scopes: Optional[List[str]] = None
+    ) -> Dict:
+        """Update an existing API key."""
+        data: Dict[str, Any] = {}
+        if name:
+            data["name"] = name
+        if scopes is not None:
+            data["scopes"] = scopes
+        return self.client.request("put", f"/api-keys/{key_id}", data=data)
+
+    def revoke(self, key_id: str) -> Dict:
+        """Revoke (delete) an API key."""
+        return self.client.request("delete", f"/api-keys/{key_id}")
+
+
+class PaymentsResource:
+    def __init__(self, client: BondMCPClient):
+        self.client = client
+
+    def create_intent(
+        self, amount: int, currency: str, metadata: Optional[Dict[str, Any]] = None
+    ) -> Dict:
+        """Create a payment intent."""
+        data = {"amount": amount, "currency": currency}
+        if metadata:
+            data["metadata"] = metadata
+        return self.client.request("post", "/payments/create-intent", data=data)
+
+
+class OrchestrateResource:
+    def __init__(self, client: BondMCPClient):
+        self.client = client
+
+    def run(self, steps: List[Dict], conversation_id: Optional[str] = None) -> Dict:
+        """Orchestrate multiple tool invocations."""
+        data: Dict[str, Any] = {"steps": steps}
+        if conversation_id:
+            data["conversation_id"] = conversation_id
+        return self.client.request("post", "/orchestrate", data=data)
+
+
+class ToolsResource:
+    def __init__(self, client: BondMCPClient):
+        self.client = client
+
+    def call(self, tool: str, payload: Dict) -> Dict:
+        """Call a specific tool by name."""
+        data = {"tool": tool, "payload": payload}
+        return self.client.request("post", "/tools/call", data=data)
+
+
+class ImportResource:
+    def __init__(self, client: BondMCPClient):
+        self.client = client
+
+    def oura(self, data: Dict) -> Dict:
+        """Import Oura data."""
+        return self.client.request("post", "/import/oura", data=data)
+
+
+class ChatResource:
+    def __init__(self, client: BondMCPClient):
+        self.client = client
+
+    def upload_health_data(self, conversation_id: str, data: Dict) -> Dict:
+        """Upload health data to a conversation."""
+        path = f"/v1/chat/conversation/{conversation_id}/health-data"
+        return self.client.request("post", path, data=data)
+
+
 class BondMCPError(Exception):
     """Base exception for all BondMCP errors"""
 
@@ -314,3 +452,11 @@ Client = BondMCPClient
 APIError = BondMCPAPIError
 NetworkError = BondMCPNetworkError
 Error = BondMCPError
+AskResource = AskResource
+InsightsResource = InsightsResource
+APIKeysResource = APIKeysResource
+PaymentsResource = PaymentsResource
+OrchestrateResource = OrchestrateResource
+ToolsResource = ToolsResource
+ImportResource = ImportResource
+ChatResource = ChatResource

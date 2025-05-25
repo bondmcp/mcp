@@ -24,6 +24,14 @@ class BondMCPClient {
     this.supplements = new SupplementsResource(this);
     this.wearables = new WearablesResource(this);
     this.medicalRecords = new MedicalRecordsResource(this);
+    this.ask = new AskResource(this);
+    this.insights = new InsightsResource(this);
+    this.apiKeys = new APIKeysResource(this);
+    this.payments = new PaymentsResource(this);
+    this.orchestrate = new OrchestrateResource(this);
+    this.tools = new ToolsResource(this);
+    this.imports = new ImportResource(this);
+    this.chat = new ChatResource(this);
   }
   
   async request(method, path, data = null, options = {}) {
@@ -170,6 +178,132 @@ class MedicalRecordsResource {
   }
 }
 
+class AskResource {
+  constructor(client) {
+    this.client = client;
+  }
+
+  /** Query the LLM using the /ask endpoint. */
+  async query(query, conversationId = null) {
+    const data = { query };
+    if (conversationId) {
+      data.conversation_id = conversationId;
+    }
+
+    return this.client.request('post', '/ask', data);
+  }
+}
+
+class InsightsResource {
+  constructor(client) {
+    this.client = client;
+  }
+
+  /** Generate health insights. */
+  async generate(payload, insightType = null) {
+    const path = insightType ? `/insights/${insightType}` : '/insights';
+    return this.client.request('post', path, payload);
+  }
+}
+
+class APIKeysResource {
+  constructor(client) {
+    this.client = client;
+  }
+
+  /** List API keys for the authenticated user. */
+  async list() {
+    return this.client.request('get', '/api-keys');
+  }
+
+  /** Create a new API key. */
+  async create(name, scopes = null) {
+    const data = { name };
+    if (scopes) {
+      data.scopes = scopes;
+    }
+    return this.client.request('post', '/api-keys', data);
+  }
+
+  /** Update an existing API key. */
+  async update(keyId, opts = {}) {
+    const data = {};
+    if (opts.name) data.name = opts.name;
+    if (opts.scopes !== undefined) data.scopes = opts.scopes;
+    return this.client.request('put', `/api-keys/${keyId}`, data);
+  }
+
+  /** Revoke (delete) an API key. */
+  async revoke(keyId) {
+    return this.client.request('delete', `/api-keys/${keyId}`);
+  }
+}
+
+class PaymentsResource {
+  constructor(client) {
+    this.client = client;
+  }
+
+  /** Create a payment intent. */
+  async createIntent(amount, currency, metadata = null) {
+    const data = { amount, currency };
+    if (metadata) {
+      data.metadata = metadata;
+    }
+    return this.client.request('post', '/payments/create-intent', data);
+  }
+}
+
+class OrchestrateResource {
+  constructor(client) {
+    this.client = client;
+  }
+
+  /** Orchestrate multiple tool invocations. */
+  async run(steps, conversationId = null) {
+    const data = { steps };
+    if (conversationId) {
+      data.conversation_id = conversationId;
+    }
+    return this.client.request('post', '/orchestrate', data);
+  }
+}
+
+class ToolsResource {
+  constructor(client) {
+    this.client = client;
+  }
+
+  /** Call a specific tool by name. */
+  async call(tool, payload) {
+    const data = { tool, payload };
+    return this.client.request('post', '/tools/call', data);
+  }
+}
+
+class ImportResource {
+  constructor(client) {
+    this.client = client;
+  }
+
+  /** Import Oura data. */
+  async oura(data) {
+    return this.client.request('post', '/import/oura', data);
+  }
+}
+
+class ChatResource {
+  constructor(client) {
+    this.client = client;
+  }
+
+  /** Upload health data to a conversation. */
+  async uploadHealthData(conversationId, data) {
+    const path = `/v1/chat/conversation/${conversationId}/health-data`;
+    return this.client.request('post', path, data);
+  }
+}
+
 class BondMCPError extends Error {
   constructor(message) {
     super(message);
@@ -198,5 +332,18 @@ module.exports = {
   Client: BondMCPClient,
   APIError: BondMCPAPIError,
   NetworkError: BondMCPNetworkError,
-  Error: BondMCPError
+  Error: BondMCPError,
+  AskResource,
+  InsightsResource,
+  APIKeysResource,
+  PaymentsResource,
+  OrchestrateResource,
+  ToolsResource,
+  ImportResource,
+  ChatResource,
+  LabsResource,
+  SupplementsResource,
+  WearablesResource,
+  MedicalRecordsResource,
+  HealthResource
 };
