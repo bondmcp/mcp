@@ -44,3 +44,8 @@ For complete guides and SDK information see [docs.bondmcp.com](https://docs.bond
 ## API Overview
 
 See [API_OVERVIEW.md](./API_OVERVIEW.md) for a summary of available endpoints. Always check the link above for the most up-to-date schema.
+
+## License
+
+This project is licensed under the [MIT License](LICENSE).
+
