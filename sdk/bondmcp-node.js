@@ -1,4 +1,6 @@
 // Node.js SDK for BondMCP API
+// Disclaimer: This SDK is provided for informational purposes only and does not
+// constitute medical advice.
 const axios = require('axios');
 
 class BondMCPClient {
