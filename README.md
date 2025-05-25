@@ -4,6 +4,8 @@ This repository hosts the public command line interface (CLI) and minimal setup 
 
 BondMCP provides a trusted health AI platform. For all detailed documentation please visit [docs.bondmcp.com](https://docs.bondmcp.com).
 
+**Disclaimer:** The BondMCP platform and CLI are provided for informational purposes only and do not constitute medical advice.
+
 ## Getting Started
 
 ```bash

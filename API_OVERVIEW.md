@@ -3,6 +3,8 @@
 This document summarizes the main capabilities of the BondMCP public API.
 For the complete and most recent OpenAPI schema, see [api.bondmcp.com/openapi.json](https://api.bondmcp.com/openapi.json).
 
+**Disclaimer:** The BondMCP platform, API, and CLI are for informational purposes only and do not constitute medical advice.
+
 ## Endpoints
 
 - `POST /ask` – query the LLM.

@@ -3,6 +3,9 @@ import requests
 import json
 from typing import Dict, List, Optional, Union, Any
 
+# Disclaimer: This SDK is provided for informational purposes only and does not
+# constitute medical advice.
+
 
 class BondMCPClient:
     def __init__(
