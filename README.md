@@ -36,6 +36,29 @@ bondmcp-cli ask "What can BondMCP do?"
 
 The CLI uses `BONDMCP_PUBLIC_API_BASE_URL` if you need to target a different host (defaults to `https://api.bondmcp.com`).
 
+## Node SDK
+
+Install dependencies:
+
+```bash
+npm install
+```
+
+Create a client and call an endpoint:
+
+```javascript
+const BondMCPClient = require('./sdk/bondmcp-node');
+
+const client = new BondMCPClient('YOUR_API_KEY');
+
+async function main() {
+  const health = await client.health.check();
+  console.log(health);
+}
+
+main();
+```
+
 ## API Reference
 
 The latest OpenAPI schema is available at [api.bondmcp.com/openapi.json](https://api.bondmcp.com/openapi.json).
