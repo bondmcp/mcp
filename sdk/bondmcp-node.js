@@ -349,3 +349,7 @@ module.exports = {
   MedicalRecordsResource,
   HealthResource
 };
+module.exports = BondMCPClient;
+module.exports.APIError = BondMCPAPIError;
+module.exports.NetworkError = BondMCPNetworkError;
+module.exports.Error = BondMCPError;
