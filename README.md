@@ -58,7 +58,7 @@ Install dependencies:
 npm install
 ```
 
-Create a client and call an endpoint:
+## Create a client and call an endpoint:
 
 ```javascript
 const BondMCPClient = require('./sdk/bondmcp-node');
