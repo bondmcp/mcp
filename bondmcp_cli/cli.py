@@ -61,5 +61,57 @@ def ask(query):
         Console().print(f"API error {resp.status_code}: {resp.text}")
         raise SystemExit(1)
 
+
+@cli.group()
+def labs():
+    """Commands related to lab results."""
+    pass
+
+
+@labs.command("interpret")
+@click.argument("payload")
+def labs_interpret(payload):
+    """Interpret lab results with AI-powered analysis."""
+    api_key = get_api_key()
+    base_url = os.getenv("BONDMCP_PUBLIC_API_BASE_URL", "https://api.bondmcp.com")
+    url = f"{base_url}/labs/interpret"
+    try:
+        data = json.loads(payload)
+    except json.JSONDecodeError:
+        Console().print("Payload must be valid JSON")
+        raise SystemExit(1)
+    resp = requests.post(url, json=data, headers={"Authorization": f"Bearer {api_key}"})
+    if resp.status_code == 200:
+        Console().print_json(data=resp.json())
+    else:
+        Console().print(f"API error {resp.status_code}: {resp.text}")
+        raise SystemExit(1)
+
+
+@cli.group()
+def supplements():
+    """Commands related to supplement guidance."""
+    pass
+
+
+@supplements.command("recommend")
+@click.argument("payload")
+def supplements_recommend(payload):
+    """Get personalized supplement recommendations."""
+    api_key = get_api_key()
+    base_url = os.getenv("BONDMCP_PUBLIC_API_BASE_URL", "https://api.bondmcp.com")
+    url = f"{base_url}/supplement/recommend"
+    try:
+        data = json.loads(payload)
+    except json.JSONDecodeError:
+        Console().print("Payload must be valid JSON")
+        raise SystemExit(1)
+    resp = requests.post(url, json=data, headers={"Authorization": f"Bearer {api_key}"})
+    if resp.status_code == 200:
+        Console().print_json(data=resp.json())
+    else:
+        Console().print(f"API error {resp.status_code}: {resp.text}")
+        raise SystemExit(1)
+
 if __name__ == "__main__":
     cli()
