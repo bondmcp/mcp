@@ -1,21 +1,24 @@
-import json
 import os
-from pathlib import Path
 
 import click
 import requests
 from rich.console import Console
 
-# Path to store the API key if provided interactively
-CONFIG_FILE = Path.home() / ".bondmcp_cli"
+try:
+    import keyring  # type: ignore
+except Exception:  # pragma: no cover - optional dependency
+    keyring = None  # type: ignore[misc]
+
+SERVICE_NAME = "bondmcp_cli"
+USERNAME = "api_key"
 
 
 def get_api_key() -> str:
     """Retrieve the API key from env or interactive prompt.
 
     Priority order:
-    1. BONDMCP_PUBLIC_API_KEY environment variable
-    2. Stored key in CONFIG_FILE
+    1. ``BONDMCP_PUBLIC_API_KEY`` environment variable
+    2. Stored key using the system keyring (if available)
     3. Interactive prompt asking the user
     """
 
@@ -23,22 +26,20 @@ def get_api_key() -> str:
     if env_key:
         return env_key
 
-    if CONFIG_FILE.exists():
+    if keyring is not None:
         try:
-            data = json.loads(CONFIG_FILE.read_text())
-            stored_key = data.get("api_key")
+            stored_key = keyring.get_password(SERVICE_NAME, USERNAME)
             if stored_key:
                 return stored_key
         except Exception:
-            # ignore errors and fallback to prompt
             pass
 
-    # Prompt user for key and store for future use
     api_key = click.prompt("Enter your BondMCP public API key", hide_input=True)
-    try:
-        CONFIG_FILE.write_text(json.dumps({"api_key": api_key}))
-    except Exception:
-        pass
+    if keyring is not None:
+        try:
+            keyring.set_password(SERVICE_NAME, USERNAME, api_key)
+        except Exception:
+            pass
     return api_key
 
 

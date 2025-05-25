@@ -23,8 +23,8 @@ Generate an API key from the [developer portal](https://api.bondmcp.com) and exp
 export BONDMCP_PUBLIC_API_KEY=your_key
 ```
 
-If the environment variable is omitted, the CLI will ask for the key the first
-time it runs and save it to `~/.bondmcp_cli` for future use.
+If the environment variable is omitted, the CLI will prompt for the key the first
+time it runs and store it using your system keyring for future use (when available).
 
 ## Using the CLI
 
