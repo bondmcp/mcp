@@ -36,7 +36,13 @@ def get_api_key() -> str:
     # Prompt user for key and store for future use
     api_key = click.prompt("Enter your BondMCP public API key", hide_input=True)
     try:
-        CONFIG_FILE.write_text(json.dumps({"api_key": api_key}))
+        fd = os.open(
+            str(CONFIG_FILE),
+            os.O_WRONLY | os.O_CREAT | os.O_TRUNC,
+            0o600,
+        )
+        with os.fdopen(fd, "w") as f:
+            f.write(json.dumps({"api_key": api_key}))
     except Exception:
         pass
     return api_key

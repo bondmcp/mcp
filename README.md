@@ -24,7 +24,8 @@ export BONDMCP_PUBLIC_API_KEY=your_key
 ```
 
 If the environment variable is omitted, the CLI will ask for the key the first
-time it runs and save it to `~/.bondmcp_cli` for future use.
+time it runs and save it to `~/.bondmcp_cli` for future use. The file is created
+with permissions `600` so that only your user can read and write the stored key.
 
 ## Using the CLI
 
