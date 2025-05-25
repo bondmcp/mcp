@@ -16,3 +16,6 @@ dependencies = [
 
 [project.scripts]
 bondmcp-cli = "bondmcp_cli.cli:cli"
+
+[project.optional-dependencies]
+sdk = ["requests>=2.25"]
