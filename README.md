@@ -34,6 +34,24 @@ Send a question to the API:
 bondmcp-cli ask "What can BondMCP do?"
 ```
 
+Interpret lab results:
+
+```bash
+bondmcp-cli labs-interpret labs.json --context patient.json
+```
+
+Get supplement recommendations:
+
+```bash
+bondmcp-cli supplement-recommend fitness --labs labs.json --current-supplements current.json
+```
+
+Check API status:
+
+```bash
+bondmcp-cli health
+```
+
 The CLI uses `BONDMCP_PUBLIC_API_BASE_URL` if you need to target a different host (defaults to `https://api.bondmcp.com`).
 
 ## API Reference
