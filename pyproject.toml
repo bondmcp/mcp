@@ -16,3 +16,7 @@ dependencies = [
 
 [project.scripts]
 bondmcp-cli = "bondmcp_cli.cli:cli"
+
+[tool.pytest.ini_options]
+addopts = "-v"
+testpaths = ["tests"]
