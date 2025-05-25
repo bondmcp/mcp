@@ -24,7 +24,8 @@ export BONDMCP_PUBLIC_API_KEY=your_key
 ```
 
 If the environment variable is omitted, the CLI will ask for the key the first
-time it runs and save it to `~/.bondmcp_cli` for future use.
+time it runs and store it securely using your system keyring. If keyring is not
+available, you must set `BONDMCP_PUBLIC_API_KEY` each time.
 
 ## Using the CLI
 
