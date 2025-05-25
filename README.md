@@ -12,10 +12,27 @@ git clone https://github.com/bondmcp/mcp.git
 cd mcp
 
 # Install the CLI (requires Python 3.8+)
-pip install -e .
+pip install bondmcp[cli]
+
+# Or install from source
+pip install -e .[cli]
 ```
 
 The source for the CLI lives in the `bondmcp_cli/` package.
+
+## Installing the Python SDK
+
+To use the SDK as a library install the package with `pip`:
+
+```bash
+pip install bondmcp
+```
+
+When working from this repository you can install it in editable mode:
+
+```bash
+pip install -e .
+```
 
 Generate an API key from the [developer portal](https://api.bondmcp.com) and export it (optional):
 
