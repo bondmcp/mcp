@@ -44,3 +44,51 @@ For complete guides and SDK information see [docs.bondmcp.com](https://docs.bond
 ## API Overview
 
 See [API_OVERVIEW.md](./API_OVERVIEW.md) for a summary of available endpoints. Always check the link above for the most up-to-date schema.
+
+## SDK Usage
+
+The `sdk/` directory contains minimal Node.js and Python SDKs. These are
+single-file helpers that wrap the public API and can be dropped into your own
+project.
+
+### Node.js
+
+1. Install the required dependency:
+
+   ```bash
+   npm install axios
+   ```
+
+2. Copy `sdk/bondmcp-node.js` into your project and require it:
+
+   ```javascript
+   const { Client } = require('./bondmcp-node'); // adjust the path as needed
+
+   const client = new Client('YOUR_API_KEY');
+
+   async function main() {
+     const status = await client.health.check();
+     console.log(status);
+   }
+
+   main().catch(console.error);
+   ```
+
+### Python
+
+1. Install the `requests` dependency:
+
+   ```bash
+   pip install requests
+   ```
+
+2. Copy `sdk/bondmcp-python.py` into your project (renaming it to
+   `bondmcp.py` if desired) and import `BondMCPClient`:
+
+   ```python
+   from bondmcp import BondMCPClient  # from bondmcp.py
+
+   client = BondMCPClient('YOUR_API_KEY')
+   print(client.health.check())
+   ```
+
