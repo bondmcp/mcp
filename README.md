@@ -34,6 +34,18 @@ Send a question to the API:
 bondmcp-cli ask "What can BondMCP do?"
 ```
 
+Interpret lab results from a JSON payload:
+
+```bash
+bondmcp-cli labs interpret '{"lab_results": [...]}'
+```
+
+Get supplement recommendations:
+
+```bash
+bondmcp-cli supplements recommend '{"health_goals": [...]}'
+```
+
 The CLI uses `BONDMCP_PUBLIC_API_BASE_URL` if you need to target a different host (defaults to `https://api.bondmcp.com`).
 
 ## API Reference
