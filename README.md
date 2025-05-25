@@ -136,3 +136,11 @@ This project is licensed under the [MIT License](./LICENSE).
 
 This project is licensed under the [MIT License](LICENSE).
 
+## Running Tests
+
+Install the optional test dependencies and run `pytest`:
+
+```bash
+pip install -e .[test]
+pytest
+```
