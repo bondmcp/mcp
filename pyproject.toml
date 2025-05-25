@@ -16,6 +16,8 @@ dependencies = [
 cli = [
     "click>=8.0",
     "rich>=13.0"
+    "requests>=2.25",
+    "keyring>=23.0"
 ]
 
 [project.scripts]

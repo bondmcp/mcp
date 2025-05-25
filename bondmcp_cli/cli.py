@@ -23,7 +23,6 @@ def get_api_key() -> str:
             if stored_key:
                 return stored_key
         except Exception:
-            # ignore errors and fallback to prompt
             pass
 
     api_key = click.prompt("Enter your BondMCP public API key", hide_input=True)
