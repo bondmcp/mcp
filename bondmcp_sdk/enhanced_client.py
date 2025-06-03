@@ -936,3 +936,435 @@ __all__ = [
     'UserTier'
 ]
 
+
+
+# Webhook Management Extensions for Enhanced BondMCP Client
+
+class WebhookResource:
+    """Webhook management resource for real-time notifications."""
+    
+    def __init__(self, client):
+        self.client = client
+    
+    async def create(
+        self,
+        url: str,
+        event_types: List[str],
+        secret: Optional[str] = None
+    ) -> Dict[str, Any]:
+        """
+        Create a new webhook endpoint.
+        
+        Args:
+            url: The webhook URL to receive events
+            event_types: List of event types to subscribe to
+            secret: Optional webhook secret for signature verification
+            
+        Returns:
+            Webhook endpoint details
+        """
+        data = {
+            "url": url,
+            "event_types": event_types
+        }
+        if secret:
+            data["secret"] = secret
+            
+        return await self.client.request("POST", "/api/v1/webhooks", data=data)
+    
+    async def list(self) -> Dict[str, Any]:
+        """
+        List all webhook endpoints for the authenticated customer.
+        
+        Returns:
+            List of webhook endpoints
+        """
+        return await self.client.request("GET", "/api/v1/webhooks")
+    
+    async def get(self, webhook_id: str) -> Dict[str, Any]:
+        """
+        Get a specific webhook endpoint.
+        
+        Args:
+            webhook_id: The webhook endpoint ID
+            
+        Returns:
+            Webhook endpoint details
+        """
+        return await self.client.request("GET", f"/api/v1/webhooks/{webhook_id}")
+    
+    async def update(
+        self,
+        webhook_id: str,
+        url: str,
+        event_types: List[str],
+        secret: Optional[str] = None
+    ) -> Dict[str, Any]:
+        """
+        Update a webhook endpoint.
+        
+        Args:
+            webhook_id: The webhook endpoint ID
+            url: The webhook URL to receive events
+            event_types: List of event types to subscribe to
+            secret: Optional webhook secret for signature verification
+            
+        Returns:
+            Updated webhook endpoint details
+        """
+        data = {
+            "url": url,
+            "event_types": event_types
+        }
+        if secret:
+            data["secret"] = secret
+            
+        return await self.client.request("PUT", f"/api/v1/webhooks/{webhook_id}", data=data)
+    
+    async def delete(self, webhook_id: str) -> bool:
+        """
+        Delete a webhook endpoint.
+        
+        Args:
+            webhook_id: The webhook endpoint ID
+            
+        Returns:
+            True if deleted successfully
+        """
+        try:
+            await self.client.request("DELETE", f"/api/v1/webhooks/{webhook_id}")
+            return True
+        except APIError:
+            return False
+    
+    async def test(self, webhook_id: str) -> Dict[str, Any]:
+        """
+        Send a test event to a webhook endpoint.
+        
+        Args:
+            webhook_id: The webhook endpoint ID
+            
+        Returns:
+            Test result
+        """
+        return await self.client.request("POST", f"/api/v1/webhooks/{webhook_id}/test")
+    
+    async def get_event_types(self) -> Dict[str, Any]:
+        """
+        Get all available webhook event types.
+        
+        Returns:
+            List of available event types with descriptions
+        """
+        return await self.client.request("GET", "/api/v1/webhooks/event-types")
+
+
+class BatchResource:
+    """Batch processing resource for high-volume operations."""
+    
+    def __init__(self, client):
+        self.client = client
+    
+    async def process_labs(
+        self,
+        lab_results: List[Dict[str, Any]],
+        batch_id: Optional[str] = None
+    ) -> Dict[str, Any]:
+        """
+        Process multiple lab results in a single batch.
+        
+        Args:
+            lab_results: List of lab result data
+            batch_id: Optional batch identifier
+            
+        Returns:
+            Batch processing results
+        """
+        data = {
+            "lab_results": lab_results,
+            "batch_id": batch_id or f"batch_{int(time.time())}"
+        }
+        return await self.client.request("POST", "/api/v1/batch/labs", data=data)
+    
+    async def analyze_health_data(
+        self,
+        health_records: List[Dict[str, Any]],
+        analysis_type: str = "comprehensive"
+    ) -> Dict[str, Any]:
+        """
+        Analyze multiple health records in batch.
+        
+        Args:
+            health_records: List of health record data
+            analysis_type: Type of analysis to perform
+            
+        Returns:
+            Batch analysis results
+        """
+        data = {
+            "health_records": health_records,
+            "analysis_type": analysis_type
+        }
+        return await self.client.request("POST", "/api/v1/batch/analyze", data=data)
+    
+    async def get_status(self, batch_id: str) -> Dict[str, Any]:
+        """
+        Get the status of a batch operation.
+        
+        Args:
+            batch_id: The batch identifier
+            
+        Returns:
+            Batch status and progress
+        """
+        return await self.client.request("GET", f"/api/v1/batch/status/{batch_id}")
+
+
+class IntegrationsResource:
+    """Third-party integrations resource."""
+    
+    def __init__(self, client):
+        self.client = client
+    
+    async def connect_fitbit(self, access_token: str) -> Dict[str, Any]:
+        """
+        Connect Fitbit integration.
+        
+        Args:
+            access_token: Fitbit OAuth access token
+            
+        Returns:
+            Integration status
+        """
+        data = {"access_token": access_token}
+        return await self.client.request("POST", "/api/v1/integrations/fitbit/connect", data=data)
+    
+    async def connect_apple_health(self, health_data: Dict[str, Any]) -> Dict[str, Any]:
+        """
+        Connect Apple Health integration.
+        
+        Args:
+            health_data: Apple Health data export
+            
+        Returns:
+            Integration status
+        """
+        return await self.client.request("POST", "/api/v1/integrations/apple-health/connect", data=health_data)
+    
+    async def connect_google_fit(self, credentials: Dict[str, Any]) -> Dict[str, Any]:
+        """
+        Connect Google Fit integration.
+        
+        Args:
+            credentials: Google Fit API credentials
+            
+        Returns:
+            Integration status
+        """
+        return await self.client.request("POST", "/api/v1/integrations/google-fit/connect", data=credentials)
+    
+    async def sync_wearable_data(self, device_type: str) -> Dict[str, Any]:
+        """
+        Sync data from connected wearable devices.
+        
+        Args:
+            device_type: Type of wearable device
+            
+        Returns:
+            Sync results
+        """
+        data = {"device_type": device_type}
+        return await self.client.request("POST", "/api/v1/integrations/sync", data=data)
+    
+    async def list_connected(self) -> Dict[str, Any]:
+        """
+        List all connected integrations.
+        
+        Returns:
+            List of connected integrations
+        """
+        return await self.client.request("GET", "/api/v1/integrations")
+    
+    async def disconnect(self, integration_type: str) -> bool:
+        """
+        Disconnect an integration.
+        
+        Args:
+            integration_type: Type of integration to disconnect
+            
+        Returns:
+            True if disconnected successfully
+        """
+        try:
+            await self.client.request("DELETE", f"/api/v1/integrations/{integration_type}")
+            return True
+        except APIError:
+            return False
+
+
+class GraphQLResource:
+    """GraphQL API resource for flexible queries."""
+    
+    def __init__(self, client):
+        self.client = client
+    
+    async def query(self, query: str, variables: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
+        """
+        Execute a GraphQL query.
+        
+        Args:
+            query: GraphQL query string
+            variables: Optional query variables
+            
+        Returns:
+            Query results
+        """
+        data = {"query": query}
+        if variables:
+            data["variables"] = variables
+            
+        return await self.client.request("POST", "/api/v1/graphql", data=data)
+    
+    async def get_schema(self) -> Dict[str, Any]:
+        """
+        Get the GraphQL schema.
+        
+        Returns:
+            GraphQL schema definition
+        """
+        return await self.client.request("GET", "/api/v1/graphql/schema")
+
+
+# Enhanced client with new resources
+def enhance_client_with_integrations(client):
+    """Add integration resources to an existing enhanced client."""
+    if not hasattr(client, 'webhooks'):
+        client.webhooks = WebhookResource(client)
+    if not hasattr(client, 'batch'):
+        client.batch = BatchResource(client)
+    if not hasattr(client, 'integrations'):
+        client.integrations = IntegrationsResource(client)
+    if not hasattr(client, 'graphql'):
+        client.graphql = GraphQLResource(client)
+    
+    return client
+
+
+# Webhook signature verification utility
+def verify_webhook_signature(payload: str, signature: str, secret: str) -> bool:
+    """
+    Verify webhook signature for security.
+    
+    Args:
+        payload: Raw webhook payload
+        signature: Webhook signature from headers
+        secret: Webhook secret
+        
+    Returns:
+        True if signature is valid
+    """
+    import hmac
+    import hashlib
+    
+    expected_signature = hmac.new(
+        secret.encode('utf-8'),
+        payload.encode('utf-8'),
+        hashlib.sha256
+    ).hexdigest()
+    
+    # Remove 'sha256=' prefix if present
+    if signature.startswith('sha256='):
+        signature = signature[7:]
+    
+    return hmac.compare_digest(expected_signature, signature)
+
+
+# Integration helper functions
+class IntegrationHelpers:
+    """Helper functions for common integration tasks."""
+    
+    @staticmethod
+    def parse_fitbit_data(fitbit_export: Dict[str, Any]) -> Dict[str, Any]:
+        """Parse Fitbit data export into BondMCP format."""
+        # Implementation would parse Fitbit's data format
+        return {
+            "steps": fitbit_export.get("activities-steps", []),
+            "heart_rate": fitbit_export.get("activities-heart", []),
+            "sleep": fitbit_export.get("sleep", []),
+            "weight": fitbit_export.get("body-weight", [])
+        }
+    
+    @staticmethod
+    def parse_apple_health_data(health_export: Dict[str, Any]) -> Dict[str, Any]:
+        """Parse Apple Health data export into BondMCP format."""
+        # Implementation would parse Apple Health's XML format
+        return {
+            "workouts": health_export.get("workouts", []),
+            "vitals": health_export.get("vitals", []),
+            "lab_results": health_export.get("lab_results", []),
+            "medications": health_export.get("medications", [])
+        }
+    
+    @staticmethod
+    def parse_google_fit_data(fit_data: Dict[str, Any]) -> Dict[str, Any]:
+        """Parse Google Fit data into BondMCP format."""
+        # Implementation would parse Google Fit's data format
+        return {
+            "activities": fit_data.get("activities", []),
+            "biometrics": fit_data.get("biometrics", []),
+            "nutrition": fit_data.get("nutrition", [])
+        }
+
+
+# Example usage and documentation
+WEBHOOK_EXAMPLE = """
+# Webhook Usage Example
+
+from bondmcp_sdk.enhanced_client import EnhancedBondMCPClient, enhance_client_with_integrations
+
+# Initialize client
+client = EnhancedBondMCPClient(api_key="your_api_key")
+client = enhance_client_with_integrations(client)
+
+# Create webhook
+webhook = await client.webhooks.create(
+    url="https://your-app.com/webhooks/bondmcp",
+    event_types=["lab_result_ready", "health_alert"],
+    secret="your_webhook_secret"
+)
+
+# List webhooks
+webhooks = await client.webhooks.list()
+
+# Test webhook
+test_result = await client.webhooks.test(webhook["id"])
+"""
+
+BATCH_EXAMPLE = """
+# Batch Processing Example
+
+# Process multiple lab results
+lab_results = [
+    {"test_type": "CBC", "values": {...}},
+    {"test_type": "CMP", "values": {...}},
+]
+
+batch_result = await client.batch.process_labs(lab_results)
+
+# Check batch status
+status = await client.batch.get_status(batch_result["batch_id"])
+"""
+
+INTEGRATION_EXAMPLE = """
+# Integration Example
+
+# Connect Fitbit
+fitbit_result = await client.integrations.connect_fitbit(access_token)
+
+# Sync wearable data
+sync_result = await client.integrations.sync_wearable_data("fitbit")
+
+# List connected integrations
+integrations = await client.integrations.list_connected()
+"""
+
