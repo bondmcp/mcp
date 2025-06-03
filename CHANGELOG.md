@@ -1,22 +1,52 @@
 # Changelog
 
-All notable changes to this project will be documented in this file.
+All notable changes to the BondMCP Python SDK will be documented in this file.
 
-## [0.1.0] - 2025-05-20
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+## [1.0.0] - 2025-06-03
+
 ### Added
-- API overview documentation.
-- Python and Node.js SDK stubs.
-- CLI command that prompts for an API key if missing.
+- Complete Python SDK with comprehensive API coverage
+- CLI tool with health endpoint testing
+- Support for all 30+ BondMCP API endpoints
+- Multi-model AI consensus integration
+- HIPAA-compliant security practices
+- Comprehensive error handling and type hints
+- Modern build system with hatchling
+- Development tools configuration (black, isort, mypy, pytest)
+- Comprehensive documentation and examples
+
+### Fixed
+- pyproject.toml syntax errors preventing installation
+- Package metadata and versioning issues
+- Build backend compatibility for editable installs
+- Missing dependencies in CLI optional extras
 
 ### Changed
-- CLI package renamed to `bondmcp_cli`.
-- README instructions clarified.
-- Unused assets removed.
+- Upgraded to modern hatchling build backend
+- Improved package metadata and classifiers
+- Enhanced error handling with specific exception types
+- Better type hints and documentation
+- Optimized package structure and imports
 
-## [0.0.1] - 2024-06-10
+### Security
+- Secure API key handling with keyring support
+- Proper authentication headers and timeout handling
+- Input validation and sanitization
+
+## [0.1.0] - 2025-06-02
+
 ### Added
-- Basic README with setup instructions.
-- `.gitignore` and TODO list.
+- Initial SDK implementation
+- Basic CLI functionality
+- Core API client with authentication
+- Health, Labs, Supplements, and Wearables resources
+- Basic error handling
 
-### Removed
-- Outdated docs and OpenAPI file.
+### Known Issues
+- Package installation issues due to pyproject.toml syntax errors
+- Missing package metadata
+- Build backend limitations
+
