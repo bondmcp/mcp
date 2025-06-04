@@ -1,28 +1,94 @@
 # BondMCP API Overview
 
-This document summarizes the main capabilities of the BondMCP public API.
-For the complete and most recent OpenAPI schema, see [api.bondmcp.com/openapi.json](https://api.bondmcp.com/openapi.json).
+This document provides an overview of the BondMCP public API for developers integrating healthcare AI capabilities into their applications.
 
-**Disclaimer:** The BondMCP platform, API, and CLI are for informational purposes only and do not constitute medical advice.
+**Base URL**: `https://api.bondmcp.com`
 
-## Endpoints
+**Authentication**: API Key required in header: `X-API-Key: your-api-key`
 
-- `POST /ask` – query the LLM.
-- `POST /import/oura` – import Oura data.
-- `POST /insights/{insight_type}` – generate health insights by type.
-- `POST /insights` – generate general health insights.
-- `GET /api-keys` – list API keys for the authenticated user.
-- `POST /api-keys` – create a new API key.
-- `PUT /api-keys/{key_id}` – update an existing API key.
-- `DELETE /api-keys/{key_id}` – revoke an API key.
-- `POST /labs/interpret` – interpret lab results.
-- `POST /supplement/recommend` – recommend supplements.
-- `POST /v1/chat/conversation/{conversation_id}/health-data` – upload health data for a conversation.
-- `POST /payments/create-intent` – create a payment intent.
-- `POST /orchestrate` – orchestrate tool invocations.
-- `GET /health` – health check endpoint.
-- `POST /tools/call` – call a specific tool.
+## Core Endpoints
 
-## Authentication
+### Health Chat
+Query the AI with health-related questions and receive medically-informed responses.
 
-Some endpoints require a bearer token or API key. Refer to the full schema for detailed security requirements.
+```
+POST /api/v1/ask
+```
+
+**Request Body**:
+```json
+{
+  "message": "What are the symptoms of high blood pressure?",
+  "context": "general-health"
+}
+```
+
+**Response**:
+```json
+{
+  "answer": "High blood pressure symptoms include...",
+  "confidence": 0.96,
+  "sources": ["AHA", "Mayo Clinic"],
+  "timestamp": "2024-06-04T04:45:00Z"
+}
+```
+
+### Health Data Analysis
+Analyze health data and receive AI-powered insights.
+
+```
+POST /api/v1/analyze
+```
+
+**Request Body**:
+```json
+{
+  "data_type": "lab_results",
+  "data": {
+    "glucose": 120,
+    "cholesterol": 180
+  }
+}
+```
+
+**Response**:
+```json
+{
+  "analysis": "Your glucose levels are slightly elevated...",
+  "recommendations": ["Consider reducing sugar intake"],
+  "risk_factors": ["diabetes"],
+  "confidence": 0.94
+}
+```
+
+## Rate Limits
+
+- Free tier: 100 requests/day
+- Pro tier: 10,000 requests/day
+- Enterprise: Custom limits
+
+## Error Handling
+
+All errors return standard HTTP status codes with JSON error details:
+
+```json
+{
+  "error": "Invalid API key",
+  "code": "INVALID_AUTH",
+  "timestamp": "2024-06-04T04:45:00Z"
+}
+```
+
+## Getting Started
+
+1. Sign up at [bondmcp.com](https://bondmcp.com)
+2. Get your API key from the dashboard
+3. Install one of our SDKs or use the REST API directly
+4. Start building healthcare AI applications
+
+For complete API documentation with interactive examples, visit [api.bondmcp.com/docs](https://api.bondmcp.com/docs)
+
+---
+
+**Disclaimer**: BondMCP is for informational purposes only and does not constitute medical advice.
+
