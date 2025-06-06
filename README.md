@@ -53,17 +53,17 @@ POST /api/v1/analyze
 ```
 Analyze health data and receive insights.
 
-For complete API documentation, visit [api.bondmcp.com/docs](https://api.bondmcp.com/docs)
+For complete API documentation, visit [docs.bondmcp.com](https://docs.bondmcp.com)
 
 ## SDKs
 
-- [TypeScript/JavaScript SDK](./sdks/typescript/)
-- [Go SDK](./sdks/go/)
-- [Python SDK](./sdks/python/) (coming soon)
+- [TypeScript/JavaScript SDK](https://docs.bondmcp.com/sdks/typescript)
+- [Go SDK](https://docs.bondmcp.com/sdks/go)
+- [Python SDK](https://docs.bondmcp.com/sdks/python)
 
 ## Examples
 
-See the [examples](./examples/) directory for integration examples and use cases.
+See the [examples](https://github.com/bondmcp/mcp/tree/main/examples) directory for integration examples and use cases.
 
 ## Support
 
@@ -73,9 +73,8 @@ See the [examples](./examples/) directory for integration examples and use cases
 
 ## License
 
-MIT License - see [LICENSE](./LICENSE) for details.
+MIT License - see [LICENSE](https://github.com/bondmcp/mcp/blob/main/LICENSE) for details.
 
 ---
 
 **Disclaimer**: BondMCP is for informational purposes only and does not constitute medical advice. Always consult with healthcare professionals for medical decisions.
-
