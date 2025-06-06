@@ -86,9 +86,8 @@ All errors return standard HTTP status codes with JSON error details:
 3. Install one of our SDKs or use the REST API directly
 4. Start building healthcare AI applications
 
-For complete API documentation with interactive examples, visit [api.bondmcp.com/docs](https://api.bondmcp.com/docs)
+For complete API documentation with interactive examples, visit [docs.bondmcp.com](https://docs.bondmcp.com)
 
 ---
 
 **Disclaimer**: BondMCP is for informational purposes only and does not constitute medical advice.
-
