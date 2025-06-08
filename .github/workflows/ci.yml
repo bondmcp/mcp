@@ -21,5 +21,7 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: '20'
+      - name: Install Node dependencies
+        run: npm install
       - name: Run Node tests
-        run: node --test tests/test_bondmcp_node.js
+        run: npm test
