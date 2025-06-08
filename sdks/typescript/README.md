@@ -27,6 +27,11 @@ yarn add @bondmcp/typescript-sdk
 pnpm add @bondmcp/typescript-sdk
 ```
 
+> **Note**: A basic Node.js client is available in this repository as
+> `bondmcp-node-sdk`. It provides minimal functionality and is primarily kept for
+> compatibility with older examples. For new projects we recommend using the
+> fully featured `@bondmcp/typescript-sdk` package described above.
+
 ## Quick Start
 
 ```typescript
