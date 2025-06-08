@@ -63,7 +63,18 @@ For complete API documentation, visit [docs.bondmcp.com](https://docs.bondmcp.co
 
 ## Examples
 
-See the [examples](https://github.com/bondmcp/mcp/tree/main/examples) directory for integration examples and use cases.
+Run the sample programs in the `examples/` directory to see basic API usage:
+
+```bash
+# Python example
+python examples/python_basic.py
+
+# Node example
+node examples/node_basic.js
+```
+
+Each example performs a simple health check and sends a question to the API. Replace
+`YOUR_API_KEY` in the code with your actual key before running.
 
 ## Support
 
