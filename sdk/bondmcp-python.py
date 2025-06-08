@@ -1,13 +1,18 @@
-"""
-BondMCP Python SDK - Main Module
+"""BondMCP Python SDK - Test Stub."""
 
-This file is required by the CI tests to validate the Python SDK.
-"""
+import requests
 
-# This file serves as a stub for CI tests
-# The actual implementation is in the bondmcp-python directory
-
-# Import main components for easier access
-from .bondmcp-python import BondMCPClient, AuthError, RateLimitError, BondMCPError
+from bondmcp_sdk.client import BondMCPClient, BondMCPError, BondMCPAPIError, BondMCPNetworkError
 
 __version__ = "0.1.0"
+
+# Re-export requests for monkeypatching in tests
+requests = requests
+
+__all__ = [
+    "BondMCPClient",
+    "BondMCPError",
+    "BondMCPAPIError",
+    "BondMCPNetworkError",
+    "requests",
+]

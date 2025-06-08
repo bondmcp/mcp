@@ -96,7 +96,7 @@ def check_api_connectivity() -> Tuple[bool, str]:
 def test_sdk_import() -> Tuple[bool, str]:
     """Test importing and using the SDK."""
     try:
-        from bondmcp_sdk import BondMCPClient, BondMCPError
+        from bondmcp_sdk.client import BondMCPClient, BondMCPError
         
         # Test client creation (without API key)
         try:

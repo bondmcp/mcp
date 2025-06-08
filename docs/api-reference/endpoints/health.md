@@ -79,7 +79,7 @@ checkApiHealth();
 ### Python
 
 ```python
-from bondmcp_sdk import BondMCPClient
+from bondmcp_sdk.client import BondMCPClient
 
 client = BondMCPClient(api_key="YOUR_API_KEY")  # Not required for health check but SDK may expect it
 
