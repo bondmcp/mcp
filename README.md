@@ -53,7 +53,15 @@ POST /api/v1/analyze
 ```
 Analyze health data and receive insights.
 
-For complete API documentation, visit [docs.bondmcp.com](https://docs.bondmcp.com)
+For complete API documentation, visit [docs.bondmcp.com](https://docs.bondmcp.com).
+
+The full OpenAPI specification for all endpoints is provided in
+[`spec/openapi.yaml`](spec/openapi.yaml). You can generate client SDKs from the
+specification using [OpenAPI Generator](https://openapi-generator.tech):
+
+```bash
+openapi-generator-cli generate -i spec/openapi.yaml -g python -o sdks/python
+```
 
 ## SDKs
 
