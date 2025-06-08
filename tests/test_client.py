@@ -1,11 +1,17 @@
 import json
 import importlib.util
 from pathlib import Path
+import sys
 import requests
 import pytest
 
+ROOT = Path(__file__).resolve().parent.parent
+SDK_DIR = ROOT / "sdk"
+if str(SDK_DIR) not in sys.path:
+    sys.path.insert(0, str(SDK_DIR))
 spec = importlib.util.spec_from_file_location(
-    "bondmcp_python", Path(__file__).resolve().parent.parent / "sdk" / "bondmcp-python.py"
+    "sdk.bondmcp_python_stub",
+    SDK_DIR / "bondmcp-python.py",
 )
 bondmcp = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(bondmcp)
