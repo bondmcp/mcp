@@ -65,6 +65,10 @@ For complete API documentation, visit [docs.bondmcp.com](https://docs.bondmcp.co
 
 See the [examples](https://github.com/bondmcp/mcp/tree/main/examples) directory for integration examples and use cases.
 
+## Contributing
+
+We welcome contributions! See our [Contributing Guide](CONTRIBUTING.md) for details on reporting issues, running tests, and submitting pull requests.
+
 ## Support
 
 - 📖 [Documentation](https://docs.bondmcp.com)
