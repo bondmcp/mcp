@@ -12,6 +12,6 @@ jobs:
         with:
           python-version: '3.x'
       - run: python -m pip install --upgrade pip
-      - run: pip install -e .
-      - run: pip install pytest
+      - run: pip install -e .[dev]
+      - run: pre-commit run --all-files
       - run: pytest

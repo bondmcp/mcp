@@ -65,6 +65,15 @@ For complete API documentation, visit [docs.bondmcp.com](https://docs.bondmcp.co
 
 See the [examples](https://github.com/bondmcp/mcp/tree/main/examples) directory for integration examples and use cases.
 
+## Development Setup
+
+This project uses [pre-commit](https://pre-commit.com) to run formatting and linting tools. After installing the development dependencies, install the pre-commit hooks:
+
+```bash
+pip install -e .[dev]
+pre-commit install
+```
+
 ## Support
 
 - 📖 [Documentation](https://docs.bondmcp.com)
