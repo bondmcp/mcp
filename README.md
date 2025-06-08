@@ -30,6 +30,15 @@ const response = await client.ask({
 
 console.log(response.answer);
 ```
+### Environment Setup
+
+Copy `.env.example` to `.env` and provide your API key before using the CLI or SDK.
+
+```bash
+cp .env.example .env
+```
+
+Edit `.env` and set `BONDMCP_PUBLIC_API_KEY` and optional `BONDMCP_PUBLIC_API_BASE_URL`.
 
 ## Features
 
