@@ -107,6 +107,10 @@ pip install -e .[dev]
 pre-commit install
 ```
 
+## Contributing
+
+We welcome contributions! See our [Contributing Guide](CONTRIBUTING.md) for details on reporting issues, running tests, and submitting pull requests.
+
 ## Support
 
 - 📖 [Documentation](https://docs.bondmcp.com)
