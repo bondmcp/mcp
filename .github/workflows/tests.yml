@@ -15,3 +15,8 @@ jobs:
       - run: pip install -e .
       - run: pip install pytest
       - run: pytest
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '20'
+      - run: npm install
+      - run: npm test
