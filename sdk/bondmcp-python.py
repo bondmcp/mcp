@@ -1,17 +1,12 @@
 """BondMCP Python SDK - Test Stub."""
 
-import requests
-
-# This file serves as a stub for CI tests
-# The actual implementation is in the bondmcp_python directory
-
-# Import main components for easier access
 import importlib.util
 from pathlib import Path
-import requests
 
+__version__ = "0.1.0"
+
+# Define path to local modules (fallback)
 _pkg_dir = Path(__file__).resolve().parent / "bondmcp-python"
-
 
 def _load_module(name: str):
     spec = importlib.util.spec_from_file_location(name, _pkg_dir / f"{name}.py")
@@ -19,27 +14,27 @@ def _load_module(name: str):
     spec.loader.exec_module(module)
     return module
 
-
 try:
+    # Primary import from installed package
     from bondmcp_sdk import (
         BondMCPClient,
         BondMCPAPIError,
-        BondMCPNetworkError,
         BondMCPError,
+        BondMCPNetworkError,
     )
-    requests = requests
-except Exception:  # pragma: no cover - fallback to local stubs
+except ImportError:
+    # Fallback to local stub implementation
     _client = _load_module("client")
     _exc = _load_module("exceptions")
 
     BondMCPClient = _client.BondMCPClient
     BondMCPError = _exc.BondMCPError
-    BondMCPAPIError = _exc.BondMCPError
-    BondMCPNetworkError = _exc.BondMCPError
-    requests = requests
+    BondMCPAPIError = _exc.BondMCPAPIError
+    BondMCPNetworkError = _exc.BondMCPNetworkError
 
-__version__ = "0.1.0"
-
-
-
-
+__all__ = [
+    "BondMCPClient",
+    "BondMCPAPIError",
+    "BondMCPError",
+    "BondMCPNetworkError",
+]

@@ -349,3 +349,10 @@ module.exports = {
   MedicalRecordsResource,
   HealthResource
 };
+// Preserve class-style default export while also exposing named exports
+module.exports.Client = BondMCPClient;
+module.exports.APIError = BondMCPAPIError;
+module.exports.NetworkError = BondMCPNetworkError;
+module.exports.Error = BondMCPError;
+module.exports.default = BondMCPClient;
+
