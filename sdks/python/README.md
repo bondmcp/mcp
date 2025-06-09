@@ -133,7 +133,13 @@ info = client.supplement.get_info("Vitamin D3")
 The SDK provides comprehensive error handling:
 
 ```python
-from bondmcp.exceptions import BondMCPError, AuthError, RateLimitError
+from bondmcp.exceptions import (
+    BondMCPAPIError,
+    BondMCPNetworkError,
+    BondMCPError,
+    AuthError,
+    RateLimitError,
+)
 
 try:
     response = client.ask("What are the symptoms of high blood pressure?")
@@ -141,8 +147,24 @@ except AuthError:
     print("Authentication failed. Check your API key.")
 except RateLimitError:
     print("Rate limit exceeded. Please try again later.")
+except BondMCPAPIError as e:
+    print(f"API error {e.status_code} ({e.code}): {e}")
+except BondMCPNetworkError:
+    print("Network error, please retry later.")
 except BondMCPError as e:
-    print(f"An error occurred: {e}")
+    print(f"An unexpected error occurred: {e}")
+```
+
+Example output for an invalid key:
+
+```text
+API error 401 (authentication_error): Invalid API key
+```
+
+Example output when the network is unavailable:
+
+```text
+Network error, please retry later.
 ```
 
 ## Pagination
