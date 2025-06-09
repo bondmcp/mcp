@@ -8,6 +8,10 @@ The BondMCP Python SDK provides a simple and intuitive interface to integrate Bo
 pip install bondmcp
 ```
 
+> **Note**: A legacy package named `bondmcp-sdk` exists on PyPI. It is no longer
+> updated and should only be used for backwards compatibility. New applications
+> should depend on the `bondmcp` package shown above.
+
 ## Quick Start
 
 ```python

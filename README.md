@@ -7,15 +7,19 @@ BondMCP provides a healthcare-optimized implementation of the Model Context Prot
 ### Installation
 
 ```bash
-npm install @bondmcp/sdk
+npm install @bondmcp/typescript-sdk
 # or
-pip install bondmcp-sdk
+pip install bondmcp
 ```
+
+The Python package was previously published as `bondmcp-sdk`. That legacy name
+is still available on PyPI but is no longer maintained. Use `bondmcp` for new
+projects.
 
 ### Basic Usage
 
 ```javascript
-import { BondMCPClient } from '@bondmcp/sdk';
+import { BondMCPClient } from '@bondmcp/typescript-sdk';
 
 const client = new BondMCPClient({
   apiKey: 'your-api-key',
