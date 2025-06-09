@@ -1,7 +1,8 @@
-import pytest
 import sys
 import types
 from pathlib import Path
+
+import pytest
 
 # Ensure project root is on sys.path
 ROOT = Path(__file__).resolve().parents[1]
@@ -12,16 +13,16 @@ if str(SDK_DIR) not in sys.path:
     sys.path.insert(0, str(SDK_DIR))
 
 # Provide a stub requests module if not installed
-if 'requests' not in sys.modules:
-    requests_stub = types.ModuleType('requests')
-    sys.modules['requests'] = requests_stub
-import requests
-
+if "requests" not in sys.modules:
+    requests_stub = types.ModuleType("requests")
+    sys.modules["requests"] = requests_stub
 import importlib.util
 
+import requests
+
 spec = importlib.util.spec_from_file_location(
-    'sdk.bondmcp_python_stub',
-    ROOT / 'sdk' / 'bondmcp-python.py',
+    "sdk.bondmcp_python_stub",
+    ROOT / "sdk" / "bondmcp-python.py",
 )
 bondmcp_python = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(bondmcp_python)
@@ -44,39 +45,39 @@ def test_request_get(monkeypatch):
     captured = {}
 
     def fake_get(url, headers=None, params=None, timeout=None):
-        captured['url'] = url
-        captured['headers'] = headers
-        captured['params'] = params
-        captured['timeout'] = timeout
-        return DummyResp({'ok': True})
+        captured["url"] = url
+        captured["headers"] = headers
+        captured["params"] = params
+        captured["timeout"] = timeout
+        return DummyResp({"ok": True})
 
-    monkeypatch.setattr(requests, 'get', fake_get, raising=False)
+    monkeypatch.setattr(requests, "get", fake_get, raising=False)
 
-    client = BondMCPClient('KEY', base_url='http://example')
-    resp = client.request('get', '/foo', params={'a': 1})
+    client = BondMCPClient("KEY", base_url="http://example")
+    resp = client.request("get", "/foo", params={"a": 1})
 
-    assert resp == {'ok': True}
-    assert captured['url'] == 'http://example/foo'
-    assert captured['params'] == {'a': 1}
-    assert captured['headers']['Authorization'] == 'Bearer KEY'
+    assert resp == {"ok": True}
+    assert captured["url"] == "http://example/foo"
+    assert captured["params"] == {"a": 1}
+    assert captured["headers"]["X-API-Key"] == "KEY"
 
 
 def test_request_post(monkeypatch):
     captured = {}
 
     def fake_post(url, headers=None, json=None, timeout=None):
-        captured['url'] = url
-        captured['headers'] = headers
-        captured['json'] = json
-        captured['timeout'] = timeout
-        return DummyResp({'ok': True})
+        captured["url"] = url
+        captured["headers"] = headers
+        captured["json"] = json
+        captured["timeout"] = timeout
+        return DummyResp({"ok": True})
 
-    monkeypatch.setattr(requests, 'post', fake_post, raising=False)
+    monkeypatch.setattr(requests, "post", fake_post, raising=False)
 
-    client = BondMCPClient('KEY', base_url='http://example')
-    resp = client.request('post', '/bar', data={'x': 2})
+    client = BondMCPClient("KEY", base_url="http://example")
+    resp = client.request("post", "/bar", data={"x": 2})
 
-    assert resp == {'ok': True}
-    assert captured['url'] == 'http://example/bar'
-    assert captured['json'] == {'x': 2}
-    assert captured['headers']['Authorization'] == 'Bearer KEY'
+    assert resp == {"ok": True}
+    assert captured["url"] == "http://example/bar"
+    assert captured["json"] == {"x": 2}
+    assert captured["headers"]["X-API-Key"] == "KEY"

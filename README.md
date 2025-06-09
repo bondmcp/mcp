@@ -92,6 +92,8 @@ openapi-generator-cli generate -i spec/openapi.yaml -g python -o sdks/python
 - [Go SDK](https://docs.bondmcp.com/sdks/go)
 - [Python SDK](https://docs.bondmcp.com/sdks/python)
 
+For information on API and SDK compatibility, see [docs/versioning.md](docs/versioning.md).
+
 ## Examples
 
 Run the sample programs in the `examples/` directory to see basic API usage:

@@ -36,7 +36,7 @@ class DummyResponse:
 def test_ask_success(monkeypatch):
     def fake_post(url, json, headers):
         assert json == {"query": "hello"}
-        assert "Authorization" in headers
+        assert "X-API-Key" in headers
         return DummyResponse(200, {"response": "hi"})
 
     monkeypatch.setattr("bondmcp_cli.cli.requests.post", fake_post)
