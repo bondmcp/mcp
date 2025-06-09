@@ -172,6 +172,9 @@ client = BondMCPClient(
     retry_delay=2  # Delay between retries in seconds
 )
 
+# Requests that return a 429 status code will automatically be retried
+# using exponential backoff based on these settings.
+
 # Custom HTTP client
 import httpx
 custom_client = httpx.Client(timeout=30)
