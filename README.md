@@ -4,11 +4,32 @@ BondMCP provides a healthcare-optimized implementation of the Model Context Prot
 
 ## Quick Start
 
+### Environment Setup
+
+1. Clone the repository:
+```bash
+git clone https://github.com/bondmcp/mcp.git
+cd mcp
+```
+
+2. Run the automated setup script:
+```bash
+./scripts/ONBOARDING-SETUP.sh
+```
+
+3. Configure your API key:
+```bash
+cp .env.example .env
+```
+Edit `.env` and set `BONDMCP_PUBLIC_API_KEY` and optional `BONDMCP_PUBLIC_API_BASE_URL`.
+
 ### Installation
 
 ```bash
+# TypeScript/JavaScript
 npm install @bondmcp/typescript-sdk
-# or
+
+# Python
 pip install bondmcp
 ```
 
@@ -34,15 +55,6 @@ const response = await client.ask({
 
 console.log(response.answer);
 ```
-### Environment Setup
-
-Copy `.env.example` to `.env` and provide your API key before using the CLI or SDK.
-
-```bash
-cp .env.example .env
-```
-
-Edit `.env` and set `BONDMCP_PUBLIC_API_KEY` and optional `BONDMCP_PUBLIC_API_BASE_URL`.
 
 ### Docker Usage
 
@@ -52,7 +64,6 @@ Build the image and run the CLI without installing Python locally:
 docker build -t bondmcp-cli .
 docker run --rm -e BONDMCP_PUBLIC_API_KEY=YOUR_KEY bondmcp-cli ask "What are the symptoms of high blood pressure?"
 ```
-
 
 ## Features
 
@@ -88,9 +99,21 @@ openapi-generator-cli generate -i spec/openapi.yaml -g python -o sdks/python
 
 ## SDKs
 
-- [TypeScript/JavaScript SDK](https://docs.bondmcp.com/sdks/typescript)
-- [Go SDK](https://docs.bondmcp.com/sdks/go)
-- [Python SDK](https://docs.bondmcp.com/sdks/python)
+Our SDKs are now organized in a unified structure under the `sdks/` directory:
+
+- [Python SDK](sdks/python/) - For Python applications
+- [TypeScript/JavaScript SDK](sdks/typescript/) - For web and Node.js applications
+- [Other Language SDKs](sdks/other-languages/) - Additional language implementations
+
+For SDK version compatibility information, see [Version Compatibility](sdks/common/VERSION_COMPATIBILITY.md).
+
+## Authentication
+
+All SDKs use the `Authorization: Bearer {api_key}` header format for authentication. For detailed information on authentication methods and error handling, see [Authentication Methods](docs/AUTHENTICATION_METHODS.md).
+
+## Development Requirements
+
+Before contributing to this project, please review the [Environment Requirements](docs/ENVIRONMENT_REQUIREMENTS.md) for detailed information on required software, operating system compatibility, and hardware requirements.
 
 ## Examples
 
