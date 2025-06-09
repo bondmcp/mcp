@@ -1,5 +1,5 @@
-# import bondmcp
 import json
+import time
 from typing import Any, Dict, List, Optional, Union
 
 import requests
@@ -14,6 +14,8 @@ class BondMCPClient:
         api_key: str,
         base_url: str = "https://api.bondmcp.com/api",
         timeout: int = 30,
+        max_retries: int = 0,
+        retry_delay: float = 1.0,
     ):
         """
         Initialize the BondMCP API client.
@@ -22,10 +24,14 @@ class BondMCPClient:
             api_key: Your BondMCP API key
             base_url: The base URL for the BondMCP API
             timeout: Request timeout in seconds
+            max_retries: Number of retry attempts for rate limited requests
+            retry_delay: Base delay in seconds before retries (exponential backoff)
         """
         self.api_key = api_key
         self.base_url = base_url
         self.timeout = timeout
+        self.max_retries = max_retries
+        self.retry_delay = retry_delay
 
         # Initialize API resources
         self.health = HealthResource(self)
@@ -74,56 +80,66 @@ class BondMCPClient:
             "User-Agent": "bondmcp-python/1.0.0",
         }
 
-        try:
-            if method.lower() == "get":
-                response = requests.get(
-                    url, headers=headers, params=params, timeout=self.timeout
-                )
-            elif method.lower() == "post":
-                response = requests.post(
-                    url, headers=headers, json=data, timeout=self.timeout
-                )
-            elif method.lower() == "put":
-                response = requests.put(
-                    url, headers=headers, json=data, timeout=self.timeout
-                )
-            elif method.lower() == "delete":
-                response = requests.delete(
-                    url, headers=headers, json=data, timeout=self.timeout
-                )
-            else:
-                raise BondMCPError(f"Unsupported HTTP method: {method}")
-
-            response.raise_for_status()
-            return response.json()
-
-        except requests.exceptions.HTTPError as e:
+        for attempt in range(self.max_retries + 1):
             try:
-                error_data = e.response.json()
-                error_message = error_data.get("error", {}).get(
-                    "message", "API request failed"
-                )
-                error_code = error_data.get("error", {}).get("code", "api_error")
-                error_details = error_data.get("error", {}).get("details", {})
-                raise BondMCPAPIError(
-                    error_message, e.response.status_code, error_code, error_details
-                )
-            except (ValueError, KeyError):
-                raise BondMCPAPIError(
-                    str(e), e.response.status_code if hasattr(e, "response") else 0
-                )
+                if method.lower() == "get":
+                    response = requests.get(
+                        url, headers=headers, params=params, timeout=self.timeout
+                    )
+                elif method.lower() == "post":
+                    response = requests.post(
+                        url, headers=headers, json=data, timeout=self.timeout
+                    )
+                elif method.lower() == "put":
+                    response = requests.put(
+                        url, headers=headers, json=data, timeout=self.timeout
+                    )
+                elif method.lower() == "delete":
+                    response = requests.delete(
+                        url, headers=headers, json=data, timeout=self.timeout
+                    )
+                else:
+                    raise BondMCPError(f"Unsupported HTTP method: {method}")
 
-        except requests.exceptions.ConnectionError:
-            raise BondMCPNetworkError("Network error: Failed to connect to API")
+                response.raise_for_status()
+                return response.json()
+            except requests.exceptions.HTTPError as e:
+                status = e.response.status_code if hasattr(e, "response") else 0
+                if status == 429 and attempt < self.max_retries:
+                    retry_after = (
+                        e.response.headers.get("Retry-After") if e.response else None
+                    )
+                    delay = (
+                        float(retry_after)
+                        if retry_after
+                        else self.retry_delay * (2**attempt)
+                    )
+                    time.sleep(delay)
+                    continue
+                try:
+                    error_data = e.response.json()
+                    error_message = error_data.get("error", {}).get(
+                        "message", "API request failed"
+                    )
+                    error_code = error_data.get("error", {}).get("code", "api_error")
+                    error_details = error_data.get("error", {}).get("details", {})
+                    raise BondMCPAPIError(
+                        error_message, e.response.status_code, error_code, error_details
+                    )
+                except (ValueError, KeyError):
+                    raise BondMCPAPIError(
+                        str(e), e.response.status_code if hasattr(e, "response") else 0
+                    )
+            except requests.exceptions.ConnectionError:
+                raise BondMCPNetworkError("Network error: Failed to connect to API")
+            except requests.exceptions.Timeout:
+                raise BondMCPNetworkError("Network error: Request timed out")
+            except requests.exceptions.RequestException as e:
+                raise BondMCPNetworkError(f"Network error: {str(e)}")
+            except Exception as e:
+                raise BondMCPError(f"Unexpected error: {str(e)}")
 
-        except requests.exceptions.Timeout:
-            raise BondMCPNetworkError("Network error: Request timed out")
-
-        except requests.exceptions.RequestException as e:
-            raise BondMCPNetworkError(f"Network error: {str(e)}")
-
-        except Exception as e:
-            raise BondMCPError(f"Unexpected error: {str(e)}")
+        raise BondMCPError("Exceeded maximum retry attempts")
 
 
 class HealthResource:
