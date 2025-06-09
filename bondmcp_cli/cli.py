@@ -44,6 +44,7 @@ def cli():
     """BondMCP Public API CLI"""
     pass
 
+
 @cli.command()
 @click.argument("query")
 def ask(query):
@@ -54,7 +55,7 @@ def ask(query):
     resp = requests.post(
         url,
         json={"query": query},
-        headers={"Authorization": f"Bearer {api_key}"},
+        headers={"X-API-Key": api_key},
     )
     if resp.status_code == 200:
         Console().print(resp.json().get("response"))
@@ -80,7 +81,7 @@ def labs_interpret(labs, context):
     if context:
         payload["patient_context"] = json.loads(Path(context).read_text())
 
-    resp = requests.post(url, json=payload, headers={"Authorization": f"Bearer {api_key}"})
+    resp = requests.post(url, json=payload, headers={"X-API-Key": api_key})
     if resp.status_code == 200:
         Console().print_json(data=resp.json())
     else:
@@ -126,13 +127,17 @@ def supplement_recommend(
     if labs:
         payload["current_labs"] = json.loads(Path(labs).read_text())
     if current_supplements:
-        payload["current_supplements"] = json.loads(Path(current_supplements).read_text())
+        payload["current_supplements"] = json.loads(
+            Path(current_supplements).read_text()
+        )
     if dietary_restrictions:
-        payload["dietary_restrictions"] = json.loads(Path(dietary_restrictions).read_text())
+        payload["dietary_restrictions"] = json.loads(
+            Path(dietary_restrictions).read_text()
+        )
     if context:
         payload["patient_context"] = json.loads(Path(context).read_text())
 
-    resp = requests.post(url, json=payload, headers={"Authorization": f"Bearer {api_key}"})
+    resp = requests.post(url, json=payload, headers={"X-API-Key": api_key})
     if resp.status_code == 200:
         Console().print_json(data=resp.json())
     else:
@@ -146,12 +151,13 @@ def health():
     api_key = get_api_key()
     base_url = os.getenv("BONDMCP_PUBLIC_API_BASE_URL", "https://api.bondmcp.com")
     url = f"{base_url}/health"
-    resp = requests.get(url, headers={"Authorization": f"Bearer {api_key}"})
+    resp = requests.get(url, headers={"X-API-Key": api_key})
     if resp.status_code == 200:
         Console().print_json(data=resp.json())
     else:
         Console().print(f"API error {resp.status_code}: {resp.text}")
         raise SystemExit(1)
+
 
 if __name__ == "__main__":
     cli()

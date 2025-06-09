@@ -1,7 +1,8 @@
 # import bondmcp
-import requests
 import json
-from typing import Dict, List, Optional, Union, Any
+from typing import Any, Dict, List, Optional, Union
+
+import requests
 
 # Disclaimer: This SDK is provided for informational purposes only and does not
 # constitute medical advice.
@@ -67,7 +68,7 @@ class BondMCPClient:
         """
         url = f"{self.base_url}{path}"
         headers = {
-            "Authorization": f"Bearer {self.api_key}",
+            "X-API-Key": self.api_key,
             "Content-Type": "application/json",
             "Accept": "application/json",
             "User-Agent": "bondmcp-python/1.0.0",
@@ -352,7 +353,10 @@ class APIKeysResource:
         return self.client.request("post", "/api-keys", data=data)
 
     def update(
-        self, key_id: str, name: Optional[str] = None, scopes: Optional[List[str]] = None
+        self,
+        key_id: str,
+        name: Optional[str] = None,
+        scopes: Optional[List[str]] = None,
     ) -> Dict:
         """Update an existing API key."""
         data: Dict[str, Any] = {}

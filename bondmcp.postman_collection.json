@@ -61,8 +61,8 @@
                 "value": "application/json"
               },
               {
-                "key": "Authorization",
-                "value": "Bearer {{token}}"
+                "key": "X-API-Key",
+                "value": "{{token}}"
               }
             ],
             "body": {
@@ -87,8 +87,8 @@
                     "value": "application/json"
                   },
                   {
-                    "key": "Authorization",
-                    "value": "Bearer {{token}}"
+                    "key": "X-API-Key",
+                    "value": "{{token}}"
                   }
                 ],
                 "body": {
@@ -130,8 +130,8 @@
                 "value": "application/json"
               },
               {
-                "key": "Authorization",
-                "value": "Bearer {{token}}"
+                "key": "X-API-Key",
+                "value": "{{token}}"
               }
             ],
             "body": {
@@ -156,8 +156,8 @@
                     "value": "application/json"
                   },
                   {
-                    "key": "Authorization",
-                    "value": "Bearer {{token}}"
+                    "key": "X-API-Key",
+                    "value": "{{token}}"
                   }
                 ],
                 "body": {
@@ -194,8 +194,8 @@
                 "value": "application/json"
               },
               {
-                "key": "Authorization",
-                "value": "Bearer {{token}}"
+                "key": "X-API-Key",
+                "value": "{{token}}"
               }
             ],
             "body": {
@@ -220,8 +220,8 @@
                     "value": "application/json"
                   },
                   {
-                    "key": "Authorization",
-                    "value": "Bearer {{token}}"
+                    "key": "X-API-Key",
+                    "value": "{{token}}"
                   }
                 ],
                 "body": {
@@ -263,8 +263,8 @@
                 "value": "application/json"
               },
               {
-                "key": "Authorization",
-                "value": "Bearer {{token}}"
+                "key": "X-API-Key",
+                "value": "{{token}}"
               }
             ],
             "body": {
@@ -289,8 +289,8 @@
                     "value": "application/json"
                   },
                   {
-                    "key": "Authorization",
-                    "value": "Bearer {{token}}"
+                    "key": "X-API-Key",
+                    "value": "{{token}}"
                   }
                 ],
                 "body": {
@@ -332,8 +332,8 @@
                 "value": "application/json"
               },
               {
-                "key": "Authorization",
-                "value": "Bearer {{token}}"
+                "key": "X-API-Key",
+                "value": "{{token}}"
               }
             ],
             "body": {
@@ -358,8 +358,8 @@
                     "value": "application/json"
                   },
                   {
-                    "key": "Authorization",
-                    "value": "Bearer {{token}}"
+                    "key": "X-API-Key",
+                    "value": "{{token}}"
                   }
                 ],
                 "body": {
@@ -401,8 +401,8 @@
                 "value": "application/json"
               },
               {
-                "key": "Authorization",
-                "value": "Bearer {{token}}"
+                "key": "X-API-Key",
+                "value": "{{token}}"
               }
             ],
             "body": {
@@ -427,8 +427,8 @@
                     "value": "application/json"
                   },
                   {
-                    "key": "Authorization",
-                    "value": "Bearer {{token}}"
+                    "key": "X-API-Key",
+                    "value": "{{token}}"
                   }
                 ],
                 "body": {

@@ -130,7 +130,7 @@ def mcp_configuration():
         "auth": {
             "type": "api_key",
             "location": "header",
-            "key": "Authorization"
+            "key": "X-API-Key"
         },
         "servers": [
             {
@@ -240,7 +240,7 @@ lab_data = {
     }
 }
 
-headers = {"Authorization": "Bearer YOUR_API_KEY"}
+headers = {"X-API-Key": "YOUR_API_KEY"}
 response = requests.post(
     "https://api.bondmcp.com/mcp/servers/lab-results/request",
     json={
