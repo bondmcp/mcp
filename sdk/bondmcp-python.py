@@ -5,7 +5,7 @@ This file is required by the CI tests to validate the Python SDK.
 """
 
 # This file serves as a stub for CI tests
-# The actual implementation is in the bondmcp-python directory
+# The actual implementation is in the bondmcp_python directory
 
 # Import main components for easier access
 import importlib.util

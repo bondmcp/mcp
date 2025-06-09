@@ -7,6 +7,9 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
+SDK_DIR = ROOT / "sdk"
+if str(SDK_DIR) not in sys.path:
+    sys.path.insert(0, str(SDK_DIR))
 
 # Provide a stub requests module if not installed
 if 'requests' not in sys.modules:
@@ -17,7 +20,8 @@ import requests
 import importlib.util
 
 spec = importlib.util.spec_from_file_location(
-    'bondmcp_python', ROOT / 'sdk' / 'bondmcp-python.py'
+    'sdk.bondmcp_python_stub',
+    ROOT / 'sdk' / 'bondmcp-python.py',
 )
 bondmcp_python = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(bondmcp_python)
