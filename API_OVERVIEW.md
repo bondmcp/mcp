@@ -37,7 +37,7 @@ POST /api/v1/ask
 Analyze health data and receive AI-powered insights.
 
 ```
-POST /api/v1/analyze
+POST /api/v1/health-data/analyze
 ```
 
 **Request Body**:

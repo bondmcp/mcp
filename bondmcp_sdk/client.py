@@ -1,4 +1,3 @@
-# import bondmcp
 import json
 import time
 from typing import Any, Dict, List, Optional, Union
@@ -75,7 +74,7 @@ class BondMCPClient:
         """
         url = f"{self.base_url}{path}"
         headers = {
-            "Authorization": f"Bearer {self.api_key}",
+            "X-API-Key": self.api_key,
             "Content-Type": "application/json",
             "Accept": "application/json",
             "User-Agent": "bondmcp-python/1.0.0",

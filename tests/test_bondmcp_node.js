@@ -19,8 +19,8 @@ function loadWithMock(captured) {
     if (path === 'axios') return mockAxios;
     return originalRequire.apply(this, arguments);
   };
-  delete require.cache[require.resolve('../sdk/bondmcp-node.js')];
-  const sdk = require('../sdk/bondmcp-node.js');
+  delete require.cache[require.resolve('../bondmcp_sdk/bondmcp-node.js')];
+  const sdk = require('../bondmcp_sdk/bondmcp-node.js');
   Module.prototype.require = originalRequire;
   return sdk;
 }
@@ -32,7 +32,7 @@ test('POST request builds correct options', async () => {
   const data = { foo: 'bar' };
   const res = await client.request('post', '/test', data);
   assert.strictEqual(captured.config.baseURL, 'http://example');
-  assert.strictEqual(captured.config.headers.Authorization, 'Bearer KEY');
+  assert.strictEqual(captured.config.headers['X-API-Key'], 'KEY');
   assert.strictEqual(captured.request.method, 'post');
   assert.strictEqual(captured.request.url, '/test');
   assert.deepStrictEqual(captured.request.data, data);

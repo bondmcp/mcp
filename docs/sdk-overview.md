@@ -122,6 +122,59 @@ All SDKs provide consistent error handling patterns. Errors are categorized into
 
 Each SDK follows the idiomatic error handling pattern for its language.
 
+### Python Example
+
+```python
+from bondmcp import BondMCPClient, BondMCPAPIError, BondMCPNetworkError
+
+client = BondMCPClient(api_key="your_api_key")
+
+try:
+    client.ask("What are the symptoms of high blood pressure?")
+except BondMCPAPIError as e:
+    print(f"API error {e.status_code} ({e.code}): {e}")
+except BondMCPNetworkError as e:
+    print(f"Network error: {e}")
+```
+
+Sample output when the API key is invalid:
+
+```text
+API error 401 (authentication_error): Invalid API key
+```
+
+Sample output for a network issue:
+
+```text
+Network error: Connection timed out
+```
+
+### JavaScript Example
+
+```javascript
+import { BondMCPClient, BondMCPAPIError, BondMCPNetworkError } from 'bondmcp';
+
+const client = new BondMCPClient({ apiKey: 'your_api_key' });
+
+try {
+  await client.ask('What are the symptoms of high blood pressure?');
+} catch (error) {
+  if (error instanceof BondMCPAPIError) {
+    console.log(`API error ${error.statusCode} (${error.code}): ${error.message}`);
+  } else if (error instanceof BondMCPNetworkError) {
+    console.log('Network error:', error.message);
+  } else {
+    console.log('Unexpected error:', error);
+  }
+}
+```
+
+Sample output for a missing endpoint:
+
+```text
+API error 404 (not_found): Endpoint not found
+```
+
 ## Pagination
 
 For endpoints that return large collections of data, our SDKs provide pagination helpers:

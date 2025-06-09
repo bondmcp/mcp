@@ -16,6 +16,10 @@ The Python package was previously published as `bondmcp-sdk`. That legacy name
 is still available on PyPI but is no longer maintained. Use `bondmcp` for new
 projects.
 
+The maintained SDK source lives in the `bondmcp_sdk/` directory. Older
+`sdk/` and `sdks/` folders contained experimental stubs and generated code and
+have been removed.
+
 ### Basic Usage
 
 ```javascript
@@ -72,7 +76,7 @@ Query the AI with health-related questions.
 
 ### Health Data Analysis
 ```
-POST /api/v1/analyze
+POST /api/v1/health-data/analyze
 ```
 Analyze health data and receive insights.
 
@@ -91,6 +95,8 @@ openapi-generator-cli generate -i spec/openapi.yaml -g python -o sdks/python
 - [TypeScript/JavaScript SDK](https://docs.bondmcp.com/sdks/typescript)
 - [Go SDK](https://docs.bondmcp.com/sdks/go)
 - [Python SDK](https://docs.bondmcp.com/sdks/python)
+
+For information on API and SDK compatibility, see [docs/versioning.md](docs/versioning.md).
 
 ## Examples
 

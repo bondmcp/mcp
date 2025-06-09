@@ -1,5 +1,5 @@
 // Minimal example showing how to use the Node SDK.
-const BondMCP = require('../sdk/bondmcp-node.js');
+const BondMCP = require('../bondmcp_sdk/bondmcp-node.js');
 
 async function main() {
   const client = new BondMCP.Client('YOUR_API_KEY');
