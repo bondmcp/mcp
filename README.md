@@ -31,6 +31,16 @@ const response = await client.ask({
 console.log(response.answer);
 ```
 
+### Docker Usage
+
+Build the image and run the CLI without installing Python locally:
+
+```bash
+docker build -t bondmcp-cli .
+docker run --rm -e BONDMCP_PUBLIC_API_KEY=YOUR_KEY bondmcp-cli ask "What are the symptoms of high blood pressure?"
+```
+
+
 ## Features
 
 - 🏥 **Healthcare-Optimized**: Built specifically for medical and health applications
