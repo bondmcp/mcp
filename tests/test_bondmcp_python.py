@@ -1,31 +1,14 @@
 import pytest
 import sys
-import types
 from pathlib import Path
-
-# Ensure project root is on sys.path
-ROOT = Path(__file__).resolve().parents[1]
+import requests
+ROOT = Path(__file__).resolve().parent.parent
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
-SDK_DIR = ROOT / "sdk"
-if str(SDK_DIR) not in sys.path:
-    sys.path.insert(0, str(SDK_DIR))
 
-# Provide a stub requests module if not installed
-if 'requests' not in sys.modules:
-    requests_stub = types.ModuleType('requests')
-    sys.modules['requests'] = requests_stub
-import requests
+import bondmcp_sdk
 
-import importlib.util
-
-spec = importlib.util.spec_from_file_location(
-    'sdk.bondmcp_python_stub',
-    ROOT / 'sdk' / 'bondmcp-python.py',
-)
-bondmcp_python = importlib.util.module_from_spec(spec)
-spec.loader.exec_module(bondmcp_python)
-BondMCPClient = bondmcp_python.BondMCPClient
+BondMCPClient = bondmcp_sdk.BondMCPClient
 
 
 class DummyResp:
