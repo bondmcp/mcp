@@ -94,6 +94,15 @@ node examples/node_basic.js
 Each example performs a simple health check and sends a question to the API. Replace
 `YOUR_API_KEY` in the code with your actual key before running.
 
+## Development Setup
+
+This project uses [pre-commit](https://pre-commit.com) to run formatting and linting tools. After installing the development dependencies, install the pre-commit hooks:
+
+```bash
+pip install -e .[dev]
+pre-commit install
+```
+
 ## Support
 
 - 📖 [Documentation](https://docs.bondmcp.com)
