@@ -19,8 +19,8 @@ function loadWithMock(captured) {
     if (path === 'axios') return mockAxios;
     return originalRequire.apply(this, arguments);
   };
-  delete require.cache[require.resolve('../sdk/bondmcp-node.js')];
-  const sdk = require('../sdk/bondmcp-node.js');
+  delete require.cache[require.resolve('../bondmcp_sdk/bondmcp-node.js')];
+  const sdk = require('../bondmcp_sdk/bondmcp-node.js');
   Module.prototype.require = originalRequire;
   return sdk;
 }

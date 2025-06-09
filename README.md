@@ -16,6 +16,10 @@ The Python package was previously published as `bondmcp-sdk`. That legacy name
 is still available on PyPI but is no longer maintained. Use `bondmcp` for new
 projects.
 
+The maintained SDK source lives in the `bondmcp_sdk/` directory. Older
+`sdk/` and `sdks/` folders contained experimental stubs and generated code and
+have been removed.
+
 ### Basic Usage
 
 ```javascript
