@@ -13,7 +13,7 @@ class BondMCPClient {
       baseURL: this.baseURL,
       timeout: this.timeout,
       headers: {
-        'Authorization': `Bearer ${this.apiKey}`,
+        'X-API-Key': this.apiKey,
         'Content-Type': 'application/json',
         'Accept': 'application/json',
         'User-Agent': 'bondmcp-node/1.0.0'
