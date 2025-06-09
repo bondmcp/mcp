@@ -1,8 +1,6 @@
-"""
-BondMCP Python SDK - Main Module
+"""BondMCP Python SDK - Test Stub."""
 
-This file is required by the CI tests to validate the Python SDK.
-"""
+import requests
 
 # This file serves as a stub for CI tests
 # The actual implementation is in the bondmcp_python directory
