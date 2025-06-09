@@ -76,7 +76,7 @@ Query the AI with health-related questions.
 
 ### Health Data Analysis
 ```
-POST /api/v1/analyze
+POST /api/v1/health-data/analyze
 ```
 Analyze health data and receive insights.
 
