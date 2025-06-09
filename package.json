@@ -1,7 +1,7 @@
 {
   "name": "bondmcp-node-sdk",
   "version": "0.1.0",
-  "main": "sdk/bondmcp-node.js",
+  "main": "bondmcp_sdk/bondmcp-node.js",
   "dependencies": {
     "axios": "^1.6.0"
   },
