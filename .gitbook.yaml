@@ -1,0 +1,12 @@
+structure:
+  readme: README.md
+  summary: SUMMARY.md
+
+plugins:
+  - openapi
+  - swagger
+
+pluginsConfig:
+  openapi:
+    expandResponses: all
+    showExtensions: true
