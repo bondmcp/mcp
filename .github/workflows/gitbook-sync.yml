@@ -1,0 +1,74 @@
+name: GitBook Sync
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - '**/*.md'
+      - 'spec/**'
+      - '.gitbook.yaml'
+      - 'SUMMARY.md'
+  workflow_dispatch:
+
+jobs:
+  sync-to-gitbook:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Install GitBook CLI
+        run: |
+          npm install -g @gitbook/cli@latest
+          # Fallback if the above fails
+          if [ $? -ne 0 ]; then
+            echo "Installing alternative GitBook CLI..."
+            npm install -g gitbook-cli
+          fi
+
+      - name: Process OpenAPI Specification
+        run: |
+          # Convert YAML to JSON for better GitBook compatibility
+          npm install -g yaml2json
+          yaml2json ./spec/openapi.yaml > ./spec/openapi.json
+          echo "OpenAPI specification converted to JSON format"
+
+      - name: Configure Git
+        run: |
+          git config --global user.name "BondMCP Bot"
+          git config --global user.email "bot@bondmcp.com"
+
+      - name: Sync with GitBook
+        env:
+          GITBOOK_TOKEN: ${{ secrets.GITBOOK_API_KEY }}
+        run: |
+          echo "Logging into GitBook..."
+          # Use token-based authentication
+          if [ -n "$GITBOOK_TOKEN" ]; then
+            gitbook login --token "$GITBOOK_TOKEN"
+          else
+            echo "GITBOOK_TOKEN not found, falling back to username/password"
+            gitbook login --username "${{ secrets.GITBOOK_EMAIL }}" --password "${{ secrets.GITBOOK_PASSWORD }}"
+          fi
+          
+          echo "Syncing repository with GitBook..."
+          gitbook sync docs.bondmcp.com
+          
+          echo "Sync completed successfully!"
+
+      - name: Notify on success
+        if: success()
+        run: |
+          echo "Documentation successfully synced to GitBook at docs.bondmcp.com"
+
+      - name: Notify on failure
+        if: failure()
+        run: |
+          echo "Failed to sync documentation to GitBook. Check logs for details."
