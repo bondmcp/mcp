@@ -21,11 +21,16 @@ on:
 jobs:
   generate-openapi:
     runs-on: ubuntu-latest
+    # Add permissions for GitHub token
+    permissions:
+      contents: write
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
         with:
           fetch-depth: 0
+          # Use token with write permissions
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Set up Node.js
         uses: actions/setup-node@v3
@@ -101,7 +106,9 @@ jobs:
             echo "No changes to OpenAPI specification"
           else
             git commit -m "chore: update OpenAPI specification [skip ci]"
-            git push
+            
+            # Use configured token for push
+            git push origin HEAD:main
             echo "✅ Committed and pushed updated OpenAPI specification"
           fi
 
