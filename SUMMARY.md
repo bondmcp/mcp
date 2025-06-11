@@ -2,6 +2,7 @@
 
 ## Getting Started
 * [Introduction](README.md)
+* [Why BondMCP](docs/why-bondmcp.md)
 * [Quick Start](docs/api-reference/quick-start.md)
 
 ## API Reference
