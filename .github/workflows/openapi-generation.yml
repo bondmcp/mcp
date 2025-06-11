@@ -1,0 +1,118 @@
+name: Dynamic OpenAPI Generation
+
+on:
+  # Run on schedule (daily)
+  schedule:
+    - cron: '0 0 * * *'  # Run at midnight UTC every day
+  
+  # Run on API code changes
+  push:
+    branches:
+      - main
+    paths:
+      - 'api/**'
+      - 'src/**'
+      - 'lambda/**'
+      - 'scripts/generate_openapi.js'
+  
+  # Allow manual trigger
+  workflow_dispatch:
+
+jobs:
+  generate-openapi:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Install dependencies
+        run: |
+          npm install -g js-yaml
+          npm install https axios fs-extra
+
+      - name: Generate OpenAPI specification
+        run: |
+          echo "Generating OpenAPI specification from live API endpoints..."
+          chmod +x ./scripts/generate_openapi.js
+          node ./scripts/generate_openapi.js
+          
+          # Verify generated files
+          if [ -f "./spec/openapi.json" ] && [ -f "./spec/openapi.yaml" ]; then
+            echo "✅ OpenAPI specification generated successfully"
+          else
+            echo "❌ Failed to generate OpenAPI specification"
+            exit 1
+          fi
+
+      - name: Validate OpenAPI specification
+        run: |
+          echo "Validating OpenAPI specification..."
+          npm install -g @apidevtools/swagger-cli
+          swagger-cli validate ./spec/openapi.json
+          
+          if [ $? -eq 0 ]; then
+            echo "✅ OpenAPI specification is valid"
+          else
+            echo "❌ OpenAPI specification validation failed"
+            exit 1
+          fi
+
+      - name: Publish to API endpoint
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION || 'us-east-1' }}
+        run: |
+          echo "Publishing OpenAPI JSON to api.bondmcp.com/openapi.json..."
+          
+          # Install AWS CLI if not already installed
+          if ! command -v aws &> /dev/null; then
+            echo "Installing AWS CLI..."
+            curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+            unzip awscliv2.zip
+            sudo ./aws/install
+            rm -rf awscliv2.zip aws/
+          fi
+          
+          # Upload to S3 (assuming S3 bucket hosts api.bondmcp.com)
+          if [ -n "$AWS_ACCESS_KEY_ID" ] && [ -n "$AWS_SECRET_ACCESS_KEY" ]; then
+            aws s3 cp ./spec/openapi.json s3://api.bondmcp.com/openapi.json --content-type "application/json" --cache-control "max-age=300"
+            echo "✅ OpenAPI JSON published to api.bondmcp.com/openapi.json"
+          else
+            echo "⚠️ AWS credentials not found. Skipping publication to api.bondmcp.com/openapi.json"
+          fi
+
+      - name: Commit changes
+        run: |
+          git config --global user.name "BondMCP Bot"
+          git config --global user.email "bot@bondmcp.com"
+          
+          git add ./spec/openapi.json ./spec/openapi.yaml
+          
+          # Only commit if there are changes
+          if git diff --staged --quiet; then
+            echo "No changes to OpenAPI specification"
+          else
+            git commit -m "chore: update OpenAPI specification [skip ci]"
+            git push
+            echo "✅ Committed and pushed updated OpenAPI specification"
+          fi
+
+      - name: Notify on success
+        if: success()
+        run: |
+          echo "OpenAPI specification successfully generated and published"
+          echo "JSON available at api.bondmcp.com/openapi.json"
+          echo "YAML available in repository at spec/openapi.yaml"
+
+      - name: Notify on failure
+        if: failure()
+        run: |
+          echo "Failed to generate or publish OpenAPI specification. Check logs for details."
