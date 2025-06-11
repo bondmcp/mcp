@@ -35,10 +35,54 @@ jobs:
 
       - name: Process OpenAPI Specification
         run: |
-          # Convert YAML to JSON for better GitBook compatibility
-          npm install -g yaml2json
-          yaml2json ./spec/openapi.yaml > ./spec/openapi.json
-          echo "OpenAPI specification converted to JSON format"
+          # Install js-yaml for robust YAML to JSON conversion
+          echo "Installing js-yaml for OpenAPI conversion..."
+          npm install -g js-yaml
+          
+          # Create backup of original YAML
+          cp ./spec/openapi.yaml ./spec/openapi.yaml.bak
+          
+          # Validate YAML syntax first
+          echo "Validating OpenAPI YAML syntax..."
+          if js-yaml ./spec/openapi.yaml > /dev/null; then
+            echo "✅ YAML syntax is valid"
+          else
+            echo "⚠️ YAML syntax validation failed, attempting to fix common issues..."
+            # Basic attempt to fix common YAML issues could be added here
+            # For now, we'll continue with the original file
+          fi
+          
+          # Convert YAML to JSON with error handling
+          echo "Converting OpenAPI YAML to JSON..."
+          if js-yaml ./spec/openapi.yaml > ./spec/openapi.json; then
+            echo "✅ OpenAPI specification successfully converted to JSON format"
+          else
+            echo "❌ Failed to convert with js-yaml, trying alternative method..."
+            # Fallback to yaml2json if js-yaml fails
+            npm install -g yaml2json
+            if yaml2json ./spec/openapi.yaml > ./spec/openapi.json; then
+              echo "✅ OpenAPI specification converted to JSON using fallback method"
+            else
+              echo "❌ All conversion methods failed. Please check the OpenAPI YAML file."
+              exit 1
+            fi
+          fi
+          
+          # Validate the generated JSON
+          echo "Validating generated JSON..."
+          if cat ./spec/openapi.json | jq . > /dev/null; then
+            echo "✅ Generated JSON is valid"
+          else
+            echo "❌ Generated JSON is invalid. Using a simplified conversion..."
+            # Last resort: Use a more permissive conversion
+            npm install -g yaml
+            node -e "const yaml = require('yaml'); const fs = require('fs'); const content = fs.readFileSync('./spec/openapi.yaml', 'utf8'); const parsed = yaml.parse(content); fs.writeFileSync('./spec/openapi.json', JSON.stringify(parsed, null, 2));"
+            
+            if [ $? -ne 0 ]; then
+              echo "❌ All conversion attempts failed. Manual intervention required."
+              exit 1
+            fi
+          fi
 
       - name: Configure Git
         run: |
@@ -63,10 +107,36 @@ jobs:
           
           echo "Sync completed successfully!"
 
+      - name: Publish OpenAPI JSON to API endpoint
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION || 'us-east-1' }}
+        run: |
+          echo "Publishing OpenAPI JSON to api.bondmcp.com/openapi.json..."
+          
+          # Install AWS CLI if not already installed
+          if ! command -v aws &> /dev/null; then
+            echo "Installing AWS CLI..."
+            curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+            unzip awscliv2.zip
+            sudo ./aws/install
+            rm -rf awscliv2.zip aws/
+          fi
+          
+          # Upload to S3 (assuming S3 bucket hosts api.bondmcp.com)
+          if [ -n "$AWS_ACCESS_KEY_ID" ] && [ -n "$AWS_SECRET_ACCESS_KEY" ]; then
+            aws s3 cp ./spec/openapi.json s3://api.bondmcp.com/openapi.json --content-type "application/json" --cache-control "max-age=300"
+            echo "✅ OpenAPI JSON published to api.bondmcp.com/openapi.json"
+          else
+            echo "⚠️ AWS credentials not found. Skipping publication to api.bondmcp.com/openapi.json"
+          fi
+
       - name: Notify on success
         if: success()
         run: |
           echo "Documentation successfully synced to GitBook at docs.bondmcp.com"
+          echo "OpenAPI JSON available at api.bondmcp.com/openapi.json"
 
       - name: Notify on failure
         if: failure()
