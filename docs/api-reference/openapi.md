@@ -4,13 +4,13 @@ This page provides the complete OpenAPI specification for the BondMCP API.
 
 ## Interactive API Reference
 
-{% swagger src="https://api.bondmcp.com/openapi.json" %}
+{% swagger src="http://openapi.bondmcp.com/openapi.json" %}
 {% endswagger %}
 
 ## Live OpenAPI Specification
 
 The complete OpenAPI specification is always available at:
-- JSON format: [https://api.bondmcp.com/openapi.json](https://api.bondmcp.com/openapi.json)
+- JSON format: [http://openapi.bondmcp.com/openapi.json](http://openapi.bondmcp.com/openapi.json)
 - Repository: [GitHub - BondMCP/mcp](https://github.com/bondmcp/mcp/blob/main/spec/openapi.json)
 
 This specification is automatically generated from the live API endpoints and is always up-to-date with the current implementation.
