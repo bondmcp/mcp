@@ -75,7 +75,7 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION || 'us-east-1' }}
         run: |
-          echo "Publishing OpenAPI JSON to api.bondmcp.com/openapi.json..."
+          echo "Publishing OpenAPI JSON to openapi.bondmcp.com/openapi.bondmcp..."
           
           # Install AWS CLI if not already installed
           if ! command -v aws &> /dev/null; then
@@ -86,12 +86,12 @@ jobs:
             rm -rf awscliv2.zip aws/
           fi
           
-          # Upload to S3 (assuming S3 bucket hosts api.bondmcp.com)
+          # Upload to S3 (assuming S3 bucket hosts openapi.bondmcp.com)
           if [ -n "$AWS_ACCESS_KEY_ID" ] && [ -n "$AWS_SECRET_ACCESS_KEY" ]; then
-            aws s3 cp ./spec/openapi.json s3://api.bondmcp.com/openapi.json --content-type "application/json" --cache-control "max-age=300"
-            echo "✅ OpenAPI JSON published to api.bondmcp.com/openapi.json"
+            aws s3 cp ./spec/openapi.json s3://openapi.bondmcp.com/openapi.bondmcp --content-type "application/json" --cache-control "max-age=300"
+            echo "✅ OpenAPI JSON published to openapi.bondmcp.com/openapi.bondmcp"
           else
-            echo "⚠️ AWS credentials not found. Skipping publication to api.bondmcp.com/openapi.json"
+            echo "⚠️ AWS credentials not found. Skipping publication to openapi.bondmcp.com/openapi.bondmcp"
           fi
 
       - name: Commit changes
@@ -116,7 +116,7 @@ jobs:
         if: success()
         run: |
           echo "OpenAPI specification successfully generated and published"
-          echo "JSON available at api.bondmcp.com/openapi.json"
+          echo "JSON available at openapi.bondmcp.com/openapi.bondmcp"
           echo "YAML available in repository at spec/openapi.yaml"
 
       - name: Notify on failure

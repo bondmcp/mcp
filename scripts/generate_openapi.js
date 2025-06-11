@@ -7,7 +7,7 @@
  * 1. Scanning the actual API endpoints at api.bondmcp.com
  * 2. Extracting endpoint metadata, parameters, and response schemas
  * 3. Generating a complete OpenAPI specification document
- * 4. Publishing to both the documentation site and api.bondmcp.com/openapi.json
+ * 4. Publishing to both the documentation site and openapi.bondmcp.com/openapi.bondmcp
  */
 
 const fs = require('fs');

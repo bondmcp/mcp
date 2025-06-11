@@ -3,7 +3,7 @@
 /**
  * OpenAPI Specification Deployment Script for BondMCP
  * 
- * This script deploys the OpenAPI specification to api.bondmcp.com/openapi.json
+ * This script deploys the OpenAPI specification to openapi.bondmcp.com/openapi.bondmcp
  * using AWS S3 and CloudFront for distribution.
  */
 
@@ -14,7 +14,7 @@ const { execSync } = require('child_process');
 // Configuration
 const sourceFile = path.join(__dirname, '../../spec/openapi.json');
 const s3Bucket = 'openapi.bondmcp.com';
-const s3Path = 'openapi.json';
+const s3Path = 'openapi.bondmcp';
 const cloudFrontDistributionId = 'E1EXAMPLE'; // Replace with actual distribution ID
 
 // Main deployment function
@@ -46,7 +46,7 @@ async function deployOpenAPISpec() {
     execSync(`aws cloudfront create-invalidation --distribution-id ${cloudFrontDistributionId} --paths "/${s3Path}"`);
     
     console.log('OpenAPI specification deployment completed successfully');
-    console.log(`The OpenAPI specification is now available at http://openapi.bondmcp.com/openapi.json`);
+    console.log(`The OpenAPI specification is now available at https://openapi.bondmcp.com/openapi.bondmcp`);
     
     return true;
   } catch (error) {
