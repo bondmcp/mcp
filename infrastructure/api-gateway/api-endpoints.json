@@ -1,0 +1,161 @@
+{
+  "restApiId": "4ss50ogxna",
+  "resources": [
+    {
+      "path": "/api/v1/auth",
+      "methods": {
+        "POST": {
+          "authorizationType": "NONE",
+          "apiKeyRequired": false,
+          "integration": {
+            "type": "AWS_PROXY",
+            "uri": "arn:aws:apigateway:us-east-1:lambda:path/2015-03-31/functions/arn:aws:lambda:us-east-1:410126241301:function:BondMCP-API-All-Endpoints-Consolidated/invocations"
+          }
+        },
+        "OPTIONS": {
+          "authorizationType": "NONE",
+          "apiKeyRequired": false,
+          "integration": {
+            "type": "MOCK",
+            "requestTemplates": {
+              "application/json": "{\"statusCode\": 200}"
+            }
+          },
+          "methodResponse": {
+            "statusCode": "200",
+            "responseParameters": {
+              "method.response.header.Access-Control-Allow-Headers": true,
+              "method.response.header.Access-Control-Allow-Methods": true,
+              "method.response.header.Access-Control-Allow-Origin": true
+            }
+          },
+          "integrationResponse": {
+            "statusCode": "200",
+            "responseParameters": {
+              "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,X-Requested-With'",
+              "method.response.header.Access-Control-Allow-Methods": "'GET,POST,PUT,DELETE,OPTIONS'",
+              "method.response.header.Access-Control-Allow-Origin": "'*'"
+            }
+          }
+        }
+      }
+    },
+    {
+      "path": "/api/v1/dashboard",
+      "methods": {
+        "GET": {
+          "authorizationType": "NONE",
+          "apiKeyRequired": false,
+          "integration": {
+            "type": "AWS_PROXY",
+            "uri": "arn:aws:apigateway:us-east-1:lambda:path/2015-03-31/functions/arn:aws:lambda:us-east-1:410126241301:function:BondMCP-API-All-Endpoints-Consolidated/invocations"
+          }
+        },
+        "OPTIONS": {
+          "authorizationType": "NONE",
+          "apiKeyRequired": false,
+          "integration": {
+            "type": "MOCK",
+            "requestTemplates": {
+              "application/json": "{\"statusCode\": 200}"
+            }
+          },
+          "methodResponse": {
+            "statusCode": "200",
+            "responseParameters": {
+              "method.response.header.Access-Control-Allow-Headers": true,
+              "method.response.header.Access-Control-Allow-Methods": true,
+              "method.response.header.Access-Control-Allow-Origin": true
+            }
+          },
+          "integrationResponse": {
+            "statusCode": "200",
+            "responseParameters": {
+              "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,X-Requested-With'",
+              "method.response.header.Access-Control-Allow-Methods": "'GET,POST,PUT,DELETE,OPTIONS'",
+              "method.response.header.Access-Control-Allow-Origin": "'*'"
+            }
+          }
+        }
+      }
+    },
+    {
+      "path": "/api/v1/apikeys",
+      "methods": {
+        "GET": {
+          "authorizationType": "NONE",
+          "apiKeyRequired": false,
+          "integration": {
+            "type": "AWS_PROXY",
+            "uri": "arn:aws:apigateway:us-east-1:lambda:path/2015-03-31/functions/arn:aws:lambda:us-east-1:410126241301:function:BondMCP-API-All-Endpoints-Consolidated/invocations"
+          }
+        },
+        "OPTIONS": {
+          "authorizationType": "NONE",
+          "apiKeyRequired": false,
+          "integration": {
+            "type": "MOCK",
+            "requestTemplates": {
+              "application/json": "{\"statusCode\": 200}"
+            }
+          },
+          "methodResponse": {
+            "statusCode": "200",
+            "responseParameters": {
+              "method.response.header.Access-Control-Allow-Headers": true,
+              "method.response.header.Access-Control-Allow-Methods": true,
+              "method.response.header.Access-Control-Allow-Origin": true
+            }
+          },
+          "integrationResponse": {
+            "statusCode": "200",
+            "responseParameters": {
+              "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,X-Requested-With'",
+              "method.response.header.Access-Control-Allow-Methods": "'GET,POST,PUT,DELETE,OPTIONS'",
+              "method.response.header.Access-Control-Allow-Origin": "'*'"
+            }
+          }
+        }
+      }
+    },
+    {
+      "path": "/api/v1/usage",
+      "methods": {
+        "GET": {
+          "authorizationType": "NONE",
+          "apiKeyRequired": false,
+          "integration": {
+            "type": "AWS_PROXY",
+            "uri": "arn:aws:apigateway:us-east-1:lambda:path/2015-03-31/functions/arn:aws:lambda:us-east-1:410126241301:function:BondMCP-API-All-Endpoints-Consolidated/invocations"
+          }
+        },
+        "OPTIONS": {
+          "authorizationType": "NONE",
+          "apiKeyRequired": false,
+          "integration": {
+            "type": "MOCK",
+            "requestTemplates": {
+              "application/json": "{\"statusCode\": 200}"
+            }
+          },
+          "methodResponse": {
+            "statusCode": "200",
+            "responseParameters": {
+              "method.response.header.Access-Control-Allow-Headers": true,
+              "method.response.header.Access-Control-Allow-Methods": true,
+              "method.response.header.Access-Control-Allow-Origin": true
+            }
+          },
+          "integrationResponse": {
+            "statusCode": "200",
+            "responseParameters": {
+              "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,X-Requested-With'",
+              "method.response.header.Access-Control-Allow-Methods": "'GET,POST,PUT,DELETE,OPTIONS'",
+              "method.response.header.Access-Control-Allow-Origin": "'*'"
+            }
+          }
+        }
+      }
+    }
+  ]
+}
