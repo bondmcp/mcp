@@ -1,0 +1,237 @@
+name: OpenAPI S3 to Repository Sync
+
+on:
+  # Run on schedule (every 6 hours)
+  schedule:
+    - cron: '0 */6 * * *'  # Run every 6 hours
+  
+  # Allow manual trigger
+  workflow_dispatch:
+    inputs:
+      force_update:
+        description: 'Force update even if no changes detected'
+        required: false
+        default: 'false'
+        type: boolean
+
+jobs:
+  sync-from-s3:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write  # Needed for pushing to the repository
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0  # Full history for better commit messages
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+
+      - name: Create directories if they don't exist
+        run: |
+          mkdir -p spec
+          echo "Created spec directory if it didn't exist"
+
+      - name: Download OpenAPI spec from S3
+        id: download
+        continue-on-error: true
+        run: |
+          echo "Attempting to download OpenAPI spec from S3..."
+          # First try direct S3 access
+          aws s3 cp s3://openapi.bondmcp.com/openapi.json ./temp_openapi.json || true
+          
+          # If direct S3 access fails, try the public URL
+          if [ ! -f ./temp_openapi.json ]; then
+            echo "Direct S3 access failed, trying public URL..."
+            curl -f -s -o ./temp_openapi.json https://openapi.bondmcp.com/openapi.json || true
+          fi
+          
+          # Check if we successfully downloaded the file
+          if [ -f ./temp_openapi.json ] && [ -s ./temp_openapi.json ]; then
+            echo "Successfully downloaded OpenAPI spec"
+            echo "download_success=true" >> $GITHUB_OUTPUT
+          else
+            echo "Failed to download OpenAPI spec from S3 and public URL"
+            echo "download_success=false" >> $GITHUB_OUTPUT
+            exit 1
+          fi
+
+      - name: Validate OpenAPI spec
+        if: steps.download.outputs.download_success == 'true'
+        id: validate
+        continue-on-error: true
+        run: |
+          echo "Validating downloaded OpenAPI spec..."
+          npm install -g @apidevtools/swagger-cli
+          swagger-cli validate ./temp_openapi.json
+          
+          if [ $? -eq 0 ]; then
+            echo "✅ OpenAPI specification is valid"
+            echo "validation_success=true" >> $GITHUB_OUTPUT
+          else
+            echo "❌ OpenAPI specification validation failed"
+            echo "validation_success=false" >> $GITHUB_OUTPUT
+            exit 1
+          fi
+
+      - name: Convert JSON to YAML
+        if: steps.validate.outputs.validation_success == 'true'
+        run: |
+          echo "Converting JSON to YAML..."
+          npm install -g js-yaml
+          node -e "
+            const fs = require('fs');
+            const yaml = require('js-yaml');
+            const json = JSON.parse(fs.readFileSync('./temp_openapi.json', 'utf8'));
+            fs.writeFileSync('./temp_openapi.yaml', yaml.dump(json, { lineWidth: -1 }));
+          "
+          echo "✅ Conversion to YAML completed"
+
+      - name: Check for changes
+        id: check_changes
+        run: |
+          if [ -f "./spec/openapi.json" ]; then
+            # Compare with existing file
+            if cmp -s "./temp_openapi.json" "./spec/openapi.json"; then
+              echo "No changes detected in OpenAPI spec"
+              echo "has_changes=false" >> $GITHUB_OUTPUT
+            else
+              echo "Changes detected in OpenAPI spec"
+              echo "has_changes=true" >> $GITHUB_OUTPUT
+            fi
+          else
+            echo "No existing OpenAPI spec found, will create new one"
+            echo "has_changes=true" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Update repository files
+        if: steps.check_changes.outputs.has_changes == 'true' || github.event.inputs.force_update == 'true'
+        run: |
+          echo "Updating repository files..."
+          cp ./temp_openapi.json ./spec/openapi.json
+          cp ./temp_openapi.yaml ./spec/openapi.yaml
+          echo "✅ Repository files updated"
+
+      - name: Commit and push changes
+        if: steps.check_changes.outputs.has_changes == 'true' || github.event.inputs.force_update == 'true'
+        run: |
+          git config --global user.name "BondMCP Bot"
+          git config --global user.email "bot@bondmcp.com"
+          
+          git add ./spec/openapi.json ./spec/openapi.yaml
+          
+          # Get the timestamp for the commit message
+          TIMESTAMP=$(date -u +"%Y-%m-%d %H:%M:%S UTC")
+          
+          git commit -m "chore: sync OpenAPI spec from S3 to repo [$TIMESTAMP] [skip ci]"
+          git push origin HEAD:${GITHUB_REF#refs/heads/}
+          
+          echo "✅ Changes committed and pushed to repository"
+
+      - name: Update ENDPOINTS.md with API documentation
+        if: steps.check_changes.outputs.has_changes == 'true' || github.event.inputs.force_update == 'true'
+        run: |
+          echo "Updating ENDPOINTS.md with API documentation..."
+          
+          # Install required packages
+          npm install -g openapi-markdown
+          
+          # Generate markdown documentation from OpenAPI spec
+          openapi-markdown -i ./spec/openapi.json -o ./temp_endpoints.md
+          
+          # Create header for ENDPOINTS.md
+          cat > ./ENDPOINTS.md << 'EOL'
+          # BondMCP API Endpoints
+          
+          This document provides a comprehensive list of all available BondMCP API endpoints. The information is automatically generated from our OpenAPI specification.
+          
+          ## Base URL
+          
+          All endpoints are relative to: `https://api.bondmcp.com`
+          
+          ## Authentication
+          
+          Most endpoints require authentication using an API key. Include your API key in the request header:
+          
+          ```
+          X-API-Key: your-api-key
+          ```
+          
+          ## Available Endpoints
+          
+          EOL
+          
+          # Append the generated markdown content
+          cat ./temp_endpoints.md >> ./ENDPOINTS.md
+          
+          # Add footer with contact information
+          cat >> ./ENDPOINTS.md << 'EOL'
+          
+          ## Contact Information
+          
+          For support or questions about the API:
+          
+          **US Office:**  
+          111 NE 1st St, STE 89079, 33132, Miami, Florida  
+          Phone: +1 855 512 5310
+          
+          **Hong Kong Office:**  
+          144-151 Connaught Road West, Unit 4005, 40/F, Sai Ying Pun, Hong Kong
+          
+          **Company:** Lifecycle Innovations Limited (Brand: BondMCP)
+          EOL
+          
+          # Clean up temporary file
+          rm ./temp_endpoints.md
+          
+          # Commit and push ENDPOINTS.md
+          git add ./ENDPOINTS.md
+          git commit -m "docs: update API endpoints documentation [skip ci]"
+          git push origin HEAD:${GITHUB_REF#refs/heads/}
+          
+          echo "✅ ENDPOINTS.md updated with latest API documentation"
+
+      - name: Update website components
+        if: steps.check_changes.outputs.has_changes == 'true' || github.event.inputs.force_update == 'true'
+        run: |
+          echo "Updating website components with endpoint information..."
+          
+          # Check if the update scripts exist
+          if [ -f "./scripts/update-website-sections.js" ]; then
+            node ./scripts/update-website-sections.js
+            
+            # Commit website component changes if any
+            if git diff --name-only | grep -q "website-"; then
+              git add ./website-*.html
+              git commit -m "docs: update website components with latest API endpoints [skip ci]"
+              git push origin HEAD:${GITHUB_REF#refs/heads/}
+              echo "✅ Website components updated"
+            else
+              echo "No changes to website components"
+            fi
+          else
+            echo "Website component update script not found, skipping this step"
+          fi
+
+      - name: Notify on success
+        if: success()
+        run: |
+          echo "✅ OpenAPI S3 to Repository sync completed successfully"
+          if [ "${{ steps.check_changes.outputs.has_changes }}" == "true" ]; then
+            echo "Changes were detected and synced to the repository"
+          else
+            echo "No changes were detected in the OpenAPI specification"
+          fi
+
+      - name: Notify on failure
+        if: failure()
+        run: |
+          echo "❌ OpenAPI S3 to Repository sync failed"
+          echo "Please check the logs for more information"
