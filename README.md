@@ -1,141 +1,53 @@
-# BondMCP - Healthcare Model Context Protocol
+# BondMCP - Medical Context Protocol
 
-BondMCP provides a healthcare-optimized implementation of the Model Context Protocol (MCP), enabling secure and compliant AI integration with health data sources.
-
-## Quick Start
-
-### Installation
-
-```bash
-npm install @bondmcp/typescript-sdk
-# or
-pip install bondmcp
-```
-
-The Python package was previously published as `bondmcp-sdk`. That legacy name
-is still available on PyPI but is no longer maintained. Use `bondmcp` for new
-projects.
-
-The maintained SDK source lives in the `bondmcp_sdk/` directory. Older
-`sdk/` and `sdks/` folders contained experimental stubs and generated code and
-have been removed.
-
-### Basic Usage
-
-```javascript
-import { BondMCPClient } from '@bondmcp/typescript-sdk';
-
-const client = new BondMCPClient({
-  apiKey: 'your-api-key',
-  baseUrl: 'https://api.bondmcp.com'
-});
-
-// Ask a health question
-const response = await client.ask({
-  message: "What are the symptoms of high blood pressure?",
-  context: "general-health"
-});
-
-console.log(response.answer);
-```
-### Environment Setup
-
-Copy `.env.example` to `.env` and provide your API key before using the CLI or SDK.
-
-```bash
-cp .env.example .env
-```
-
-Edit `.env` and set `BONDMCP_PUBLIC_API_KEY` and optional `BONDMCP_PUBLIC_API_BASE_URL`.
-
-### Docker Usage
-
-Build the image and run the CLI without installing Python locally:
-
-```bash
-docker build -t bondmcp-cli .
-docker run --rm -e BONDMCP_PUBLIC_API_KEY=YOUR_KEY bondmcp-cli ask "What are the symptoms of high blood pressure?"
-```
-
+BondMCP is a healthcare AI protocol that eliminates hallucinations by creating verified consensus across multiple AI models, serving as a trusted layer for all health AI interactions.
 
 ## Features
 
-- 🏥 **Healthcare-Optimized**: Built specifically for medical and health applications
-- 🔒 **HIPAA Compliant**: Enterprise-grade security and compliance
-- ⚡ **Fast Responses**: Sub-3 second response times
-- 🎯 **High Accuracy**: 99.97% accuracy through multi-model consensus
-- 🔧 **Easy Integration**: Simple SDK for multiple programming languages
+- 🏥 Healthcare-Optimized
+- 🔒 HIPAA Compliant
+- ⚡ Sub-3 second response times
+- 🎯 High accuracy rate
+- 🔧 Multi-language SDK support
+
+## Documentation
+
+Comprehensive documentation is available at [docs.bondmcp.com](https://docs.bondmcp.com).
+
+## API Resources
+
+- **API Documentation**: [docs.bondmcp.com](https://docs.bondmcp.com)
+- **OpenAPI Specification**: [openapi.bondmcp.com/openapi.json](https://openapi.bondmcp.com/openapi.json)
+- **Swagger UI**: [swagger.bondmcp.com](https://swagger.bondmcp.com)
+- **Postman Collection**: [postman.bondmcp.com](https://postman.bondmcp.com)
 
 ## API Endpoints
 
-### Health Chat
-```
-POST /api/v1/ask
-```
-Query the AI with health-related questions.
+For a complete list of available endpoints, see [ENDPOINTS.md](./ENDPOINTS.md).
 
-### Health Data Analysis
-```
-POST /api/v1/health-data/analyze
-```
-Analyze health data and receive insights.
+## OpenAPI Specification
 
-For complete API documentation, visit [docs.bondmcp.com](https://docs.bondmcp.com).
+The OpenAPI specification is automatically synced from our production API to this repository. The sync workflow runs every 6 hours and ensures that this repository always contains the most up-to-date API definition.
 
-The full OpenAPI specification for all endpoints is provided in
-[`spec/openapi.yaml`](spec/openapi.yaml). You can generate client SDKs from the
-specification using [OpenAPI Generator](https://openapi-generator.tech):
+### OpenAPI Sync Workflow
 
-```bash
-openapi-generator-cli generate -i spec/openapi.yaml -g python -o sdks/python
-```
+We maintain a bidirectional sync between our API implementation and this repository:
 
-## SDKs
+1. **S3 to Repository Sync**: The [openapi-s3-to-repo-sync.yml](./.github/workflows/openapi-s3-to-repo-sync.yml) workflow pulls the latest OpenAPI specification from our S3 bucket and updates the repository.
 
-- [TypeScript/JavaScript SDK](https://docs.bondmcp.com/sdks/typescript)
-- [Go SDK](https://docs.bondmcp.com/sdks/go)
-- [Python SDK](https://docs.bondmcp.com/sdks/python)
+2. **Repository to S3 Sync**: The [openapi-sync.yml](./.github/workflows/openapi-sync.yml) workflow pushes changes from the repository to our S3 bucket and updates the Swagger UI and Postman collection.
 
-For information on API and SDK compatibility, see [docs/versioning.md](docs/versioning.md).
+## Contact
 
-## Examples
+**US Office:**  
+111 NE 1st St, STE 89079, 33132, Miami, Florida  
+Phone: +1 855 512 5310
 
-Run the sample programs in the `examples/` directory to see basic API usage:
+**Hong Kong Office:**  
+144-151 Connaught Road West, Unit 4005, 40/F, Sai Ying Pun, Hong Kong
 
-```bash
-# Python example
-python examples/python_basic.py
-
-# Node example
-node examples/node_basic.js
-```
-
-Each example performs a simple health check and sends a question to the API. Replace
-`YOUR_API_KEY` in the code with your actual key before running.
-
-## Development Setup
-
-This project uses [pre-commit](https://pre-commit.com) to run formatting and linting tools. After installing the development dependencies, install the pre-commit hooks:
-
-```bash
-pip install -e .[dev]
-pre-commit install
-```
-
-## Contributing
-
-We welcome contributions! See our [Contributing Guide](CONTRIBUTING.md) for details on reporting issues, running tests, and submitting pull requests.
-
-## Support
-
-- 📖 [Documentation](https://docs.bondmcp.com)
-- 💬 [Discord Community](https://discord.gg/bondmcp)
-- 📧 [Email Support](mailto:support@bondmcp.com)
+**Company:** Lifecycle Innovations Limited (Brand: BondMCP)
 
 ## License
 
-MIT License - see [LICENSE](https://github.com/bondmcp/mcp/blob/main/LICENSE) for details.
-
----
-
-**Disclaimer**: BondMCP is for informational purposes only and does not constitute medical advice. Always consult with healthcare professionals for medical decisions.
+This project is licensed under the MIT License - see the [LICENSE](./LICENSE) file for details.
