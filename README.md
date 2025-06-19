@@ -13,9 +13,11 @@ Choose your preferred SDK to get started with BondMCP:
 
 | Language | Status | Installation | Documentation |
 |----------|--------|-------------|---------------|
-| **Python** | ✅ Available | `pip install bondmcp` | [Python SDK →](./python/) |
-| **JavaScript** | 🚧 Coming Q2 2025 | `npm install @bondmcp/sdk` | [JavaScript SDK →](./javascript/) |
-| **Go** | 🚧 Coming Q3 2025 | `go get github.com/bondmcp/go-sdk` | [Go SDK →](./go/) |
+| **Python** | 🚧 In Development | *Coming Soon* | [Python SDK →](./python/) |
+| **JavaScript** | 🚧 In Development | *Coming Soon* | [JavaScript SDK →](./javascript/) |
+| **Go** | 🚧 In Development | *Coming Soon* | [Go SDK →](./go/) |
+
+> **📦 Package Publishing**: SDKs are currently in development. Installation commands will be available once packages are published to their respective registries (PyPI, npm, Go modules).
 
 ## 📚 Documentation
 
@@ -92,21 +94,78 @@ print(f"Confidence: {response.confidence_score}")
 
 ## 🌟 Live Demo
 
-Try BondMCP instantly with our interactive playground:
-- **🎮 [API Playground](https://bondmcp.com/docs#playground)** - Test endpoints without signup
-- **📚 [Full Documentation](https://bondmcp.com/docs)** - Complete API reference
+Experience BondMCP's power with our interactive playground:
+- **🎮 [Try BondMCP](https://bondmcp.com/try)** - Interactive playground for all endpoints
+- **📚 [Technical Documentation](https://docs.bondmcp.com)** - Complete API reference (auto-synced from Git)
 - **🔗 [OpenAPI Spec](https://openapi.bondmcp.com)** - Machine-readable specification
 
 ## 📊 API Endpoints
 
+### Core Health AI
 | Endpoint | Description | Tier |
 |----------|-------------|------|
-| `/ask` | Multi-model health AI consensus | Developer+ |
-| `/labs/interpret` | Lab result interpretation | Developer+ |
-| `/supplement/recommend` | Personalized supplement advice | Professional+ |
-| `/wearable-data-insights` | Wearable device analysis | Professional+ |
-| `/orchestrate` | Multi-step AI workflows | Enterprise+ |
-| `/admin/*` | Administrative endpoints | Clinical+ |
+| `/api/v1/ask` | Multi-model health AI consensus | Developer+ |
+| `/api/v1/health-data/analyze` | Comprehensive health data analysis | Developer+ |
+| `/api/v1/trust-score/{responseId}` | Detailed trust score verification | Developer+ |
+
+### Laboratory & Diagnostics
+| Endpoint | Description | Tier |
+|----------|-------------|------|
+| `/api/v1/labs/interpret` | Lab result interpretation | Developer+ |
+| `/api/v1/labs/upload` | Upload lab results for analysis | Developer+ |
+| `/api/v1/diagnostics/imaging` | Medical imaging analysis | Professional+ |
+| `/api/v1/diagnostics/symptoms` | Symptom checker and analysis | Developer+ |
+
+### Personalized Health
+| Endpoint | Description | Tier |
+|----------|-------------|------|
+| `/api/v1/supplements/recommend` | Personalized supplement advice | Professional+ |
+| `/api/v1/nutrition/analyze` | Nutritional analysis and recommendations | Professional+ |
+| `/api/v1/fitness/plan` | Personalized fitness planning | Professional+ |
+| `/api/v1/wearable-data-insights` | Wearable device data analysis | Professional+ |
+
+### Clinical Workflows
+| Endpoint | Description | Tier |
+|----------|-------------|------|
+| `/api/v1/orchestrate` | Multi-step AI workflows | Enterprise+ |
+| `/api/v1/clinical/notes` | Clinical note generation | Clinical+ |
+| `/api/v1/clinical/coding` | Medical coding assistance | Clinical+ |
+| `/api/v1/clinical/protocols` | Treatment protocol recommendations | Clinical+ |
+
+### Knowledge & Research
+| Endpoint | Description | Tier |
+|----------|-------------|------|
+| `/api/v1/medical-knowledge/search` | Medical knowledge base search | Developer+ |
+| `/api/v1/research/literature` | Medical literature analysis | Professional+ |
+| `/api/v1/research/trials` | Clinical trial matching | Professional+ |
+| `/api/v1/drug-interactions` | Drug interaction checking | Developer+ |
+
+### User & Account Management
+| Endpoint | Description | Tier |
+|----------|-------------|------|
+| `/api/v1/users` | User account management | All |
+| `/api/v1/users/me` | Current user profile | All |
+| `/api/v1/api-keys` | API key management | All |
+| `/api/v1/usage` | Usage statistics and billing | All |
+| `/api/v1/subscriptions` | Subscription management | All |
+
+### Integration & Monitoring
+| Endpoint | Description | Tier |
+|----------|-------------|------|
+| `/api/v1/webhooks` | Webhook management | Professional+ |
+| `/api/v1/audit-logs` | Audit trail and compliance | Enterprise+ |
+| `/api/v1/health` | API health status | All |
+| `/api/v1/metrics` | Performance metrics | Enterprise+ |
+
+### Administrative
+| Endpoint | Description | Tier |
+|----------|-------------|------|
+| `/api/v1/admin/users` | User administration | Clinical+ |
+| `/api/v1/admin/organizations` | Organization management | Clinical+ |
+| `/api/v1/admin/compliance` | Compliance reporting | Clinical+ |
+| `/api/v1/admin/analytics` | Advanced analytics | Clinical+ |
+
+**📋 Complete Documentation**: [ENDPOINTS.md](./ENDPOINTS.md) | **🔗 OpenAPI Spec**: [openapi.bondmcp.com](https://openapi.bondmcp.com) | **📦 Postman**: [postman.bondmcp.com](https://postman.bondmcp.com)
 
 ## 🏗️ Repository Structure
 
@@ -170,15 +229,15 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## 🔗 Links
 
 - **🌐 Website**: [bondmcp.com](https://bondmcp.com)
-- **📚 API Docs**: [bondmcp.com/docs](https://bondmcp.com/docs)
-- **🎮 Playground**: [bondmcp.com/docs#playground](https://bondmcp.com/docs#playground)
-- **📊 Status**: [status.bondmcp.com](https://status.bondmcp.com)
+- **📚 API Docs**: [docs.bondmcp.com](https://docs.bondmcp.com)
+- **🎮 Try It Live**: [bondmcp.com/try](https://bondmcp.com/try)
 - **🔗 OpenAPI**: [openapi.bondmcp.com](https://openapi.bondmcp.com)
+- **📦 Postman**: [postman.bondmcp.com](https://postman.bondmcp.com)
+- **💚 Health Check**: [api.bondmcp.com/api/v1/health](https://api.bondmcp.com/api/v1/health)
 
 ---
 
 <div align="center">
-  <strong>Built with ❤️ for the healthcare community</strong><br>
-  <em>Trusted by 10,000+ healthcare professionals worldwide</em>
+  <strong>Built with ❤️ for the healthcare community</strong>
 </div>
 

@@ -409,8 +409,8 @@ This project is licensed under the MIT License - see the [LICENSE](../LICENSE) f
 
 - **📚 Main Repository**: [bondmcp/mcp](https://github.com/bondmcp/mcp)
 - **🌐 Website**: [bondmcp.com](https://bondmcp.com)
-- **📖 API Documentation**: [bondmcp.com/docs](https://bondmcp.com/docs)
-- **🎮 Playground**: [bondmcp.com/docs#playground](https://bondmcp.com/docs#playground)
+- **📖 API Documentation**: [docs.bondmcp.com](https://docs.bondmcp.com)
+- **🎮 Try It Live**: [bondmcp.com/try](https://bondmcp.com/try)
 
 ---
 

@@ -1,7 +1,7 @@
 # BondMCP Go SDK
 
-[![Go Reference](https://pkg.go.dev/badge/github.com/bondmcp/go-sdk.svg)](https://pkg.go.dev/github.com/bondmcp/go-sdk)
-[![Go Report Card](https://goreportcard.com/badge/github.com/bondmcp/go-sdk)](https://goreportcard.com/report/github.com/bondmcp/go-sdk)
+[![Go Reference](https://pkg.go.dev/badge/github.com/bondmcp/mcp/go.svg)](https://pkg.go.dev/github.com/bondmcp/mcp/go)
+[![Go Report Card](https://goreportcard.com/badge/github.com/bondmcp/mcp/go)](https://goreportcard.com/report/github.com/bondmcp/mcp/go)
 [![Go Version](https://img.shields.io/badge/go-1.19+-00ADD8.svg)](https://golang.org/)
 
 > **High-performance Go SDK for enterprise healthcare applications**
@@ -11,7 +11,7 @@
 ### Installation
 
 ```bash
-go get github.com/bondmcp/go-sdk
+go get github.com/bondmcp/mcp/go
 ```
 
 ### Basic Usage
@@ -24,7 +24,7 @@ import (
     "fmt"
     "log"
     
-    "github.com/bondmcp/go-sdk/bondmcp"
+    "github.com/bondmcp/mcp/go/bondmcp"
 )
 
 func main() {
@@ -73,7 +73,7 @@ func main() {
 ### Client Configuration
 
 ```go
-import "github.com/bondmcp/go-sdk/bondmcp"
+import "github.com/bondmcp/mcp/go/bondmcp"
 
 client := bondmcp.NewClient(&bondmcp.Config{
     APIKey:      os.Getenv("BONDMCP_API_KEY"),
@@ -223,7 +223,7 @@ import (
     "net/http"
     
     "github.com/gin-gonic/gin"
-    "github.com/bondmcp/go-sdk/bondmcp"
+    "github.com/bondmcp/mcp/go/bondmcp"
 )
 
 func main() {
@@ -269,7 +269,7 @@ import (
     "net"
 
     "google.golang.org/grpc"
-    "github.com/bondmcp/go-sdk/bondmcp"
+    "github.com/bondmcp/mcp/go/bondmcp"
     pb "your-proto-package/health"
 )
 
@@ -322,7 +322,7 @@ import (
     "fmt"
     "sync"
     
-    "github.com/bondmcp/go-sdk/bondmcp"
+    "github.com/bondmcp/mcp/go/bondmcp"
 )
 
 func main() {
@@ -423,7 +423,7 @@ import (
     
     "github.com/stretchr/testify/assert"
     "github.com/stretchr/testify/mock"
-    "github.com/bondmcp/go-sdk/bondmcp"
+    "github.com/bondmcp/mcp/go/bondmcp"
 )
 
 func TestBondMCPClient(t *testing.T) {
@@ -584,8 +584,8 @@ This project is licensed under the MIT License - see the [LICENSE](../LICENSE) f
 
 - **📚 Main Repository**: [bondmcp/mcp](https://github.com/bondmcp/mcp)
 - **🌐 Website**: [bondmcp.com](https://bondmcp.com)
-- **📖 API Documentation**: [bondmcp.com/docs](https://bondmcp.com/docs)
-- **📊 Go Package**: [pkg.go.dev/github.com/bondmcp/go-sdk](https://pkg.go.dev/github.com/bondmcp/go-sdk)
+- **📖 API Documentation**: [docs.bondmcp.com](https://docs.bondmcp.com)
+- **📊 Go Package**: [pkg.go.dev/github.com/bondmcp/mcp/go](https://pkg.go.dev/github.com/bondmcp/mcp/go)
 
 ---
 

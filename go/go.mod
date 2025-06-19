@@ -1,4 +1,4 @@
-module github.com/bondmcp/go-sdk
+module github.com/bondmcp/mcp/go
 
 go 1.19
 
