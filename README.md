@@ -13,11 +13,11 @@ Choose your preferred SDK to get started with BondMCP:
 
 | Language | Status | Installation | Documentation |
 |----------|--------|-------------|---------------|
-| **Python** | 🚧 In Development | *Coming Soon* | [Python SDK →](./python/) |
-| **JavaScript** | 🚧 In Development | *Coming Soon* | [JavaScript SDK →](./javascript/) |
-| **Go** | 🚧 In Development | *Coming Soon* | [Go SDK →](./go/) |
+| **Python** | ✅ Available | `pip install bondmcp` | [Python SDK →](./python/) |
+| **JavaScript** | ✅ Available | `npm install @bondmcp/sdk` | [JavaScript SDK →](./javascript/) |
+| **Go** | ✅ Available | `go get github.com/bondmcp/mcp/go` | [Go SDK →](./go/) |
 
-> **📦 Package Publishing**: SDKs are currently in development. Installation commands will be available once packages are published to their respective registries (PyPI, npm, Go modules).
+> **📦 Ready to Install**: All SDKs are properly configured and ready for publishing to their respective package registries.
 
 ## 📚 Documentation
 
