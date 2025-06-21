@@ -18,14 +18,29 @@ All API responses include headers that provide information about your current ra
 
 ## Default Rate Limits
 
-Rate limits are based on your pay-per-call usage level:
+BondMCP uses a simple usage-based billing model with generous rate limits:
 
-| Usage Level | Requests per Minute | Daily Limit |
-|-------------|---------------------|------------|
-| Standard | 60 | 1,000 |
-| Enhanced | 300 | 10,000 |
-| Premium | 600 | 50,000 |
-| Enterprise | Custom | Custom |
+| Account Status | Requests per Minute | Free Calls | Billing Model |
+|----------------|---------------------|------------|---------------|
+| New Account | 60 | 50 calls | Pay-per-call after free tier |
+| Active Account | 300 | N/A | Pay-per-call |
+| High Volume | 600+ | N/A | Volume discounts applied |
+| Enterprise | Custom | Custom | Custom pricing |
+
+### Free Tier Details
+
+- **50 free calls** provided on account signup
+- No expiration on free calls
+- No monthly subscription required
+- Automatic transition to pay-per-call billing after free tier
+
+### Pay-Per-Call Pricing
+
+After your free calls are used:
+- Simple per-call pricing
+- No monthly minimums or commitments  
+- Volume discounts automatically applied
+- Transparent billing with no hidden fees
 
 ## Handling Rate Limits
 
@@ -123,9 +138,11 @@ To make the most efficient use of your rate limits:
 
 If you need higher rate limits, you can:
 
-1. **Increase your usage level** for automatic limit increases
+1. **Increase your usage volume** - Higher volume usage automatically qualifies for increased rate limits
 2. **Contact support** at support@bondmcp.com for custom rate limit discussions
-3. **Apply for enterprise pricing** for high-volume usage needs
+3. **Apply for enterprise pricing** for high-volume usage needs with custom rate limits
+
+Your rate limits automatically scale with your usage patterns - no manual upgrades required.
 
 ## SDK Rate Limit Handling
 
