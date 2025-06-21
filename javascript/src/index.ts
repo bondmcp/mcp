@@ -127,11 +127,7 @@ export class BondMCP {
    */
   createWebSocket(): WebSocket {
     const wsUrl = this.baseURL.replace('https://', 'wss://') + '/ws';
-    const ws = new WebSocket(wsUrl, [], {
-      headers: {
-        'Authorization': `Bearer ${this.config.apiKey}`
-      }
-    });
+    const ws = new WebSocket(wsUrl);
 
     return ws;
   }
