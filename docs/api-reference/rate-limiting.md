@@ -16,31 +16,27 @@ All API responses include headers that provide information about your current ra
 | `X-RateLimit-Remaining` | Number of requests remaining in the current time window |
 | `X-RateLimit-Reset` | Time in UTC epoch seconds when the rate limit window resets |
 
-## Default Rate Limits
+## Usage-Based Billing Model
 
-BondMCP uses a simple usage-based billing model with generous rate limits:
+BondMCP uses a simple usage-based billing model:
 
-| Account Status | Requests per Minute | Free Calls | Billing Model |
-|----------------|---------------------|------------|---------------|
-| New Account | 60 | 50 calls | Pay-per-call after free tier |
-| Active Account | 300 | N/A | Pay-per-call |
-| High Volume | 600+ | N/A | Volume discounts applied |
-| Enterprise | Custom | Custom | Custom pricing |
-
-### Free Tier Details
-
-- **50 free calls** provided on account signup
+### Free Tier
+- **50 free API calls** provided on account signup
 - No expiration on free calls
 - No monthly subscription required
-- Automatic transition to pay-per-call billing after free tier
+- No rate limiting during free tier
 
 ### Pay-Per-Call Pricing
-
 After your free calls are used:
-- Simple per-call pricing
+- **$0.10 per API call**
 - No monthly minimums or commitments  
-- Volume discounts automatically applied
+- No rate limiting based on usage tiers
 - Transparent billing with no hidden fees
+
+### Rate Limits
+- **Standard rate limit**: 300 requests per minute for all accounts
+- **No tier-based restrictions** - same limits for all users
+- **Enterprise**: Custom rate limits available on request
 
 ## Handling Rate Limits
 
@@ -136,13 +132,10 @@ To make the most efficient use of your rate limits:
 
 ## Requesting Rate Limit Increases
 
-If you need higher rate limits, you can:
+If you need higher rate limits:
 
-1. **Increase your usage volume** - Higher volume usage automatically qualifies for increased rate limits
-2. **Contact support** at support@bondmcp.com for custom rate limit discussions
-3. **Apply for enterprise pricing** for high-volume usage needs with custom rate limits
-
-Your rate limits automatically scale with your usage patterns - no manual upgrades required.
+1. **Contact support** at support@bondmcp.com for custom rate limit discussions
+2. **Apply for enterprise pricing** for high-volume usage needs with custom rate limits
 
 ## SDK Rate Limit Handling
 
@@ -172,13 +165,15 @@ before retrying up to `max_retries` times.
 
 For more information on SDK configuration, see the [SDK Integration](../sdks/) guides.
 
-## Pay-Per-Call Pricing
+## Pricing Information
 
-BondMCP uses a simple pay-per-call pricing model:
+BondMCP uses a simple usage-based pricing model:
 
-1. **No monthly subscriptions** - You only pay for the API calls you make
-2. **No minimum commitments** - Scale up or down based on your actual usage
-3. **Volume discounts** - Automatically applied as your usage increases
-4. **Transparent billing** - Clear per-call pricing with no hidden fees
+1. **50 free calls** on signup
+2. **$0.10 per call** after free tier
+3. **No monthly subscriptions** - You only pay for the API calls you make
+4. **No minimum commitments** - Scale up or down based on your actual usage
+5. **Transparent billing** - Clear per-call pricing with no hidden fees
 
 For detailed pricing information, visit [bondmcp.com/pricing](https://bondmcp.com/pricing).
+
