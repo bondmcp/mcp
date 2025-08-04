@@ -1,17 +1,32 @@
-# BondMCP - The Trusted Medical Context Protocol
+# BondMCP - The Trusted Medical Context# BondMCP Documentation
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Python](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
-[![JavaScript](https://img.shields.io/badge/javascript-ES2020+-yellow.svg)](https://developer.mozilla.org/en-US/docs/Web/JavaScript)
-[![Go](https://img.shields.io/badge/go-1.19+-00ADD8.svg)](https://golang.org/)
+[![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
+[![API Status](https://img.shields.io/badge/API-Live-green.svg)](https://api.bondmcp.com)
+[![Deployment Status](https://img.shields.io/badge/Deployment-Upgrading-orange.svg)](https://cloud.digitalocean.com/apps/293e428e-cdab-4403-9565-b3df99d4b780)
 
 > **The world's first consensus-driven health AI protocol that eliminates hallucinations through real-time validation across 10+ medically trained AI models.**
 
+## 🎯 **CURRENT STATUS: Platform Upgrade in Progress**
+
+**✅ LIVE ENDPOINTS (11/46)**: Core authentication, API keys, basic health features  
+**🔄 DEPLOYING**: Full platform with all 46 endpoints (upgraded to dedicated resources)  
+**⏱️ ETA**: 2-3 minutes for complete deployment
+
 ## 🚀 Quick Start
 
-Choose your preferred SDK to get started with BondMCP:
+### Installation
 
-| Language | Status | Installation | Documentation |
+```bash
+# Python SDK
+pip install bondmcp
+
+# JavaScript SDK (Coming Soon)
+npm install @bondmcp/sdk
+
+# Go SDK (Coming Soon)  
+go get github.com/bondmcp/go-sdk
+``` | Installation | Documentation |
 |----------|--------|-------------|---------------|
 | **Python** | ✅ Available | `pip install bondmcp` | [Python SDK →](./python/) |
 | **JavaScript** | ✅ Available | `npm install @bondmcp/sdk` | [JavaScript SDK →](./javascript/) |
