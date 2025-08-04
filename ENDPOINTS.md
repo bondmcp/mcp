@@ -1,392 +1,222 @@
 # BondMCP API Endpoints
 
-This document provides a comprehensive list of all available BondMCP API endpoints. The information is automatically generated from our OpenAPI specification.
+> **⚠️ DEPLOYMENT STATUS: 6/42 endpoints functional (14.3%)**
+> 
+> This document lists all planned endpoints with their current deployment status. Only test endpoints marked as ✅ WORKING.
 
-## Base URL
+## Endpoint Status Legend
 
-All endpoints are relative to: `https://api.bondmcp.com`
+- ✅ **WORKING** - Endpoint is deployed and functional
+- 🔐 **AUTH REQUIRED** - Endpoint exists but requires authentication
+- ⚠️ **METHOD ERROR** - Endpoint exists but has method issues
+- ❌ **NOT DEPLOYED** - Endpoint not currently available
+- 🔄 **UNDER DEPLOYMENT** - Planned for next release
 
-## Authentication
+---
 
-Most endpoints require authentication using an API key. Include your API key in the request header:
+## Core System Endpoints
 
-```
-X-API-Key: your-api-key
-```
+| Endpoint | Method | Status | Description |
+|----------|--------|--------|-------------|
+| `/` | GET | ✅ WORKING | API root and status |
+| `/health` | GET | ✅ WORKING | System health check |
+| `/docs` | GET | ✅ WORKING | Interactive documentation |
+| `/openapi.json` | GET | ✅ WORKING | OpenAPI specification |
 
-## Available Endpoints
+**Category Status: 4/4 endpoints working (100%)**
 
-### Health Chat
+---
 
-#### POST /api/v1/ask
+## Authentication Endpoints
 
-Ask a health-related question and receive a verified response with consensus from multiple AI models.
+| Endpoint | Method | Status | Description |
+|----------|--------|--------|-------------|
+| `/auth/register` | POST | ⚠️ METHOD ERROR | User registration |
+| `/auth/login` | POST | ⚠️ METHOD ERROR | User login |
+| `/auth/logout` | POST | ⚠️ METHOD ERROR | User logout |
+| `/auth/refresh` | POST | ⚠️ METHOD ERROR | Token refresh |
+| `/auth/verify` | POST | ⚠️ METHOD ERROR | Email verification |
+| `/auth/reset` | POST | ⚠️ METHOD ERROR | Password reset |
 
-**Request Body:**
-```json
-{
-  "question": "What are the symptoms of diabetes?",
-  "context": "For a 45-year-old patient with family history",
-  "detailed": true,
-  "maxSources": 5
-}
-```
+**Category Status: 0/6 endpoints working (0%)**
 
-**Response:**
-```json
-{
-  "id": "resp_12345abcde",
-  "answer": "Common symptoms of diabetes include increased thirst, frequent urination...",
-  "trustScore": 97,
-  "sources": [
-    {
-      "title": "American Diabetes Association",
-      "url": "https://diabetes.org/diabetes/symptoms",
-      "snippet": "Common symptoms of diabetes..."
-    }
-  ],
-  "timestamp": "2025-06-13T10:15:30Z"
-}
-```
+---
 
-### Health Data Analysis
+## API Key Management
 
-#### POST /api/v1/health-data/analyze
+| Endpoint | Method | Status | Description |
+|----------|--------|--------|-------------|
+| `/api-keys/generate` | POST | ⚠️ METHOD ERROR | Generate new API key |
+| `/api-keys/list` | GET | ⚠️ METHOD ERROR | List user's API keys |
+| `/api-keys/revoke` | DELETE | ⚠️ METHOD ERROR | Revoke API key |
+| `/api-keys/usage` | GET | ⚠️ METHOD ERROR | API key usage stats |
+| `/api-keys/validate` | POST | ⚠️ METHOD ERROR | Validate API key |
 
-Analyze health data and receive insights with consensus verification.
+**Category Status: 0/5 endpoints working (0%)**
 
-**Request Body:**
-```json
-{
-  "data": {
-    "bloodGlucose": [
-      {"value": 120, "unit": "mg/dL", "timestamp": "2025-06-10T08:00:00Z"},
-      {"value": 145, "unit": "mg/dL", "timestamp": "2025-06-10T12:00:00Z"}
-    ],
-    "bloodPressure": [
-      {"systolic": 130, "diastolic": 85, "timestamp": "2025-06-10T08:00:00Z"}
-    ],
-    "medications": [
-      {"name": "Metformin", "dosage": "500mg", "frequency": "twice daily"}
-    ]
-  },
-  "detailed": true,
-  "includeRecommendations": true
-}
-```
+---
 
-**Response:**
-```json
-{
-  "id": "analysis_67890fghij",
-  "analysis": {
-    "bloodGlucose": {
-      "average": 132.5,
-      "status": "elevated",
-      "interpretation": "Blood glucose levels are slightly elevated..."
-    },
-    "bloodPressure": {
-      "status": "elevated",
-      "interpretation": "Blood pressure is slightly elevated..."
-    }
-  },
-  "trustScore": 95,
-  "recommendations": [
-    {
-      "category": "Lifestyle",
-      "text": "Consider increasing physical activity to help lower blood glucose levels.",
-      "priority": "medium"
-    },
-    {
-      "category": "Monitoring",
-      "text": "Monitor blood glucose more frequently to establish patterns.",
-      "priority": "high"
-    }
-  ],
-  "timestamp": "2025-06-13T10:20:15Z"
-}
-```
+## Health AI Endpoints
 
-### Trust Verification
+| Endpoint | Method | Status | Description |
+|----------|--------|--------|-------------|
+| `/health/ask` | POST | ❌ NOT DEPLOYED | Health question answering |
+| `/health/analyze` | POST | ❌ NOT DEPLOYED | Medical data analysis |
+| `/health/trust-score` | GET | ❌ NOT DEPLOYED | Trust score verification |
+| `/health/data/upload` | POST | ❌ NOT DEPLOYED | Health data upload |
+| `/health/data/analyze` | POST | ❌ NOT DEPLOYED | Health data analysis |
+| `/health/recommendations` | GET | ❌ NOT DEPLOYED | Health recommendations |
+| `/health/insights` | GET | ❌ NOT DEPLOYED | Health insights |
+| `/health/monitoring` | GET | ❌ NOT DEPLOYED | Health monitoring |
 
-#### GET /api/v1/trust-score/{responseId}
+**Category Status: 0/8 endpoints working (0%)**
 
-Get detailed trust score information for a previous response.
+---
 
-**Parameters:**
-- `responseId` (path): ID of the response to get the trust score for
+## Billing Endpoints
 
-**Response:**
-```json
-{
-  "responseId": "resp_12345abcde",
-  "score": 97,
-  "breakdown": {
-    "consensus": 98,
-    "sourceReliability": 95,
-    "clinicalValidation": 97
-  },
-  "models": [
-    "GPT-4",
-    "Claude",
-    "Gemini",
-    "MedicalLLM-v2"
-  ],
-  "timestamp": "2025-06-13T10:15:35Z"
-}
-```
+| Endpoint | Method | Status | Description |
+|----------|--------|--------|-------------|
+| `/billing/usage` | GET | 🔐 AUTH REQUIRED | Usage statistics |
+| `/billing/plans` | GET | ❌ NOT DEPLOYED | Available plans |
+| `/billing/subscribe` | POST | ❌ NOT DEPLOYED | Subscribe to plan |
+| `/billing/cancel` | POST | ❌ NOT DEPLOYED | Cancel subscription |
+| `/billing/invoice` | GET | ❌ NOT DEPLOYED | Get invoices |
+| `/billing/payment-methods` | POST | ⚠️ METHOD ERROR | Manage payments |
 
-### User Management
+**Category Status: 1/6 endpoints working (16.7%)**
 
-#### POST /api/v1/users
+---
 
-Create a new user account.
+## Research Integration
 
-**Request Body:**
-```json
-{
-  "email": "user@example.com",
-  "password": "securePassword123",
-  "name": "John Doe",
-  "organization": "Medical Center Inc."
-}
-```
+| Endpoint | Method | Status | Description |
+|----------|--------|--------|-------------|
+| `/research/pubmed` | GET | ❌ NOT DEPLOYED | PubMed literature search |
+| `/research/clinical-trials` | GET | ❌ NOT DEPLOYED | Clinical trial search |
+| `/research/literature` | POST | ❌ NOT DEPLOYED | Literature analysis |
+| `/research/analyze` | POST | ❌ NOT DEPLOYED | Research analysis |
 
-**Response:**
-```json
-{
-  "id": "user_12345abcde",
-  "email": "user@example.com",
-  "name": "John Doe",
-  "organization": "Medical Center Inc.",
-  "createdAt": "2025-06-13T10:25:00Z"
-}
-```
+**Category Status: 0/4 endpoints working (0%)**
 
-#### GET /api/v1/users/me
+---
 
-Get the current user's profile information.
+## Healthcare Services
 
-**Response:**
-```json
-{
-  "id": "user_12345abcde",
-  "email": "user@example.com",
-  "name": "John Doe",
-  "organization": "Medical Center Inc.",
-  "createdAt": "2025-06-13T10:25:00Z",
-  "subscription": {
-    "plan": "professional",
-    "status": "active",
-    "expiresAt": "2026-06-13T10:25:00Z"
-  }
-}
+| Endpoint | Method | Status | Description |
+|----------|--------|--------|-------------|
+| `/healthcare/providers` | GET | ❌ NOT DEPLOYED | Provider directory |
+| `/healthcare/facilities` | GET | ❌ NOT DEPLOYED | Medical facilities |
+| `/healthcare/specialties` | GET | ❌ NOT DEPLOYED | Medical specialties |
+| `/healthcare/insurance` | GET | ❌ NOT DEPLOYED | Insurance verification |
+| `/healthcare/appointments` | POST | ❌ NOT DEPLOYED | Appointment scheduling |
+
+**Category Status: 0/5 endpoints working (0%)**
+
+---
+
+## Administration
+
+| Endpoint | Method | Status | Description |
+|----------|--------|--------|-------------|
+| `/admin/users` | GET | 🔐 AUTH REQUIRED | User administration |
+| `/admin/analytics` | GET | ❌ NOT DEPLOYED | System analytics |
+| `/admin/system` | GET | ❌ NOT DEPLOYED | System information |
+| `/admin/logs` | GET | ❌ NOT DEPLOYED | System logs |
+
+**Category Status: 1/4 endpoints working (25%)**
+
+---
+
+## Overall Platform Status
+
+### Summary by Status
+
+| Status | Count | Percentage |
+|--------|-------|------------|
+| ✅ WORKING | 4 | 9.5% |
+| 🔐 AUTH REQUIRED | 2 | 4.8% |
+| ⚠️ METHOD ERROR | 12 | 28.6% |
+| ❌ NOT DEPLOYED | 24 | 57.1% |
+| **TOTAL** | **42** | **100%** |
+
+### Functional Analysis
+
+- **Fully Functional**: 6/42 endpoints (14.3%)
+- **Partially Functional**: 12/42 endpoints (28.6%)
+- **Non-Functional**: 24/42 endpoints (57.1%)
+
+---
+
+## Testing Status
+
+All endpoints have been tested as of August 4, 2025:
+
+```bash
+# Test working endpoints
+curl https://api.bondmcp.com/
+curl https://api.bondmcp.com/health
+curl https://api.bondmcp.com/docs
+curl https://api.bondmcp.com/openapi.json
+
+# Test auth-required endpoints (need valid token)
+curl -H "Authorization: Bearer YOUR_TOKEN" https://api.bondmcp.com/billing/usage
+curl -H "Authorization: Bearer YOUR_TOKEN" https://api.bondmcp.com/admin/users
 ```
 
-### API Keys
+---
 
-#### GET /api/v1/api-keys
+## Deployment Roadmap
 
-List all API keys for the current user.
+### Phase 1: Core Infrastructure ✅ COMPLETE
+- [x] Basic API endpoints (4/4)
+- [x] Health monitoring
+- [x] Documentation system
 
-**Response:**
-```json
-{
-  "apiKeys": [
-    {
-      "id": "key_12345abcde",
-      "name": "Production Key",
-      "prefix": "pk_1234",
-      "createdAt": "2025-06-01T10:00:00Z",
-      "lastUsed": "2025-06-13T09:45:00Z"
-    },
-    {
-      "id": "key_67890fghij",
-      "name": "Development Key",
-      "prefix": "pk_5678",
-      "createdAt": "2025-06-05T14:30:00Z",
-      "lastUsed": "2025-06-12T16:20:00Z"
-    }
-  ]
-}
-```
+### Phase 2: Authentication 🔄 IN PROGRESS
+- [ ] Fix method errors for auth endpoints (0/6)
+- [ ] Implement user registration
+- [ ] Implement login/logout flow
 
-#### POST /api/v1/api-keys
+### Phase 3: Health AI 📅 PLANNED
+- [ ] Deploy health question answering
+- [ ] Deploy medical data analysis
+- [ ] Deploy trust score system
 
-Create a new API key.
+### Phase 4: Full Platform 📅 PLANNED
+- [ ] Research integration (0/4)
+- [ ] Healthcare services (0/5)
+- [ ] Complete billing system (5/6 remaining)
+- [ ] API key management (0/5)
 
-**Request Body:**
-```json
-{
-  "name": "New Project Key",
-  "expiresIn": 90 // days
-}
-```
+---
 
-**Response:**
-```json
-{
-  "id": "key_abcde12345",
-  "name": "New Project Key",
-  "key": "pk_abcde12345_FULL_KEY_ONLY_SHOWN_ONCE",
-  "prefix": "pk_abcde",
-  "createdAt": "2025-06-13T10:30:00Z",
-  "expiresAt": "2025-09-11T10:30:00Z"
-}
-```
+## Known Issues
 
-### Medical Knowledge
+1. **Method Errors (405)**: 12 endpoints return "Method Not Allowed"
+   - Likely due to incorrect HTTP method configuration
+   - Affects authentication and API key management
 
-#### GET /api/v1/medical-knowledge/search
+2. **Missing Endpoints (404)**: 24 endpoints not deployed
+   - Core health AI functionality missing
+   - Research and healthcare services unavailable
 
-Search medical knowledge base.
+3. **Resource Constraints**: Deployment failures due to container termination
+   - Upgraded to dedicated instances with autoscaling
+   - Still experiencing deployment issues
 
-**Parameters:**
-- `query` (query): Search query
-- `limit` (query): Maximum number of results to return (default: 10)
-- `offset` (query): Number of results to skip (default: 0)
+---
 
-**Response:**
-```json
-{
-  "results": [
-    {
-      "id": "kb_12345abcde",
-      "title": "Type 2 Diabetes: Symptoms and Diagnosis",
-      "snippet": "Type 2 diabetes is characterized by insulin resistance...",
-      "source": "American Diabetes Association",
-      "url": "https://diabetes.org/diabetes/type-2",
-      "trustScore": 98
-    },
-    {
-      "id": "kb_67890fghij",
-      "title": "Managing Diabetes: Diet and Exercise",
-      "snippet": "Diet and exercise play crucial roles in managing diabetes...",
-      "source": "Mayo Clinic",
-      "url": "https://mayoclinic.org/diabetes-management",
-      "trustScore": 97
-    }
-  ],
-  "total": 156,
-  "limit": 10,
-  "offset": 0
-}
-```
+## Next Steps
 
-### Usage Statistics
+1. **Fix Method Errors**: Resolve 405 errors for authentication endpoints
+2. **Deploy Health AI**: Core product functionality
+3. **Complete Authentication**: Enable user registration and login
+4. **API Key Management**: Self-service API key generation
 
-#### GET /api/v1/usage
+---
 
-Get usage statistics for the current user.
+*Last Updated: August 4, 2025*  
+*Next Review: When deployment issues are resolved*  
+*Test Results: 6/42 endpoints functional*
 
-**Parameters:**
-- `startDate` (query): Start date for usage statistics (format: YYYY-MM-DD)
-- `endDate` (query): End date for usage statistics (format: YYYY-MM-DD)
-
-**Response:**
-```json
-{
-  "totalCalls": 1250,
-  "totalCost": 625.50,
-  "byEndpoint": {
-    "/api/v1/ask": {
-      "calls": 850,
-      "cost": 425.00
-    },
-    "/api/v1/health-data/analyze": {
-      "calls": 400,
-      "cost": 200.50
-    }
-  },
-  "byDay": [
-    {
-      "date": "2025-06-01",
-      "calls": 42,
-      "cost": 21.00
-    },
-    {
-      "date": "2025-06-02",
-      "calls": 38,
-      "cost": 19.00
-    }
-  ]
-}
-```
-
-### Webhooks
-
-#### POST /api/v1/webhooks
-
-Create a new webhook subscription.
-
-**Request Body:**
-```json
-{
-  "url": "https://example.com/webhook",
-  "events": ["response.created", "analysis.completed"],
-  "secret": "whsec_your_webhook_secret"
-}
-```
-
-**Response:**
-```json
-{
-  "id": "wh_12345abcde",
-  "url": "https://example.com/webhook",
-  "events": ["response.created", "analysis.completed"],
-  "status": "active",
-  "createdAt": "2025-06-13T10:35:00Z"
-}
-```
-
-#### GET /api/v1/webhooks
-
-List all webhook subscriptions.
-
-**Response:**
-```json
-{
-  "webhooks": [
-    {
-      "id": "wh_12345abcde",
-      "url": "https://example.com/webhook",
-      "events": ["response.created", "analysis.completed"],
-      "status": "active",
-      "createdAt": "2025-06-13T10:35:00Z"
-    }
-  ]
-}
-```
-
-### Health Check
-
-#### GET /api/v1/health
-
-Check the health status of the API.
-
-**Response:**
-```json
-{
-  "status": "healthy",
-  "version": "1.5.2",
-  "uptime": 1209600, // seconds (14 days)
-  "services": {
-    "database": "healthy",
-    "cache": "healthy",
-    "ai": "healthy"
-  }
-}
-```
-
-## Contact Information
-
-For support or questions about the API:
-
-**US Office:**  
-111 NE 1st St, STE 89079, 33132, Miami, Florida  
-Phone: +1 855 512 5310
-
-**Hong Kong Office:**  
-144-151 Connaught Road West, Unit 4005, 40/F, Sai Ying Pun, Hong Kong
-
-**Company:** Lifecycle Innovations Limited (Brand: BondMCP)
