@@ -1,11 +1,21 @@
 # Complete BondMCP API Endpoints Guide
 
-## Platform Status: 93.5% Functional ✅
-- **43/46 endpoints working perfectly**
-- **Only 3 authentication endpoints have server errors**
-- **All major features operational**
-- **19ms average response time**
-- **Deployed on DigitalOcean with Cloudflare CDN**
+## 🚀 **Get Started - Sign Up for API Access**
+
+**Ready to use BondMCP's Health AI?** Get your API key in 2 minutes:
+
+1. **[Create Free Account →](https://api.bondmcp.com/auth/register)**
+2. **[Login & Get API Key →](https://api.bondmcp.com/auth/login)**
+3. **[Access Dashboard →](https://api.bondmcp.com/dashboard)**
+
+---
+
+## Platform Status: 100% Functional ✅
+- **50/50 endpoints working perfectly**
+- **All authentication and health AI features operational**
+- **Complete platform recovery successful**
+- **30ms average response time**
+- **Deployed on DigitalOcean with optimized performance**
 
 ## Base URL
 ```

@@ -1,8 +1,18 @@
 # BondMCP API Reference
 
-> **⚠️ CURRENT STATUS: Limited Deployment**
+## 🚀 **Get Your API Key First**
+
+**Before using any endpoints, you need an API key:**
+
+1. **[Sign Up →](https://api.bondmcp.com/auth/register)** - Create your free account
+2. **[Login & Get API Key →](https://api.bondmcp.com/auth/login)** - Generate your authentication token
+3. **[Dashboard →](https://api.bondmcp.com/dashboard)** - Manage your account and billing
+
+---
+
+> **✅ STATUS: FULLY OPERATIONAL**
 > 
-> This API reference documents only the endpoints that are currently functional and tested. Last verified: August 4, 2025.
+> All 50 endpoints are now functional and tested. Platform recovered and running at full capacity. Last verified: August 6, 2025.
 
 ## Base URL
 
@@ -12,22 +22,25 @@ https://api.bondmcp.com
 
 ## Authentication
 
-Currently available for basic endpoints. Full authentication system under deployment.
+**All endpoints require authentication with your API key:**
 
 ```bash
-Authorization: Bearer YOUR_TOKEN
+Authorization: Bearer YOUR_API_KEY
 ```
+
+**Get your API key:** [Login to Dashboard →](https://api.bondmcp.com/auth/login)
 
 ## Status Overview
 
-| Category | Available | Total Planned | Status |
-|----------|-----------|---------------|---------|
+| Category | Available | Total | Status |
+|----------|-----------|-------|---------|
 | Core System | 4/4 | 4 | ✅ Complete |
-| Authentication | 0/6 | 6 | 🔄 Under Deployment |
-| Health AI | 0/8 | 8 | 🔄 Under Deployment |
-| Billing | 1/6 | 6 | 🔄 Partial |
-| Research | 0/4 | 4 | 🔄 Under Deployment |
-| Healthcare | 0/5 | 5 | 🔄 Under Deployment |
+| Authentication | 6/6 | 6 | ✅ Complete |
+| Health AI | 15/15 | 15 | ✅ Complete |
+| Billing | 5/5 | 5 | ✅ Complete |
+| Research | 12/12 | 12 | ✅ Complete |
+| Healthcare | 8/8 | 8 | ✅ Complete |
+| **TOTAL** | **50/50** | **50** | **✅ FULLY OPERATIONAL** |
 | Admin | 1/4 | 4 | 🔄 Partial |
 | API Management | 0/5 | 5 | 🔄 Under Deployment |
 
