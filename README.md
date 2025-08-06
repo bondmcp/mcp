@@ -10,6 +10,8 @@
 3. **[View Dashboard →](https://api.bondmcp.com/dashboard)** - Manage billing, usage, and settings
 4. **Start Building** - Use the examples below with your API key
 
+**📖 [Complete Signup Guide →](SIGNUP_INTEGRATION.md)** - Step-by-step instructions with code examples
+
 ### 🔑 **Authentication**
 ```bash
 # Use your API key in all requests
