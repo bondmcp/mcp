@@ -4,11 +4,14 @@
 
 **Ready to use BondMCP's Health AI platform?** Get instant access to our comprehensive health intelligence API:
 
-### 📋 **Quick Start**
-1. **[Sign Up for Free Account →](https://api.bondmcp.com/auth/register)** - Create your BondMCP account
-2. **[Get Your API Key →](https://api.bondmcp.com/auth/login)** - Login and generate your API token  
-3. **[View Dashboard →](https://api.bondmcp.com/dashboard)** - Manage billing, usage, and settings
-4. **Start Building** - Use the examples below with your API key
+## 📋 **Quick Start (When Available)**
+
+**Note**: The following steps will be available once the API infrastructure is deployed.
+
+1. **[Sign Up for Free Account →](https://api.bondmcp.com/auth/register)** - *Coming Soon*
+2. **[Get Your API Key →](https://api.bondmcp.com/auth/login)** - *Coming Soon*  
+3. **[View Dashboard →](https://api.bondmcp.com/dashboard)** - *Coming Soon*
+4. **Start Building** - Use the examples below with your API key (when available)
 
 **📖 [Complete Signup Guide →](SIGNUP_INTEGRATION.md)** - Step-by-step instructions with code examples
 
@@ -26,20 +29,20 @@ curl -H "Authorization: Bearer YOUR_API_KEY" https://api.bondmcp.com/health/ask
 
 ---
 
-> **✅ PLATFORM STATUS: FULLY OPERATIONAL (99% Functional)**
+> **🚧 DEVELOPMENT STATUS: API Infrastructure In Development**
 > 
-> **BREAKTHROUGH UPDATE**: All health AI endpoints are now confirmed FULLY OPERATIONAL! The BondMCP platform delivers complete health AI capabilities with 15+ advanced endpoints for health scoring, nutrition analysis, risk assessment, and personalized recommendations.
+> **Important**: The BondMCP API is currently in development. The domain `api.bondmcp.com` is not yet deployed. This documentation serves as a specification for the planned API and SDK functionality. See [ACTUAL_API_STATUS.md](ACTUAL_API_STATUS.md) for current deployment status.
 
 ## 🎯 **Platform Status**
 
-**Last Updated**: August 7, 2025  
-**Deployment Status**: ✅ **FULLY OPERATIONAL** (99% functional - breakthrough achieved!)  
-**Health AI System**: ✅ **FULLY OPERATIONAL** (15+ endpoints confirmed working)  
-**Billing & Usage**: ✅ **FULLY OPERATIONAL** (JWT authentication confirmed)  
-**All Core Systems**: ✅ **OPERATIONAL**  
+**Last Updated**: August 23, 2025  
+**Deployment Status**: 🔧 **IN DEVELOPMENT** (API infrastructure not yet deployed)  
+**Health AI System**: 📅 **PLANNED** (Awaiting infrastructure deployment)  
+**Billing & Usage**: 📅 **PLANNED** (Awaiting infrastructure deployment)  
+**All Core Systems**: 🚧 **UNDER DEVELOPMENT**  
 
-## ✅ **Available Features**
-### 🧠 **Health AI Intelligence** (8 endpoints)
+## ✅ **Planned Features**
+### 🧠 **Health AI Intelligence** (8 endpoints planned)
 
 * Advanced health question answering
 * Medical data analysis and insights  
@@ -134,9 +137,10 @@ curl -X POST "https://api.bondmcp.com/api-keys/generate" \
   -d '{"name":"My API Key","permissions":["read","write"]}'
 ```
 
-### 2. **Test Core Functionality**
+### 2. **Test Core Functionality (When Available)**
 
 ```bash
+# These commands will work once the API is deployed
 # Check API status
 curl https://api.bondmcp.com/
 
@@ -147,16 +151,16 @@ curl https://api.bondmcp.com/health
 open https://api.bondmcp.com/docs
 ```
 
-### 3. **Use Health AI Features**
+### 3. **Use Health AI Features (Planned)**
 
 ```bash
-# Health scoring (requires JWT token)
+# Health scoring (will require JWT token)
 curl -X POST "https://api.bondmcp.com/health/score" \
   -H "Authorization: Bearer YOUR_JWT_TOKEN" \
   -H "Content-Type: application/json" \
   -d '{"data":"test"}'
 
-# Nutrition analysis
+# Nutrition analysis (planned)
 curl -X POST "https://api.bondmcp.com/health/nutrition" \
   -H "Authorization: Bearer YOUR_JWT_TOKEN" \
   -H "Content-Type: application/json" \
@@ -206,11 +210,11 @@ curl -X POST "https://api.bondmcp.com/health/nutrition" \
 
 ## ⚠️ **Important Notes**
 
-1. **Platform Status**: All 50 endpoints are fully operational and tested
-2. **Authentication**: Use JWT tokens for health AI and billing, API keys for external integrations
-3. **Performance**: Production-ready with enterprise-grade reliability
-4. **Documentation**: All features documented with real examples and responses
+1. **Platform Status**: API infrastructure is in development - domain not yet deployed
+2. **Authentication**: JWT and API key systems planned for future deployment
+3. **Performance**: Production-ready architecture designed for enterprise-grade reliability
+4. **Documentation**: All features documented as specification for planned functionality
 
 ---
 
-*This documentation reflects the complete operational status of the BondMCP platform as of August 7, 2025. All 50 endpoints have been verified as functional and ready for production use.*
+*This documentation serves as a specification for the BondMCP platform. Actual deployment status is tracked in [ACTUAL_API_STATUS.md](ACTUAL_API_STATUS.md). All endpoints and features are currently in development phase.*
