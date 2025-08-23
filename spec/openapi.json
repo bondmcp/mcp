@@ -2,8 +2,8 @@
   "openapi": "3.0.2",
   "info": {
     "title": "BondMCP API",
-    "version": "1.0.0-2025-08-23",
-    "description": "OpenAPI specification for the BondMCP healthcare API."
+    "version": "2.1.0",
+    "description": "OpenAPI specification for the BondMCP healthcare API with MCP discovery and capability management."
   },
   "servers": [
     {
@@ -17,6 +17,11 @@
         "type": "apiKey",
         "in": "header",
         "name": "X-API-Key"
+      },
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
       }
     },
     "schemas": {
@@ -71,6 +76,162 @@
             }
           }
         }
+      },
+      "ErrorEnvelope": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "object",
+            "properties": {
+              "code": {
+                "type": "string"
+              },
+              "message": {
+                "type": "string"
+              }
+            },
+            "required": ["code", "message"]
+          }
+        },
+        "required": ["error"]
+      },
+      "MCPConfiguration": {
+        "type": "object",
+        "properties": {
+          "service": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "version": {
+                "type": "string"
+              },
+              "description": {
+                "type": "string"
+              }
+            },
+            "required": ["name", "version"]
+          },
+          "auth": {
+            "type": "object",
+            "properties": {
+              "supported_methods": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "enum": ["api_key", "bearer"]
+                }
+              },
+              "required": {
+                "type": "boolean"
+              }
+            },
+            "required": ["supported_methods", "required"]
+          },
+          "capabilities": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MCPCapability"
+            }
+          },
+          "rate_limits": {
+            "type": "object",
+            "properties": {
+              "requests_per_minute": {
+                "type": "integer"
+              },
+              "requests_per_hour": {
+                "type": "integer"
+              },
+              "requests_per_day": {
+                "type": "integer"
+              }
+            }
+          },
+          "contact": {
+            "type": "object",
+            "properties": {
+              "email": {
+                "type": "string",
+                "format": "email"
+              },
+              "support_url": {
+                "type": "string",
+                "format": "uri"
+              }
+            }
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": ["service", "auth", "capabilities", "updated_at"]
+      },
+      "MCPCapability": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "method": {
+            "type": "string",
+            "enum": ["GET", "POST", "PUT", "PATCH", "DELETE"]
+          },
+          "path": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "auth_required": {
+            "type": "boolean"
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "input_example": {
+            "type": "object"
+          },
+          "output_example": {
+            "type": "object"
+          },
+          "rate_limit_tier": {
+            "type": "string",
+            "enum": ["basic", "standard", "premium"]
+          },
+          "deprecated": {
+            "type": "boolean"
+          }
+        },
+        "required": ["id", "method", "path", "name", "auth_required"]
+      },
+      "MCPManifest": {
+        "type": "object",
+        "properties": {
+          "version": {
+            "type": "string"
+          },
+          "capabilities_sha256": {
+            "type": "string"
+          },
+          "generated_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "configuration_url": {
+            "type": "string",
+            "format": "uri"
+          }
+        },
+        "required": ["version", "capabilities_sha256", "generated_at", "configuration_url"]
       }
     }
   },
@@ -499,6 +660,62 @@
               "application/json": {
                 "schema": {
                   "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/.well-known/mcp-configuration": {
+      "get": {
+        "summary": "Get MCP Configuration",
+        "description": "Returns the MCP configuration including service information, supported authentication methods, and available capabilities",
+        "responses": {
+          "200": {
+            "description": "MCP configuration response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MCPConfiguration"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/.well-known/mcp-manifest.json": {
+      "get": {
+        "summary": "Get MCP Manifest",
+        "description": "Returns the MCP manifest with version information and capability hash for verification",
+        "responses": {
+          "200": {
+            "description": "MCP manifest response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MCPManifest"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
                 }
               }
             }
