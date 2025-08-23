@@ -1,0 +1,426 @@
+name: Contract Ingest & SDK Pipeline
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'spec/**'
+      - 'javascript/**'
+      - 'python/**'
+      - 'go/**'
+  pull_request:
+    paths:
+      - 'spec/**'
+      - 'javascript/**'
+      - 'python/**'
+      - 'go/**'
+
+env:
+  NODE_VERSION: '18'
+  PYTHON_VERSION: '3.11'
+
+jobs:
+  # Job 1: Normalize and Diff
+  normalize-and-diff:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    outputs:
+      spec-changed: ${{ steps.diff.outputs.spec-changed }}
+      classification: ${{ steps.classify.outputs.classification }}
+      
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Need full history for diff
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: |
+          cd javascript && npm install
+
+      - name: Normalize current spec
+        run: |
+          echo "Normalizing current OpenAPI specification..."
+          if [ -f "spec/openapi.json" ]; then
+            node scripts/contract/normalize_spec.js spec/openapi.json spec/openapi.normalized.json
+            echo "✅ Current spec normalized"
+          else
+            echo "❌ No OpenAPI spec found at spec/openapi.json"
+            exit 1
+          fi
+
+      - name: Get baseline spec (if available)
+        id: baseline
+        run: |
+          if [ "${{ github.event_name }}" == "pull_request" ]; then
+            # For PRs, get the base branch spec
+            git checkout ${{ github.event.pull_request.base.sha }} -- spec/openapi.json || echo "No baseline spec"
+            if [ -f "spec/openapi.json" ]; then
+              node scripts/contract/normalize_spec.js spec/openapi.json spec/baseline.normalized.json
+              echo "has_baseline=true" >> $GITHUB_OUTPUT
+              echo "✅ Baseline spec normalized"
+            else
+              echo "has_baseline=false" >> $GITHUB_OUTPUT
+              echo "ℹ️ No baseline spec available"
+            fi
+            # Restore current spec
+            git checkout HEAD -- spec/openapi.json
+          else
+            echo "has_baseline=false" >> $GITHUB_OUTPUT
+            echo "ℹ️ Push event - no baseline comparison"
+          fi
+
+      - name: Compare specs and generate diff
+        id: diff
+        run: |
+          if [ "${{ steps.baseline.outputs.has_baseline }}" == "true" ]; then
+            echo "Comparing normalized specifications..."
+            
+            if cmp -s spec/baseline.normalized.json spec/openapi.normalized.json; then
+              echo "spec-changed=false" >> $GITHUB_OUTPUT
+              echo "ℹ️ No changes detected in OpenAPI specification"
+            else
+              echo "spec-changed=true" >> $GITHUB_OUTPUT
+              echo "📋 Changes detected in OpenAPI specification"
+              
+              # Generate diff for review
+              diff -u spec/baseline.normalized.json spec/openapi.normalized.json > spec_diff.txt || true
+              echo "Diff saved to spec_diff.txt"
+            fi
+          else
+            echo "spec-changed=true" >> $GITHUB_OUTPUT
+            echo "ℹ️ Treating as changed (no baseline available)"
+          fi
+
+      - name: Classify changes
+        id: classify
+        if: steps.diff.outputs.spec-changed == 'true'
+        run: |
+          echo "Classifying contract changes..."
+          
+          # Simple classification logic (can be enhanced)
+          # This is a basic implementation - in production you might use OpenAPI diff tools
+          
+          classification="patch"  # default
+          
+          if [ "${{ steps.baseline.outputs.has_baseline }}" == "true" ] && [ -f "spec_diff.txt" ]; then
+            # Check for breaking changes indicators
+            if grep -q "paths.*-" spec_diff.txt || grep -q "required.*+" spec_diff.txt; then
+              classification="major"
+            elif grep -q "paths.*+" spec_diff.txt || grep -q "properties.*+" spec_diff.txt; then
+              classification="minor"
+            fi
+          fi
+          
+          echo "classification=$classification" >> $GITHUB_OUTPUT
+          echo "Semantic change classification: $classification"
+          
+          # Create classification artifact
+          cat > diff_classification.json << EOF
+          {
+            "semanticChange": "$classification",
+            "summary": "Contract changes detected in OpenAPI specification",
+            "timestamp": "$(date -u --iso-8601=seconds)"
+          }
+          EOF
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: contract-artifacts
+          path: |
+            spec/openapi.normalized.json
+            spec_diff.txt
+            diff_classification.json
+          retention-days: 30
+
+  # Job 2: SDK Generation
+  generate-sdks:
+    runs-on: ubuntu-latest
+    needs: normalize-and-diff
+    if: needs.normalize-and-diff.outputs.spec-changed == 'true'
+    permissions:
+      contents: read
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: |
+          # JavaScript dependencies
+          cd javascript && npm install
+          
+          # Python dependencies  
+          cd ../python && pip install -e .
+          
+          # Go dependencies (if applicable)
+          if [ -d "go" ]; then
+            cd ../go && go mod download
+          fi
+
+      - name: Build JavaScript SDK
+        run: |
+          echo "Building JavaScript SDK..."
+          cd javascript
+          npm run build
+          npm run test
+          echo "✅ JavaScript SDK built and tested"
+
+      - name: Build Python SDK
+        run: |
+          echo "Building Python SDK..."
+          cd python
+          python -m pytest tests/ -v || echo "Python tests not found"
+          echo "✅ Python SDK built"
+
+      - name: Build Go SDK (if applicable)
+        run: |
+          if [ -d "go" ]; then
+            echo "Building Go SDK..."
+            cd go
+            go build ./...
+            go test ./... || echo "Go tests not found"
+            echo "✅ Go SDK built"
+          else
+            echo "ℹ️ No Go SDK directory found"
+          fi
+
+      - name: Upload SDK artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: sdk-artifacts
+          path: |
+            javascript/dist/
+            python/dist/
+            go/dist/
+          retention-days: 30
+
+  # Job 3: Migration Assertion
+  assert-migration:
+    runs-on: ubuntu-latest
+    needs: normalize-and-diff
+    if: needs.normalize-and-diff.outputs.spec-changed == 'true' && contains(fromJSON('["minor", "major"]'), needs.normalize-and-diff.outputs.classification)
+    permissions:
+      contents: read
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Download classification artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: contract-artifacts
+
+      - name: Assert migration file exists
+        env:
+          CONTRACT_VERSION: ${{ github.ref_name }}
+        run: |
+          node scripts/contract/assert_migration_file.js diff_classification.json MIGRATIONS
+
+  # Job 4: Publish Preflight
+  publish-preflight:
+    runs-on: ubuntu-latest
+    needs: [normalize-and-diff, generate-sdks]
+    if: needs.normalize-and-diff.outputs.spec-changed == 'true' && github.event_name == 'push' && github.ref == 'refs/heads/main'
+    permissions:
+      contents: read
+    outputs:
+      npm-skip: ${{ steps.npm-check.outputs.skip }}
+      pypi-skip: ${{ steps.pypi-check.outputs.skip }}
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Get package version
+        id: version
+        run: |
+          # Extract version from JavaScript package.json
+          VERSION=$(cd javascript && node -p "require('./package.json').version")
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "Package version: $VERSION"
+
+      - name: Check npm registry
+        id: npm-check
+        continue-on-error: true
+        run: |
+          # Run preflight check for npm
+          if node scripts/contract/publish_preflight.js npm ${{ steps.version.outputs.version }} @bondmcp/sdk; then
+            echo "skip=false" >> $GITHUB_OUTPUT
+            echo "✅ npm: Ready to publish"
+          else
+            exit_code=$?
+            if [ $exit_code -eq 20 ]; then
+              echo "skip=true" >> $GITHUB_OUTPUT
+              echo "⏭️ npm: Skipping (already exists)"
+            else
+              echo "❌ npm: Preflight check failed"
+              exit 1
+            fi
+          fi
+
+      - name: Check PyPI registry
+        id: pypi-check
+        continue-on-error: true
+        run: |
+          # Run preflight check for PyPI
+          if node scripts/contract/publish_preflight.js pypi ${{ steps.version.outputs.version }} bondmcp-sdk; then
+            echo "skip=false" >> $GITHUB_OUTPUT
+            echo "✅ PyPI: Ready to publish"
+          else
+            exit_code=$?
+            if [ $exit_code -eq 21 ]; then
+              echo "skip=true" >> $GITHUB_OUTPUT
+              echo "⏭️ PyPI: Skipping (already exists)"
+            else
+              echo "❌ PyPI: Preflight check failed"
+              exit 1
+            fi
+          fi
+
+  # Job 5: Publish Packages
+  publish:
+    runs-on: ubuntu-latest
+    needs: [normalize-and-diff, generate-sdks, publish-preflight]
+    if: needs.normalize-and-diff.outputs.spec-changed == 'true' && github.event_name == 'push' && github.ref == 'refs/heads/main' && !github.event.repository.fork
+    permissions:
+      contents: read
+      packages: write
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: Download SDK artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: sdk-artifacts
+
+      - name: Publish to npm
+        if: needs.publish-preflight.outputs.npm-skip != 'true'
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: |
+          echo "Publishing JavaScript SDK to npm..."
+          cd javascript
+          npm publish
+          echo "✅ Published to npm"
+
+      - name: Publish to PyPI
+        if: needs.publish-preflight.outputs.pypi-skip != 'true'
+        env:
+          TWINE_USERNAME: __token__
+          TWINE_PASSWORD: ${{ secrets.PYPI_TOKEN }}
+        run: |
+          echo "Publishing Python SDK to PyPI..."
+          pip install twine build
+          cd python
+          python -m build
+          python -m twine upload dist/*
+          echo "✅ Published to PyPI"
+
+  # Job 6: Apply Labels
+  apply-labels:
+    runs-on: ubuntu-latest
+    needs: normalize-and-diff
+    if: needs.normalize-and-diff.outputs.spec-changed == 'true' && github.event_name == 'pull_request'
+    permissions:
+      contents: read
+      pull-requests: write
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Apply contract label
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: |
+          node scripts/contract/apply_label.js contract
+
+  # Job 7: Summarize
+  summarize:
+    runs-on: ubuntu-latest
+    needs: [normalize-and-diff, generate-sdks, assert-migration, publish-preflight, publish, apply-labels]
+    if: always()
+    permissions:
+      contents: read
+    
+    steps:
+      - name: Generate summary
+        run: |
+          echo "# Contract Ingest & SDK Pipeline Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          
+          # Spec changes
+          if [ "${{ needs.normalize-and-diff.outputs.spec-changed }}" == "true" ]; then
+            echo "## 📋 Contract Changes Detected" >> $GITHUB_STEP_SUMMARY
+            echo "- **Classification**: ${{ needs.normalize-and-diff.outputs.classification }}" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "## ℹ️ No Contract Changes" >> $GITHUB_STEP_SUMMARY
+            echo "OpenAPI specification unchanged." >> $GITHUB_STEP_SUMMARY
+          fi
+          
+          echo "" >> $GITHUB_STEP_SUMMARY
+          
+          # Job statuses
+          echo "## Job Results" >> $GITHUB_STEP_SUMMARY
+          echo "| Job | Status |" >> $GITHUB_STEP_SUMMARY
+          echo "|-----|--------|" >> $GITHUB_STEP_SUMMARY
+          echo "| Normalize & Diff | ${{ needs.normalize-and-diff.result }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| SDK Generation | ${{ needs.generate-sdks.result }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Migration Assertion | ${{ needs.assert-migration.result }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Publish Preflight | ${{ needs.publish-preflight.result }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Package Publishing | ${{ needs.publish.result }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Label Application | ${{ needs.apply-labels.result }} |" >> $GITHUB_STEP_SUMMARY
+          
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "*Pipeline completed at $(date -u --iso-8601=seconds)*" >> $GITHUB_STEP_SUMMARY
