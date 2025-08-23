@@ -1,14 +1,23 @@
 # API and SDK Version Compatibility
 
-BondMCP follows [semantic versioning](https://semver.org/). The current stable API version is **v1** (OpenAPI `1.0.0`).
+BondMCP follows [semantic versioning](https://semver.org/). The current stable API version is **v2.1** (OpenAPI `2.1.0`) with MCP discovery support.
 
 The table below shows which SDK versions are designed to work with this API version.
 
 | SDK | Current Version | Supported API Versions | Notes |
 |-----|-----------------|-----------------------|-------|
-| Python (`bondmcp` package) | >=1.0.0 | v1 | Use on Python 3.8+ |
-| TypeScript / JavaScript | >=2.0.0 | v1 | Package `@bondmcp/typescript-sdk` |
+| Python (`bondmcp` package) | >=2.1.0 | v2.1, v1 | Use on Python 3.8+, includes MCP discovery |
+| TypeScript / JavaScript | >=2.1.0 | v2.1, v1 | Package `@bondmcp/typescript-sdk`, includes MCP discovery |
 | Go | >=2.0.0 | v1 | Module `github.com/bondmcp/mcp/sdks/go` |
+
+## MCP Discovery Support (v2.1.0+)
+
+Starting with API version 2.1.0, BondMCP supports Model Control Protocol (MCP) for dynamic capability discovery:
+
+- **Discovery Endpoints**: `/.well-known/mcp-configuration` and `/.well-known/mcp-manifest.json`
+- **Capability Metadata**: Rich endpoint information with auth requirements, rate limits, and examples
+- **Cryptographic Verification**: SHA256 hashes for capability integrity verification
+- **Version Management**: Explicit capability versioning with deprecation tracking
 
 ## Legacy SDKs
 
