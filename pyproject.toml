@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "bondmcp"
-version = "1.0.0"
+version = "1.0.1"
 description = "BondMCP - The Trusted Protocol for Health AI. Python SDK and CLI for seamless integration with BondMCP's multi-model consensus health AI platform."
 readme = "README.md"
 license = {file = "LICENSE"}
@@ -117,7 +117,7 @@ line_length = 88
 known_first_party = ["bondmcp_sdk", "bondmcp_cli"]
 
 [tool.mypy]
-python_version = "3.8"
+python_version = "1.0.1"
 warn_return_any = true
 warn_unused_configs = true
 disallow_untyped_defs = true
@@ -132,7 +132,7 @@ warn_unreachable = true
 strict_equality = true
 
 [tool.pytest.ini_options]
-minversion = "7.0"
+minversion = "1.0.1"
 addopts = "-ra -q --strict-markers --strict-config"
 testpaths = ["tests"]
 markers = [
