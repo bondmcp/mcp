@@ -38,8 +38,8 @@ class HealthAnswer:
     answer: str
     trust_score: float
     sources: List[str]
-    categories: Optional[List[str]] = None
     timestamp: str
+    categories: Optional[List[str]] = None
 
 
 class BondMCPError(Exception):
