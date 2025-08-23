@@ -112,6 +112,41 @@ curl -H "Authorization: Bearer YOUR_API_KEY" https://api.bondmcp.com/health/ask
 * Notification management
 * Developer tools
 
+## 🔍 **MCP Integration: Discovery & Capability Management**
+
+BondMCP now supports **Model Control Protocol (MCP)** for dynamic capability discovery and enhanced integration patterns. MCP allows your applications to dynamically discover available endpoints, understand their capabilities, and verify system integrity.
+
+### 🌟 **Key MCP Features**
+
+* **Dynamic Discovery**: Automatically discover available API endpoints and their capabilities
+* **Capability Metadata**: Rich information about authentication requirements, rate limits, and usage examples
+* **Cryptographic Verification**: SHA256 hashes ensure capability data integrity
+* **Version Management**: Standardized capability versioning with deprecation tracking
+* **Rate Limit Awareness**: Understand rate limiting tiers before making requests
+
+### 🚀 **Quick MCP Discovery**
+
+```bash
+# Get complete MCP configuration
+curl https://api.bondmcp.com/.well-known/mcp-configuration
+
+# Get lightweight manifest for verification
+curl https://api.bondmcp.com/.well-known/mcp-manifest.json
+```
+
+### 📚 **MCP Documentation**
+
+* **[MCP Overview →](docs/mcp/overview.md)** - Learn about MCP configuration, capabilities, and discovery patterns
+* **[Consuming Capabilities →](docs/mcp/consuming-capabilities.md)** - Language-specific examples for Python and TypeScript
+* **[API Reference →](docs/api-reference/)** - Complete endpoint documentation
+
+### 💡 **Migration Benefits**
+
+* **Future-proof**: Automatically discover new endpoints as they're released
+* **Resilient**: Handle deprecated endpoints gracefully with built-in deprecation flags
+* **Efficient**: Understand rate limits and auth requirements before making requests
+* **Secure**: Verify system integrity with cryptographic capability hashes
+
 ## 🚀 **Getting Started - Full Platform**
 
 ### 1. **Sign Up & Authentication**

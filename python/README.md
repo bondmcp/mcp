@@ -26,6 +26,33 @@ print(response.answer)
 print(f"Confidence: {response.confidence_score}")
 ```
 
+## MCP Discovery (New in v2.1.0)
+
+```python
+from bondmcp import BondMCPClient
+
+client = BondMCPClient(api_key="your-api-key")
+
+# Discover available capabilities dynamically
+config = client.get_mcp_configuration()
+print(f"Service: {config['service']['name']} v{config['service']['version']}")
+
+# Get capability manifest for verification
+manifest = client.get_mcp_manifest()
+print(f"Capabilities hash: {manifest['capabilities_sha256']}")
+
+# Find specific capabilities
+health_capabilities = [
+    cap for cap in config["capabilities"] 
+    if "health" in cap["path"] and not cap.get("deprecated", False)
+]
+
+print("Available health endpoints:")
+for cap in health_capabilities:
+    auth_indicator = "🔐" if cap["auth_required"] else "🌐"
+    print(f"  {auth_indicator} {cap['method']} {cap['path']} - {cap['name']}")
+```
+
 ## Features
 
 - **Health Queries**: Ask medical questions with AI consensus validation

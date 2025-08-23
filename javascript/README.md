@@ -39,6 +39,28 @@ console.log(response.answer);
 console.log(`Confidence: ${response.confidenceScore}`);
 ```
 
+### MCP Discovery (New in v2.1.0)
+
+```typescript
+// Discover available capabilities dynamically
+const config = await client.getMcpConfiguration();
+console.log(`Service: ${config.service.name} v${config.service.version}`);
+
+// Get capability manifest for verification
+const manifest = await client.getMcpManifest();
+console.log(`Capabilities hash: ${manifest.capabilities_sha256}`);
+
+// Find specific capabilities
+const healthCapabilities = config.capabilities.filter(
+  cap => cap.path.includes('health') && !cap.deprecated
+);
+
+console.log('Available health endpoints:');
+healthCapabilities.forEach(cap => {
+  console.log(`  ${cap.method} ${cap.path} - ${cap.name}`);
+});
+```
+
 ## 📚 Features
 
 ### ✅ **Full TypeScript Support**
