@@ -110,27 +110,7 @@ jobs:
           gh pr ready ${PR_NUMBER}
           
           # Add a comment explaining the auto-ready action
-          gh pr comment ${PR_NUMBER} --body "🤖 **Auto-Ready Bot**
-
-This PR has been automatically marked as ready for review because:
-- ✅ Contract ingest pipeline completed successfully
-- ✅ PR has the 'contract' label
-- ✅ All automated checks passed
-- ✅ No merge conflicts detected
-
-The following validations were performed:
-- 🔍 OpenAPI specification normalized
-- 🔍 SDK generation completed
-- 🔍 Publish preflight checks completed
-- 🔍 Migration documentation validated (if required)
-
-**Next Steps:**
-1. Review the generated SDKs and documentation
-2. Perform manual testing if needed
-3. Approve and merge when ready
-
----
-*This comment was generated automatically by the Contract Ingest Pipeline*"
+          gh pr comment ${PR_NUMBER} --body "🤖 Auto-Ready Bot: This PR has been automatically marked as ready for review because the contract ingest pipeline completed successfully, the PR has the 'contract' label, all automated checks passed, and no merge conflicts were detected. Please review the generated SDKs, perform manual testing if needed, and approve when ready."
           
           echo "✅ PR #${PR_NUMBER} marked as ready for review"
 
