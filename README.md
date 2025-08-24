@@ -204,6 +204,41 @@ curl -X POST "https://api.bondmcp.com/health/nutrition" \
 * **📊 Real-time Status**: Monitor platform health and performance
 * **🔐 Security**: HIPAA compliant with enterprise-grade security
 
+## 🔄 **Contract Ingest Pipeline**
+
+BondMCP uses an automated contract ingest pipeline to ensure safe, deterministic API publishing:
+
+### ✅ **Key Features**
+- **Spec Normalization**: Consistent OpenAPI formatting before diff generation
+- **Idempotent Publishing**: Automatic version checks prevent duplicate publications  
+- **Label Automation**: PRs automatically receive `contract` labels for filtering
+- **Migration Safeguards**: Ensures documentation exists for breaking changes
+- **Auto-Ready Workflows**: Draft PRs promoted automatically when checks pass
+
+### 🛠️ **Contract Scripts**
+```bash
+# Normalize OpenAPI specification
+npm run contract:normalize -- --in spec/openapi.json --out openapi/latest.normalized.json
+
+# Check if version exists on npm/PyPI
+npm run contract:preflight npm 1.0.0
+npm run contract:preflight pypi 1.0.0
+
+# Apply contract label to PR
+npm run contract:label contract
+
+# Assert migration documentation
+npm run contract:migrate
+```
+
+### 🔐 **Publishing Safeguards**
+- **Exit Code 0**: Safe to publish (version doesn't exist)
+- **Exit Code 20**: Skip npm publish (version exists)  
+- **Exit Code 21**: Skip PyPI publish (version exists)
+- **Migration Assertion**: Major/minor changes require MIGRATIONS documentation
+
+*See [ADR-002](docs/adr/ADR-002-contract-ingest-pipeline.md) for complete implementation details.*
+
 ## ⚠️ **Important Notes**
 
 1. **Platform Status**: All 50 endpoints are fully operational and tested

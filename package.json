@@ -6,7 +6,16 @@
     "axios": "^1.6.0"
   },
   "scripts": {
-    "test": "node --test tests/test_bondmcp_node.js"
+    "test": "node --test tests/test_bondmcp_node.js",
+    "contract:normalize": "npx ts-node scripts/contract/normalize_spec.ts",
+    "contract:preflight": "npx ts-node scripts/contract/publish_preflight.ts",
+    "contract:label": "npx ts-node scripts/contract/apply_label.ts",
+    "contract:migrate": "npx ts-node scripts/contract/assert_migration_file.ts",
+    "build:ts": "npx tsc"
+  },
+  "devDependencies": {
+    "@octokit/rest": "^22.0.0",
+    "@types/node": "^24.3.0",
+    "typescript": "^5.9.2"
   }
 }
-
