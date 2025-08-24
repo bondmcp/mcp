@@ -2,7 +2,7 @@
   "openapi": "3.0.2",
   "info": {
     "title": "BondMCP API",
-    "version": "1.0.0-2025-08-23",
+    "version": "1.0.0-2025-08-24",
     "description": "OpenAPI specification for the BondMCP healthcare API."
   },
   "servers": [
