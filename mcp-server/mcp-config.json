@@ -1,0 +1,148 @@
+{
+  "mcpVersion": "2024-11-05",
+  "name": "bondmcp-server",
+  "version": "1.0.0",
+  "description": "BondMCP Healthcare Model Context Protocol Server",
+  "capabilities": {
+    "resources": true,
+    "tools": true,
+    "prompts": true,
+    "experimental": {
+      "healthcare": true
+    }
+  },
+  "healthcareExtensions": {
+    "hmcp": {
+      "version": "1.0.0",
+      "capabilities": [
+        "health_question_answering",
+        "symptom_analysis", 
+        "nutrition_analysis",
+        "risk_assessment",
+        "clinical_decision_support"
+      ],
+      "dataCompliance": {
+        "hipaa": "planned",
+        "gdpr": "planned",
+        "encryption": "planned"
+      }
+    }
+  },
+  "resources": [
+    {
+      "uri": "bondmcp://health/guidelines",
+      "name": "Health Guidelines",
+      "description": "Evidence-based health guidelines and recommendations",
+      "mimeType": "application/json"
+    },
+    {
+      "uri": "bondmcp://health/conditions", 
+      "name": "Medical Conditions",
+      "description": "Comprehensive medical condition database",
+      "mimeType": "application/json"
+    },
+    {
+      "uri": "bondmcp://health/medications",
+      "name": "Medication Database", 
+      "description": "Drug information and interaction database",
+      "mimeType": "application/json"
+    },
+    {
+      "uri": "bondmcp://health/nutrition",
+      "name": "Nutrition Database",
+      "description": "Nutritional information and meal planning",
+      "mimeType": "application/json"
+    }
+  ],
+  "tools": [
+    {
+      "name": "health_question",
+      "description": "Ask health-related questions with AI consensus",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "question": {
+            "type": "string",
+            "description": "Health question to ask"
+          },
+          "context": {
+            "type": "string", 
+            "description": "Additional context for the question",
+            "default": ""
+          }
+        },
+        "required": ["question"]
+      }
+    },
+    {
+      "name": "analyze_symptoms",
+      "description": "Analyze symptoms and provide guidance", 
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "symptoms": {
+            "type": "array",
+            "items": {"type": "string"},
+            "description": "List of symptoms to analyze"
+          },
+          "duration": {
+            "type": "string",
+            "description": "How long symptoms have been present"
+          }
+        },
+        "required": ["symptoms"]
+      }
+    },
+    {
+      "name": "nutrition_analysis",
+      "description": "Analyze nutritional content and provide recommendations",
+      "inputSchema": {
+        "type": "object", 
+        "properties": {
+          "food_items": {
+            "type": "array",
+            "items": {"type": "string"},
+            "description": "List of food items to analyze"
+          },
+          "meal_type": {
+            "type": "string",
+            "enum": ["breakfast", "lunch", "dinner", "snack"],
+            "description": "Type of meal"
+          }
+        },
+        "required": ["food_items"]
+      }
+    },
+    {
+      "name": "health_risk_assessment",
+      "description": "Assess health risks based on provided data",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "age": {"type": "integer"},
+          "gender": {"type": "string"},
+          "conditions": {
+            "type": "array",
+            "items": {"type": "string"},
+            "description": "Existing health conditions"
+          },
+          "lifestyle_factors": {
+            "type": "object",
+            "description": "Lifestyle factors (smoking, exercise, diet, etc.)"
+          }
+        },
+        "required": ["age", "gender"]
+      }
+    }
+  ],
+  "apiConfiguration": {
+    "baseUrl": "https://api.bondmcp.com",
+    "status": "in_development", 
+    "note": "API infrastructure not yet deployed - server operates in development mode"
+  },
+  "wellKnownEndpoint": "/.well-known/mcp-configuration",
+  "discoveryMethods": [
+    "well_known_endpoint",
+    "manual_configuration"
+  ]
+}

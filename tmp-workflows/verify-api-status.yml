@@ -1,0 +1,320 @@
+name: Verify API Status and Documentation Alignment
+
+on:
+  schedule:
+    # Run daily at 6 AM UTC
+    - cron: '0 6 * * *'
+  workflow_dispatch:
+    # Allow manual triggering
+  push:
+    paths:
+      # Run when documentation files change
+      - 'README.md'
+      - 'ENDPOINTS.md'
+      - 'API_REFERENCE.md'
+      - 'ACTUAL_API_STATUS.md'
+      - 'docs/**'
+
+jobs:
+  verify-api-status:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.9'
+        
+    - name: Install dependencies
+      run: |
+        pip install requests pyyaml
+        
+    - name: Test API Availability
+      id: api-test
+      run: |
+        python3 << 'EOF'
+        import requests
+        import json
+        import sys
+        from datetime import datetime
+        
+        # Test API endpoints
+        base_url = "https://api.bondmcp.com"
+        endpoints = [
+            {"path": "/", "method": "GET", "description": "API root"},
+            {"path": "/health", "method": "GET", "description": "Health check"},
+            {"path": "/docs", "method": "GET", "description": "Documentation"},
+            {"path": "/openapi.json", "method": "GET", "description": "OpenAPI spec"},
+            {"path": "/auth/register", "method": "POST", "description": "User registration"},
+            {"path": "/auth/login", "method": "POST", "description": "User login"}
+        ]
+        
+        results = []
+        total_working = 0
+        
+        print("Testing BondMCP API endpoints...")
+        print("=" * 50)
+        
+        for endpoint in endpoints:
+            url = f"{base_url}{endpoint['path']}"
+            try:
+                if endpoint['method'] == 'GET':
+                    response = requests.get(url, timeout=10)
+                else:
+                    response = requests.post(url, timeout=10)
+                    
+                status = "WORKING" if response.status_code < 500 else "ERROR"
+                if status == "WORKING":
+                    total_working += 1
+                    
+                results.append({
+                    "endpoint": endpoint['path'],
+                    "method": endpoint['method'],
+                    "status": status,
+                    "http_code": response.status_code,
+                    "description": endpoint['description']
+                })
+                print(f"✅ {endpoint['path']} ({endpoint['method']}): {response.status_code}")
+                
+            except requests.exceptions.ConnectionError:
+                results.append({
+                    "endpoint": endpoint['path'],
+                    "method": endpoint['method'], 
+                    "status": "CONNECTION_FAILED",
+                    "http_code": 0,
+                    "description": endpoint['description']
+                })
+                print(f"❌ {endpoint['path']} ({endpoint['method']}): Connection failed")
+                
+            except Exception as e:
+                results.append({
+                    "endpoint": endpoint['path'],
+                    "method": endpoint['method'],
+                    "status": "ERROR", 
+                    "http_code": 0,
+                    "description": endpoint['description']
+                })
+                print(f"❌ {endpoint['path']} ({endpoint['method']}): {str(e)}")
+        
+        # DNS resolution test
+        try:
+            import socket
+            socket.gethostbyname("api.bondmcp.com")
+            dns_status = "RESOLVED"
+            print(f"✅ DNS: api.bondmcp.com resolves")
+        except socket.gaierror:
+            dns_status = "FAILED"
+            print(f"❌ DNS: api.bondmcp.com does not resolve")
+        
+        # Calculate percentage
+        total_endpoints = len(endpoints)
+        percentage = (total_working / total_endpoints) * 100 if total_endpoints > 0 else 0
+        
+        # Write results to GitHub Actions output
+        with open('api_test_results.json', 'w') as f:
+            json.dump({
+                "timestamp": datetime.now().isoformat(),
+                "dns_status": dns_status,
+                "total_endpoints": total_endpoints,
+                "working_endpoints": total_working,
+                "percentage_working": percentage,
+                "results": results
+            }, f, indent=2)
+        
+        print(f"\nSummary: {total_working}/{total_endpoints} endpoints working ({percentage:.1f}%)")
+        print(f"DNS Status: {dns_status}")
+        
+        # Set GitHub Actions output
+        print(f"::set-output name=working_endpoints::{total_working}")
+        print(f"::set-output name=total_endpoints::{total_endpoints}")
+        print(f"::set-output name=percentage::{percentage:.1f}")
+        print(f"::set-output name=dns_status::{dns_status}")
+        EOF
+        
+    - name: Check Documentation Claims
+      id: doc-check
+      run: |
+        python3 << 'EOF'
+        import re
+        import json
+        
+        def extract_claims_from_file(filename):
+            """Extract functionality claims from documentation files."""
+            try:
+                with open(filename, 'r') as f:
+                    content = f.read()
+                    
+                claims = []
+                
+                # Look for percentage claims
+                percentage_patterns = [
+                    r'(\d+)%\s+functional',
+                    r'(\d+)%\s+operational', 
+                    r'(\d+)/(\d+)\s+endpoints?\s+(?:working|functional|operational)',
+                    r'FULLY OPERATIONAL',
+                    r'confirmed working'
+                ]
+                
+                for pattern in percentage_patterns:
+                    matches = re.findall(pattern, content, re.IGNORECASE)
+                    if matches:
+                        claims.extend(matches)
+                        
+                return claims
+            except FileNotFoundError:
+                return []
+        
+        # Check key documentation files
+        files_to_check = ['README.md', 'ENDPOINTS.md', 'API_REFERENCE.md']
+        all_claims = {}
+        
+        for filename in files_to_check:
+            claims = extract_claims_from_file(filename)
+            if claims:
+                all_claims[filename] = claims
+                print(f"Claims found in {filename}: {claims}")
+        
+        # Load API test results
+        try:
+            with open('api_test_results.json', 'r') as f:
+                api_results = json.load(f)
+                actual_percentage = api_results['percentage_working']
+        except:
+            actual_percentage = 0
+            
+        print(f"Actual API status: {actual_percentage}% working")
+        
+        # Check for misalignments
+        misaligned = False
+        if any('99' in str(claims) or 'FULLY OPERATIONAL' in str(claims) for claims in all_claims.values()):
+            if actual_percentage < 90:  # Allow some tolerance
+                misaligned = True
+                print("⚠️  Documentation claims high functionality but API shows low functionality")
+        
+        print(f"::set-output name=misaligned::{misaligned}")
+        print(f"::set-output name=actual_percentage::{actual_percentage}")
+        EOF
+        
+    - name: Update API Status File
+      run: |
+        python3 << 'EOF'
+        import json
+        from datetime import datetime
+        
+        # Load test results
+        with open('api_test_results.json', 'r') as f:
+            results = json.load(f)
+        
+        # Generate updated ACTUAL_API_STATUS.md
+        content = f"""# Actual BondMCP API Status Report
+
+> **Report Generated**: {datetime.now().strftime('%B %d, %Y at %H:%M UTC')}  
+> **Testing Target**: https://api.bondmcp.com  
+> **Automated Test**: GitHub Actions Workflow
+
+## Summary
+
+- **DNS Status**: {results['dns_status']}
+- **Working Endpoints**: {results['working_endpoints']}/{results['total_endpoints']} ({results['percentage_working']:.1f}%)
+- **Last Updated**: {results['timestamp']}
+
+## Endpoint Test Results
+
+| Endpoint | Method | Status | HTTP Code | Description |
+|----------|--------|--------|-----------|-------------|"""
+
+        for result in results['results']:
+            status_emoji = "✅" if result['status'] == "WORKING" else "❌"
+            content += f"""
+| `{result['endpoint']}` | {result['method']} | {status_emoji} {result['status']} | {result['http_code']} | {result['description']} |"""
+
+        content += f"""
+
+## Infrastructure Status
+
+- **Domain Resolution**: {'✅ Success' if results['dns_status'] == 'RESOLVED' else '❌ Failed'}
+- **API Availability**: {'✅ Available' if results['percentage_working'] > 0 else '❌ Not Available'}
+
+## Historical Tracking
+
+This file is automatically updated by GitHub Actions to track API deployment progress.
+
+---
+*Automated report generated by: `.github/workflows/verify-api-status.yml`*
+"""
+
+        # Write updated file
+        with open('ACTUAL_API_STATUS.md', 'w') as f:
+            f.write(content)
+            
+        print("Updated ACTUAL_API_STATUS.md with latest test results")
+        EOF
+        
+    - name: Commit Updated Status
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        
+        if [[ $(git diff --stat) != '' ]]; then
+          git add ACTUAL_API_STATUS.md
+          git commit -m "Auto-update API status report [skip ci]"
+          git push
+        else
+          echo "No changes to commit"
+        fi
+        
+    - name: Create Issue if Misaligned
+      if: steps.doc-check.outputs.misaligned == 'true'
+      uses: actions/github-script@v6
+      with:
+        script: |
+          const title = 'API Documentation Misalignment Detected';
+          const body = `
+          ## API Documentation Misalignment
+          
+          The automated verification has detected a misalignment between documentation claims and actual API status.
+          
+          **Current API Status**: ${{ steps.api-test.outputs.percentage }}% functional
+          **DNS Status**: ${{ steps.api-test.outputs.dns_status }}
+          **Working Endpoints**: ${{ steps.api-test.outputs.working_endpoints }}/${{ steps.api-test.outputs.total_endpoints }}
+          
+          **Action Required**: Update documentation to reflect actual API capabilities.
+          
+          **Files to Review**:
+          - README.md
+          - ENDPOINTS.md 
+          - API_REFERENCE.md
+          
+          This issue was automatically generated by the API verification workflow.
+          `;
+          
+          // Check if issue already exists
+          const existingIssues = await github.rest.issues.listForRepo({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            state: 'open',
+            labels: ['api-alignment']
+          });
+          
+          if (existingIssues.data.length === 0) {
+            await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: title,
+              body: body,
+              labels: ['api-alignment', 'documentation']
+            });
+            console.log('Created new alignment issue');
+          } else {
+            console.log('Alignment issue already exists');
+          }
+          
+    - name: Upload Test Results
+      uses: actions/upload-artifact@v3
+      with:
+        name: api-test-results
+        path: api_test_results.json
+        retention-days: 30

@@ -1,16 +1,17 @@
 # BondMCP API Endpoints
 
-> **⚠️ DEPLOYMENT STATUS: 6/42 endpoints functional (14.3%)**
+> **⚠️ DEVELOPMENT STATUS: 0/42 endpoints deployed (API domain not available)**
 > 
-> This document lists all planned endpoints with their current deployment status. Only test endpoints marked as ✅ WORKING.
+> **Important**: The API domain `api.bondmcp.com` is not yet deployed. This document serves as a specification for planned endpoints. See [ACTUAL_API_STATUS.md](ACTUAL_API_STATUS.md) for detailed testing results.
 
 ## Endpoint Status Legend
 
-- ✅ **WORKING** - Endpoint is deployed and functional
-- 🔐 **AUTH REQUIRED** - Endpoint exists but requires authentication
-- ⚠️ **METHOD ERROR** - Endpoint exists but has method issues
-- ❌ **NOT DEPLOYED** - Endpoint not currently available
-- 🔄 **UNDER DEPLOYMENT** - Planned for next release
+- 📅 **PLANNED** - Endpoint specified for future deployment
+- 🚧 **IN DEVELOPMENT** - Endpoint implementation in progress
+- ❌ **NOT DEPLOYED** - Endpoint awaiting infrastructure deployment
+- 🔄 **UNDER DESIGN** - Endpoint specification being refined
+
+**Note**: All endpoints currently show as not deployed due to missing API infrastructure.
 
 ---
 
@@ -18,12 +19,12 @@
 
 | Endpoint | Method | Status | Description |
 |----------|--------|--------|-------------|
-| `/` | GET | ✅ WORKING | API root and status |
-| `/health` | GET | ✅ WORKING | System health check |
-| `/docs` | GET | ✅ WORKING | Interactive documentation |
-| `/openapi.json` | GET | ✅ WORKING | OpenAPI specification |
+| `/` | GET | 📅 PLANNED | API root and status |
+| `/health` | GET | 📅 PLANNED | System health check |
+| `/docs` | GET | 📅 PLANNED | Interactive documentation |
+| `/openapi.json` | GET | 📅 PLANNED | OpenAPI specification |
 
-**Category Status: 4/4 endpoints working (100%)**
+**Category Status: 0/4 endpoints deployed (awaiting infrastructure)**
 
 ---
 
@@ -31,14 +32,14 @@
 
 | Endpoint | Method | Status | Description |
 |----------|--------|--------|-------------|
-| `/auth/register` | POST | ⚠️ METHOD ERROR | User registration |
-| `/auth/login` | POST | ⚠️ METHOD ERROR | User login |
-| `/auth/logout` | POST | ⚠️ METHOD ERROR | User logout |
-| `/auth/refresh` | POST | ⚠️ METHOD ERROR | Token refresh |
-| `/auth/verify` | POST | ⚠️ METHOD ERROR | Email verification |
-| `/auth/reset` | POST | ⚠️ METHOD ERROR | Password reset |
+| `/auth/register` | POST | 📅 PLANNED | User registration |
+| `/auth/login` | POST | 📅 PLANNED | User login |
+| `/auth/logout` | POST | 📅 PLANNED | User logout |
+| `/auth/refresh` | POST | 📅 PLANNED | Token refresh |
+| `/auth/verify` | POST | 📅 PLANNED | Email verification |
+| `/auth/reset` | POST | 📅 PLANNED | Password reset |
 
-**Category Status: 0/6 endpoints working (0%)**
+**Category Status: 0/6 endpoints deployed (awaiting infrastructure)**
 
 ---
 
