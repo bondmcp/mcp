@@ -7,6 +7,10 @@
   },
   "scripts": {
     "test": "node --test tests/test_bondmcp_node.js"
+  },
+  "devDependencies": {
+    "@types/node": "^24.3.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.2"
   }
 }
-
