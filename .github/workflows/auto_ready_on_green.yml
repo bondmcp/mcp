@@ -1,0 +1,194 @@
+name: Auto Ready on Green
+
+on:
+  workflow_run:
+    workflows: ["Contract Ingest & SDK Pipeline"]
+    types: [completed]
+    branches: [main]
+
+jobs:
+  auto-ready:
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    permissions:
+      contents: read
+      pull-requests: write
+    
+    steps:
+      - name: Find associated PR
+        id: find_pr
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const headSha = context.payload.workflow_run.head_sha;
+            console.log(`Looking for PRs with head SHA: ${headSha}`);
+            
+            // Get all open PRs
+            const { data: pulls } = await github.rest.pulls.list({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'open',
+            });
+            
+            // Find PRs matching the head SHA
+            const matchingPRs = pulls.filter(pr => pr.head.sha === headSha);
+            
+            // Filter for draft PRs with contract label or title pattern
+            const targetPRs = matchingPRs.filter(pr => {
+              const isDraft = pr.draft;
+              const hasContractLabel = pr.labels.some(label => label.name === 'contract');
+              const hasTitlePattern = pr.title.includes('[WIP]') || pr.title.includes('contract');
+              
+              return isDraft && (hasContractLabel || hasTitlePattern);
+            });
+            
+            console.log(`Found ${matchingPRs.length} PRs with matching SHA`);
+            console.log(`Found ${targetPRs.length} target PRs (draft + contract label/pattern)`);
+            
+            if (targetPRs.length === 0) {
+              console.log('No draft PRs with contract label found for this workflow run');
+              core.setOutput('found_pr', 'false');
+              return;
+            }
+            
+            const pr = targetPRs[0]; // Take the first matching PR
+            core.setOutput('found_pr', 'true');
+            core.setOutput('pr_number', pr.number);
+            core.setOutput('pr_title', pr.title);
+            core.setOutput('is_draft', pr.draft);
+            core.setOutput('has_wip_prefix', pr.title.includes('[WIP]'));
+            
+            console.log(`Target PR: #${pr.number} - "${pr.title}"`);
+
+      - name: Remove WIP prefix and promote to ready
+        if: steps.find_pr.outputs.found_pr == 'true'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const prNumber = parseInt('${{ steps.find_pr.outputs.pr_number }}');
+            const currentTitle = '${{ steps.find_pr.outputs.pr_title }}';
+            const isDraft = '${{ steps.find_pr.outputs.is_draft }}' === 'true';
+            const hasWipPrefix = '${{ steps.find_pr.outputs.has_wip_prefix }}' === 'true';
+            
+            console.log(`Processing PR #${prNumber}: "${currentTitle}"`);
+            
+            let updates = {};
+            
+            // Remove [WIP] prefix from title if present
+            if (hasWipPrefix) {
+              const newTitle = currentTitle.replace(/^\s*\[WIP\]\s*/i, '').trim();
+              updates.title = newTitle;
+              console.log(`Removing [WIP] prefix: "${currentTitle}" -> "${newTitle}"`);
+            }
+            
+            // Convert from draft to ready for review
+            if (isDraft) {
+              updates.draft = false;
+              console.log('Converting from draft to ready for review');
+            }
+            
+            // Update the PR if needed
+            if (Object.keys(updates).length > 0) {
+              await github.rest.pulls.update({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                pull_number: prNumber,
+                ...updates
+              });
+              
+              console.log(`✅ Updated PR #${prNumber}`);
+            }
+
+      - name: Add ready-for-review label
+        if: steps.find_pr.outputs.found_pr == 'true'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const prNumber = parseInt('${{ steps.find_pr.outputs.pr_number }}');
+            
+            // Check if label already exists
+            const { data: labels } = await github.rest.issues.listLabelsOnIssue({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: prNumber,
+            });
+            
+            const hasReadyLabel = labels.some(label => label.name === 'ready-for-review');
+            
+            if (!hasReadyLabel) {
+              // First ensure the label exists in the repository
+              try {
+                await github.rest.issues.getLabel({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  name: 'ready-for-review'
+                });
+              } catch (error) {
+                if (error.status === 404) {
+                  // Create the label if it doesn't exist
+                  await github.rest.issues.createLabel({
+                    owner: context.repo.owner,
+                    repo: context.repo.repo,
+                    name: 'ready-for-review',
+                    color: '0e8a16',
+                    description: 'PR is ready for review after successful pipeline'
+                  });
+                  console.log('Created ready-for-review label');
+                }
+              }
+              
+              // Add label to PR
+              await github.rest.issues.addLabels({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: prNumber,
+                labels: ['ready-for-review']
+              });
+              
+              console.log(`✅ Added 'ready-for-review' label to PR #${prNumber}`);
+            } else {
+              console.log(`PR #${prNumber} already has 'ready-for-review' label`);
+            }
+
+      - name: Add success comment
+        if: steps.find_pr.outputs.found_pr == 'true'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const prNumber = parseInt('${{ steps.find_pr.outputs.pr_number }}');
+            
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: prNumber,
+              body: `🎉 **Contract Pipeline Successful!**
+
+The Contract Ingest & SDK Pipeline has completed successfully for this PR. 
+
+**Automated Actions Taken:**
+- ✅ Removed [WIP] prefix from title (if present)
+- ✅ Converted from draft to ready for review
+- ✅ Added \`ready-for-review\` label
+
+This PR is now ready for human review! The contract changes have been validated and SDK generation has passed.
+
+**Next Steps:**
+1. Human reviewer should verify the changes
+2. Ensure all checklist items are completed
+3. Merge when ready
+
+---
+*Workflow run: [${context.payload.workflow_run.name}](${context.payload.workflow_run.html_url})*`
+            });
+            
+            console.log(`✅ Added success comment to PR #${prNumber}`);
+
+      - name: Summary
+        run: |
+          if [ "${{ steps.find_pr.outputs.found_pr }}" == "true" ]; then
+            echo "✅ Auto-promoted PR #${{ steps.find_pr.outputs.pr_number }} to ready for review"
+            echo "PR Title: ${{ steps.find_pr.outputs.pr_title }}"
+          else
+            echo "ℹ️ No matching draft PRs found for this workflow run"
+            echo "SHA: ${{ github.event.workflow_run.head_sha }}"
+          fi
