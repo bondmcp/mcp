@@ -48,6 +48,32 @@ curl -H "Authorization: Bearer YOUR_API_KEY" https://api.bondmcp.com/health/ask
 * Nutrition analysis and meal planning
 * Clinical decision support
 * Symptom analysis and triage
+
+## 🔄 **OpenAPI & SDK Pipeline**
+
+BondMCP now features an **automated OpenAPI ingestion and SDK publishing pipeline**:
+
+### 📦 **Auto-Generated SDKs**
+- **TypeScript SDK**: `@bondmcp/sdk` (auto-published to npm)
+- **Python SDK**: `bondmcp_sdk` (auto-published to PyPI)
+
+### 🔧 **Developer Tools**
+```bash
+# Install official SDKs
+npm install @bondmcp/sdk          # TypeScript/JavaScript
+pip install bondmcp_sdk           # Python
+
+# Build SDKs locally
+node scripts/build-sdks.js all
+
+# Test pipeline utilities
+node scripts/test-pipeline.js test
+```
+
+### 📚 **Documentation**
+- **[OpenAPI Pipeline Guide](docs/openapi-pipeline.md)** - Complete pipeline documentation
+- **[SDK Examples](SDK_EXAMPLES_COMPREHENSIVE.md)** - Code examples in all languages
+- **[API Reference](docs/api-reference/)** - Auto-generated from OpenAPI specs
 * Bloodwork and DNA analysis
 
 ### 🔬 **Research Integration** (4 endpoints)

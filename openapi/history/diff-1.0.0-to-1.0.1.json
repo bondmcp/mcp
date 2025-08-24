@@ -1,0 +1,78 @@
+Non breaking changes found between the two specifications:
+{
+    "breakingDifferencesFound": false,
+    "nonBreakingDifferences": [
+        {
+            "type": "non-breaking",
+            "action": "add",
+            "code": "path.add",
+            "destinationSpecEntityDetails": [
+                {
+                    "location": "paths./api/v1/symptoms",
+                    "value": {
+                        "post": {
+                            "summary": "Analyze symptoms (NEW in v1.0.1)",
+                            "requestBody": {
+                                "required": true,
+                                "content": {
+                                    "application/json": {
+                                        "schema": {
+                                            "type": "object",
+                                            "properties": {
+                                                "symptoms": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "string"
+                                                    }
+                                                },
+                                                "age": {
+                                                    "type": "integer"
+                                                },
+                                                "gender": {
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "required": [
+                                                "symptoms"
+                                            ]
+                                        }
+                                    }
+                                }
+                            },
+                            "responses": {
+                                "200": {
+                                    "description": "Symptom analysis",
+                                    "content": {
+                                        "application/json": {
+                                            "schema": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "analysis": {
+                                                        "type": "string"
+                                                    },
+                                                    "severity": {
+                                                        "type": "string"
+                                                    },
+                                                    "recommendations": {
+                                                        "type": "array",
+                                                        "items": {
+                                                            "type": "string"
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            ],
+            "entity": "path",
+            "source": "openapi-diff",
+            "sourceSpecEntityDetails": []
+        }
+    ],
+    "unclassifiedDifferences": []
+}

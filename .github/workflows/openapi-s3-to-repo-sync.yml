@@ -1,22 +1,46 @@
-name: OpenAPI S3 to Repository Sync
+name: "[DEPRECATED] OpenAPI S3 to Repository Sync"
+
+# This workflow is deprecated and replaced by openapi-ingestion.yml
+# The new workflow receives specs directly from the platform via repository_dispatch
 
 on:
-  # Run on schedule (every 6 hours)
-  schedule:
-    - cron: '0 */6 * * *'  # Run every 6 hours
+  # Temporarily disable automatic triggers
+  # schedule:
+  #   - cron: '0 */6 * * *'  # Run every 6 hours
   
-  # Allow manual trigger
+  # Allow manual trigger only for backward compatibility
   workflow_dispatch:
     inputs:
-      force_update:
-        description: 'Force update even if no changes detected'
-        required: false
+      force_run:
+        description: 'Force run this deprecated workflow'
+        required: true
         default: 'false'
         type: boolean
 
 jobs:
+  deprecation-notice:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deprecation Notice
+        run: |
+          echo "⚠️ DEPRECATION NOTICE: This workflow is deprecated"
+          echo "The S3 sync workflow has been replaced by the new ingestion pipeline."
+          echo "The new workflow receives OpenAPI specs directly from the platform."
+          echo ""
+          echo "New workflow: .github/workflows/openapi-ingestion.yml"
+          echo "Trigger: repository_dispatch with type 'openapi_spec_updated'"
+          
+          if [ "${{ github.event.inputs.force_run }}" != "true" ]; then
+            echo "Skipping execution. Set force_run=true to run anyway."
+            exit 0
+          fi
+          
+          echo "Proceeding with deprecated workflow as requested..."
+
   sync-from-s3:
     runs-on: ubuntu-latest
+    needs: deprecation-notice
+    if: github.event.inputs.force_run == 'true'
     permissions:
       contents: write  # Needed for pushing to the repository
     
