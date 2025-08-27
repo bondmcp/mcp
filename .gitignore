@@ -22,6 +22,7 @@ build/
 .idea/
 .vscode/
 
+dist/
 # OpenAPI pipeline artifacts
 temp/
 temp_*.json
