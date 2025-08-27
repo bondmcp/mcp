@@ -1,455 +1,196 @@
 {
   "openapi": "3.0.2",
   "info": {
+    "description": "OpenAPI specification for the BondMCP healthcare API.",
     "title": "BondMCP API",
-    "version": "1.0.0-2025-08-27",
-    "description": "OpenAPI specification for the BondMCP healthcare API."
+    "version": "1.0.0"
   },
   "servers": [
     {
-      "url": "https://api.bondmcp.com",
-      "description": "Production"
+      "description": "Production",
+      "url": "https://api.bondmcp.com"
     }
   ],
-  "components": {
-    "securitySchemes": {
-      "ApiKeyAuth": {
-        "type": "apiKey",
-        "in": "header",
-        "name": "X-API-Key"
-      }
-    },
-    "schemas": {
-      "HealthStatus": {
-        "type": "object",
-        "properties": {
-          "status": {
-            "type": "string"
-          },
-          "version": {
-            "type": "string"
-          },
-          "timestamp": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "environment": {
-            "type": "string"
-          },
-          "services": {
-            "type": "object"
-          }
-        }
-      },
-      "AskRequest": {
-        "type": "object",
-        "properties": {
-          "message": {
-            "type": "string"
-          },
-          "context": {
-            "type": "string"
-          }
-        },
-        "required": [
-          "message"
-        ]
-      },
-      "AskResponse": {
-        "type": "object",
-        "properties": {
-          "request_id": {
-            "type": "string"
-          },
-          "answer": {
-            "type": "string"
-          },
-          "sources": {
-            "type": "array",
-            "items": {
-              "type": "object"
-            }
-          }
-        }
-      }
-    }
-  },
   "paths": {
-    "/api/v1/health": {
-      "get": {
-        "summary": "health",
-        "responses": {
-          "200": {
-            "description": "health response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HealthStatus"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
     "/api/v1/ask": {
       "post": {
-        "summary": "ask",
-        "security": [
-          {
-            "ApiKeyAuth": []
-          }
-        ],
         "requestBody": {
-          "required": true,
           "content": {
             "application/json": {
               "schema": {
                 "$ref": "#/components/schemas/AskRequest"
               }
             }
-          }
+          },
+          "required": true
         },
         "responses": {
           "200": {
-            "description": "ask response",
             "content": {
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/AskResponse"
                 }
               }
-            }
+            },
+            "description": "ask response"
           }
-        }
-      }
-    },
-    "/api/v1/orchestrator/multi-llm": {
-      "post": {
-        "summary": "multi-llm",
+        },
         "security": [
           {
             "ApiKeyAuth": []
           }
         ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "multi-llm response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object"
-                }
-              }
-            }
-          }
-        }
+        "summary": "ask"
       }
     },
-    "/api/v1/labs/interpret": {
-      "post": {
-        "summary": "interpret",
-        "security": [
-          {
-            "ApiKeyAuth": []
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object"
-              }
-            }
-          }
-        },
+    "/api/v1/health": {
+      "get": {
         "responses": {
           "200": {
-            "description": "interpret response",
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "object"
+                  "$ref": "#/components/schemas/HealthStatus"
                 }
               }
-            }
+            },
+            "description": "health response"
           }
-        }
+        },
+        "summary": "health"
       }
     },
     "/api/v1/health-data/analyze": {
       "post": {
-        "summary": "analyze",
-        "security": [
-          {
-            "ApiKeyAuth": []
-          }
-        ],
         "requestBody": {
-          "required": true,
           "content": {
             "application/json": {
               "schema": {
                 "type": "object"
               }
             }
-          }
+          },
+          "required": true
         },
         "responses": {
           "200": {
-            "description": "analyze response",
             "content": {
               "application/json": {
                 "schema": {
                   "type": "object"
                 }
               }
-            }
+            },
+            "description": "analyze response"
           }
-        }
-      }
-    },
-    "/api/v1/supplement/recommend": {
-      "post": {
-        "summary": "recommend",
+        },
         "security": [
           {
             "ApiKeyAuth": []
           }
         ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "recommend response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/v1/import/oura": {
-      "post": {
-        "summary": "oura",
-        "security": [
-          {
-            "ApiKeyAuth": []
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "oura response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object"
-                }
-              }
-            }
-          }
-        }
+        "summary": "analyze"
       }
     },
     "/api/v1/import/labs/csv": {
       "post": {
-        "summary": "csv",
-        "security": [
-          {
-            "ApiKeyAuth": []
-          }
-        ],
         "requestBody": {
-          "required": true,
           "content": {
             "application/json": {
               "schema": {
                 "type": "object"
               }
             }
-          }
+          },
+          "required": true
         },
         "responses": {
           "200": {
-            "description": "csv response",
             "content": {
               "application/json": {
                 "schema": {
                   "type": "object"
                 }
               }
-            }
+            },
+            "description": "csv response"
           }
-        }
-      }
-    },
-    "/api/v1/keys": {
-      "get": {
-        "summary": "keys",
+        },
         "security": [
           {
             "ApiKeyAuth": []
           }
         ],
-        "responses": {
-          "200": {
-            "description": "keys response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object"
-                }
-              }
-            }
-          }
-        }
-      },
+        "summary": "csv"
+      }
+    },
+    "/api/v1/import/oura": {
       "post": {
-        "summary": "keys",
-        "security": [
-          {
-            "ApiKeyAuth": []
-          }
-        ],
         "requestBody": {
-          "required": true,
           "content": {
             "application/json": {
               "schema": {
                 "type": "object"
               }
             }
-          }
+          },
+          "required": true
         },
         "responses": {
           "200": {
-            "description": "keys response",
             "content": {
               "application/json": {
                 "schema": {
                   "type": "object"
                 }
               }
-            }
+            },
+            "description": "oura response"
           }
-        }
-      }
-    },
-    "/api/v1/keys/{key_id}": {
-      "delete": {
-        "summary": "{key_id}",
+        },
         "security": [
           {
             "ApiKeyAuth": []
           }
         ],
-        "parameters": [
-          {
-            "in": "path",
-            "name": "key_id",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "{key_id} response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object"
-                }
-              }
-            }
-          }
-        }
+        "summary": "oura"
       }
     },
     "/api/v1/insights/generate": {
       "post": {
-        "summary": "generate",
-        "security": [
-          {
-            "ApiKeyAuth": []
-          }
-        ],
         "requestBody": {
-          "required": true,
           "content": {
             "application/json": {
               "schema": {
                 "type": "object"
               }
             }
-          }
+          },
+          "required": true
         },
         "responses": {
           "200": {
-            "description": "generate response",
             "content": {
               "application/json": {
                 "schema": {
                   "type": "object"
                 }
               }
-            }
+            },
+            "description": "generate response"
           }
-        }
-      }
-    },
-    "/api/v1/insights/history/{user_id}": {
-      "get": {
-        "summary": "{user_id}",
+        },
         "security": [
           {
             "ApiKeyAuth": []
           }
         ],
+        "summary": "generate"
+      }
+    },
+    "/api/v1/insights/history/{user_id}": {
+      "get": {
         "parameters": [
           {
             "in": "path",
@@ -462,26 +203,26 @@
         ],
         "responses": {
           "200": {
-            "description": "{user_id} response",
             "content": {
               "application/json": {
                 "schema": {
                   "type": "object"
                 }
               }
-            }
+            },
+            "description": "{user_id} response"
           }
-        }
-      }
-    },
-    "/api/v1/insights/{insight_id}": {
-      "get": {
-        "summary": "{insight_id}",
+        },
         "security": [
           {
             "ApiKeyAuth": []
           }
         ],
+        "summary": "{user_id}"
+      }
+    },
+    "/api/v1/insights/{insight_id}": {
+      "get": {
         "parameters": [
           {
             "in": "path",
@@ -494,16 +235,275 @@
         ],
         "responses": {
           "200": {
-            "description": "{insight_id} response",
             "content": {
               "application/json": {
                 "schema": {
                   "type": "object"
                 }
               }
+            },
+            "description": "{insight_id} response"
+          }
+        },
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "summary": "{insight_id}"
+      }
+    },
+    "/api/v1/keys": {
+      "get": {
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            },
+            "description": "keys response"
+          }
+        },
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "summary": "keys"
+      },
+      "post": {
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            },
+            "description": "keys response"
+          }
+        },
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "summary": "keys"
+      }
+    },
+    "/api/v1/keys/{key_id}": {
+      "delete": {
+        "parameters": [
+          {
+            "in": "path",
+            "name": "key_id",
+            "required": true,
+            "schema": {
+              "type": "string"
             }
           }
-        }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            },
+            "description": "{key_id} response"
+          }
+        },
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "summary": "{key_id}"
+      }
+    },
+    "/api/v1/labs/interpret": {
+      "post": {
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            },
+            "description": "interpret response"
+          }
+        },
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "summary": "interpret"
+      }
+    },
+    "/api/v1/orchestrator/multi-llm": {
+      "post": {
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            },
+            "description": "multi-llm response"
+          }
+        },
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "summary": "multi-llm"
+      }
+    },
+    "/api/v1/supplement/recommend": {
+      "post": {
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            },
+            "description": "recommend response"
+          }
+        },
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "summary": "recommend"
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "AskRequest": {
+        "properties": {
+          "context": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "message"
+        ],
+        "type": "object"
+      },
+      "AskResponse": {
+        "properties": {
+          "answer": {
+            "type": "string"
+          },
+          "request_id": {
+            "type": "string"
+          },
+          "sources": {
+            "items": {
+              "type": "object"
+            },
+            "type": "array"
+          }
+        },
+        "type": "object"
+      },
+      "HealthStatus": {
+        "properties": {
+          "environment": {
+            "type": "string"
+          },
+          "services": {
+            "type": "object"
+          },
+          "status": {
+            "type": "string"
+          },
+          "timestamp": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "version": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      }
+    },
+    "securitySchemes": {
+      "ApiKeyAuth": {
+        "in": "header",
+        "name": "X-API-Key",
+        "type": "apiKey"
       }
     }
   }

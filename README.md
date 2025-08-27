@@ -51,6 +51,32 @@ curl -H "Authorization: Bearer YOUR_API_KEY" https://api.bondmcp.com/health/ask
 * Nutrition analysis and meal planning
 * Clinical decision support
 * Symptom analysis and triage
+
+## 🔄 **OpenAPI & SDK Pipeline**
+
+BondMCP now features an **automated OpenAPI ingestion and SDK publishing pipeline**:
+
+### 📦 **Auto-Generated SDKs**
+- **TypeScript SDK**: `@bondmcp/sdk` (auto-published to npm)
+- **Python SDK**: `bondmcp_sdk` (auto-published to PyPI)
+
+### 🔧 **Developer Tools**
+```bash
+# Install official SDKs
+npm install @bondmcp/sdk          # TypeScript/JavaScript
+pip install bondmcp_sdk           # Python
+
+# Build SDKs locally
+node scripts/build-sdks.js all
+
+# Test pipeline utilities
+node scripts/test-pipeline.js test
+```
+
+### 📚 **Documentation**
+- **[OpenAPI Pipeline Guide](docs/openapi-pipeline.md)** - Complete pipeline documentation
+- **[SDK Examples](SDK_EXAMPLES_COMPREHENSIVE.md)** - Code examples in all languages
+- **[API Reference](docs/api-reference/)** - Auto-generated from OpenAPI specs
 * Bloodwork and DNA analysis
 
 ### 🔬 **Research Integration** (4 endpoints)
@@ -207,6 +233,41 @@ curl -X POST "https://api.bondmcp.com/health/nutrition" \
 * **💬 Developer Support**: Technical assistance for integration
 * **📊 Real-time Status**: Monitor platform health and performance
 * **🔐 Security**: HIPAA compliant with enterprise-grade security
+
+## 🔄 **Contract Ingest Pipeline**
+
+BondMCP uses an automated contract ingest pipeline to ensure safe, deterministic API publishing:
+
+### ✅ **Key Features**
+- **Spec Normalization**: Consistent OpenAPI formatting before diff generation
+- **Idempotent Publishing**: Automatic version checks prevent duplicate publications  
+- **Label Automation**: PRs automatically receive `contract` labels for filtering
+- **Migration Safeguards**: Ensures documentation exists for breaking changes
+- **Auto-Ready Workflows**: Draft PRs promoted automatically when checks pass
+
+### 🛠️ **Contract Scripts**
+```bash
+# Normalize OpenAPI specification
+npm run contract:normalize -- --in spec/openapi.json --out openapi/latest.normalized.json
+
+# Check if version exists on npm/PyPI
+npm run contract:preflight npm 1.0.0
+npm run contract:preflight pypi 1.0.0
+
+# Apply contract label to PR
+npm run contract:label contract
+
+# Assert migration documentation
+npm run contract:migrate
+```
+
+### 🔐 **Publishing Safeguards**
+- **Exit Code 0**: Safe to publish (version doesn't exist)
+- **Exit Code 20**: Skip npm publish (version exists)  
+- **Exit Code 21**: Skip PyPI publish (version exists)
+- **Migration Assertion**: Major/minor changes require MIGRATIONS documentation
+
+*See [ADR-002](docs/adr/ADR-002-contract-ingest-pipeline.md) for complete implementation details.*
 
 ## ⚠️ **Important Notes**
 

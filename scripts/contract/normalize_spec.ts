@@ -1,0 +1,354 @@
+#!/usr/bin/env node
+
+
+ */
+
+import * as fs from 'fs';
+import * as path from 'path';
+
+interface NormalizeOptions {
+  inputFile: string;
+  outputFile: string;
+  verbose?: boolean;
+}
+
+/**
+ * Normalizes an OpenAPI specification
+ */
+function normalizeOpenAPISpec(spec: any): any {
+  // Deep clone to avoid modifying the original
+  const normalized = JSON.parse(JSON.stringify(spec));
+
+  // Sort properties alphabetically for consistent output
+  function sortObjectKeys(obj: any): any {
+    if (Array.isArray(obj)) {
+      return obj.map(sortObjectKeys);
+    } else if (obj !== null && typeof obj === 'object') {
+      const sorted: any = {};
+      Object.keys(obj).sort().forEach(key => {
+        sorted[key] = sortObjectKeys(obj[key]);
+      });
+      return sorted;
+    }
+    return obj;
+  }
+
+  // Ensure consistent properties order
+  const orderedSpec: any = {};
+  
+  // Standard OpenAPI property order
+  const propertyOrder = [
+    'openapi',
+    'info',
+    'servers',
+    'paths',
+    'components',
+    'security',
+    'tags',
+    'externalDocs'
+  ];
+
+  // Add properties in order
+  propertyOrder.forEach(prop => {
+    if (normalized[prop] !== undefined) {
+      orderedSpec[prop] = sortObjectKeys(normalized[prop]);
+    }
+  });
+
+  // Add any remaining properties
+  Object.keys(normalized).forEach(key => {
+    if (!propertyOrder.includes(key)) {
+      orderedSpec[key] = sortObjectKeys(normalized[key]);
+    }
+  });
+
+  // Normalize version format if present
+  if (orderedSpec.info && orderedSpec.info.version) {
+    // Remove timestamp suffixes for consistent versioning
+    orderedSpec.info.version = orderedSpec.info.version.replace(/-\d{4}-\d{2}-\d{2}$/, '');
+  }
+
+  return orderedSpec;
+=======
+interface OpenAPISpec {
+  [key: string]: any;
+}
+
+/**
+ * Fields to remove from the specification as they are volatile/ephemeral
+ */
+const VOLATILE_FIELDS = [
+  'x-generated-at',
+  'x-timestamp', 
+  'x-build-time',
+  'x-commit-sha',
+  'x-pipeline-id',
+  'x-generation-timestamp'
+];
+
+/**
+ * Recursively sorts object keys and removes volatile fields
+ * @param obj - Object to normalize
+ * @returns Normalized object with sorted keys
+ */
+function normalizeObject(obj: any): any {
+  if (obj === null || obj === undefined) {
+    return obj;
+  }
+  
+  if (Array.isArray(obj)) {
+    return obj.map(item => normalizeObject(item));
+  }
+  
+  if (typeof obj !== 'object') {
+    return obj;
+  }
+  
+  const normalized: any = {};
+  const sortedKeys = Object.keys(obj).sort();
+  
+  for (const key of sortedKeys) {
+    // Skip volatile fields
+    if (VOLATILE_FIELDS.includes(key)) {
+      continue;
+    }
+    
+    normalized[key] = normalizeObject(obj[key]);
+  }
+  
+  return normalized;
+}
+
+/**
+ * Removes version-specific volatile metadata from info section
+ * @param spec - OpenAPI specification
+ * @returns Spec with cleaned info section
+ */
+function cleanInfoSection(spec: OpenAPISpec): OpenAPISpec {
+  if (spec.info) {
+    const cleanedInfo = { ...spec.info };
+    
+    // Remove build-specific version suffixes (e.g., "1.0.0-2025-08-23" -> "1.0.0")
+    if (cleanedInfo.version && typeof cleanedInfo.version === 'string') {
+      cleanedInfo.version = cleanedInfo.version.replace(/-\d{4}-\d{2}-\d{2}.*$/, '');
+    }
+    
+    // Remove volatile fields from info section
+    VOLATILE_FIELDS.forEach(field => {
+      delete cleanedInfo[field];
+    });
+    
+    spec.info = cleanedInfo;
+  }
+  
+  return spec;
+}
+
+/**
+ * Main normalization function
+ */
+async function normalizeSpec(options: NormalizeOptions): Promise<void> {
+  const { inputFile, outputFile, verbose = false } = options;
+
+  if (verbose) {
+    console.log(`Normalizing OpenAPI spec: ${inputFile} -> ${outputFile}`);
+  }
+
+  // Check if input file exists
+  if (!fs.existsSync(inputFile)) {
+    throw new Error(`Input file not found: ${inputFile}`);
+  }
+
+  // Read and parse the input file
+  const inputContent = fs.readFileSync(inputFile, 'utf-8');
+  let spec: any;
+
+  try {
+    spec = JSON.parse(inputContent);
+  } catch (error) {
+    throw new Error(`Failed to parse JSON from ${inputFile}: ${error}`);
+  }
+
+  // Validate it's an OpenAPI spec
+  if (!spec.openapi) {
+    throw new Error('Input file is not a valid OpenAPI specification (missing "openapi" field)');
+  }
+
+  // Normalize the specification
+  const normalizedSpec = normalizeOpenAPISpec(spec);
+
+  // Ensure output directory exists
+  const outputDir = path.dirname(outputFile);
+  if (!fs.existsSync(outputDir)) {
+    fs.mkdirSync(outputDir, { recursive: true });
+  }
+
+  // Write normalized spec
+  fs.writeFileSync(outputFile, JSON.stringify(normalizedSpec, null, 2) + '\n');
+
+  if (verbose) {
+    console.log(`✅ Normalized OpenAPI spec written to: ${outputFile}`);
+  }
+}
+
+// CLI interface
+if (require.main === module) {
+  const args = process.argv.slice(2);
+  const options: NormalizeOptions = {
+    inputFile: '',
+    outputFile: '',
+    verbose: false
+  };
+
+  for (let i = 0; i < args.length; i++) {
+    switch (args[i]) {
+      case '--in':
+      case '--input':
+        options.inputFile = args[++i];
+        break;
+      case '--out':
+      case '--output':
+        options.outputFile = args[++i];
+        break;
+      case '--verbose':
+      case '-v':
+        options.verbose = true;
+        break;
+      case '--help':
+      case '-h':
+        console.log(`Usage: normalize_spec.ts --in <input> --out <output> [--verbose]
+        
+Options:
+  --in, --input     Input OpenAPI JSON file
+  --out, --output   Output normalized JSON file
+  --verbose, -v     Verbose output
+  --help, -h        Show this help`);
+        process.exit(0);
+        break;
+      default:
+        console.error(`Unknown option: ${args[i]}`);
+        process.exit(1);
+    }
+  }
+
+  if (!options.inputFile || !options.outputFile) {
+    console.error('Error: --in and --out parameters are required');
+    console.error('Use --help for usage information');
+    process.exit(1);
+  }
+
+  normalizeSpec(options)
+    .then(() => {
+      process.exit(0);
+    })
+    .catch((error) => {
+      console.error(`Error: ${error.message}`);
+      process.exit(1);
+    });
+}
+
+export { normalizeSpec, normalizeOpenAPISpec };
+ * @param inputPath - Path to input OpenAPI specification file
+ * @param outputPath - Optional output path (defaults to overwriting input)
+ */
+function normalizeSpec(inputPath: string, outputPath?: string): void {
+  try {
+    console.log(`Normalizing OpenAPI specification: ${inputPath}`);
+    
+    // Read the specification file
+    if (!fs.existsSync(inputPath)) {
+      throw new Error(`Input file does not exist: ${inputPath}`);
+    }
+    
+    const fileContent = fs.readFileSync(inputPath, 'utf8');
+    let spec: OpenAPISpec;
+    
+    try {
+      spec = JSON.parse(fileContent);
+    } catch (parseError: any) {
+      throw new Error(`Failed to parse JSON: ${parseError.message}`);
+    }
+    
+    // Clean version-specific metadata
+    spec = cleanInfoSection(spec);
+    
+    // Normalize the entire specification
+    const normalizedSpec = normalizeObject(spec);
+    
+    // Determine output path
+    const finalOutputPath = outputPath || inputPath;
+    
+    // Write the normalized specification
+    fs.writeFileSync(finalOutputPath, JSON.stringify(normalizedSpec, null, 2));
+    
+    console.log(`✅ Normalized specification written to: ${finalOutputPath}`);
+    
+    // Report on changes made
+    const originalKeys = countKeys(spec);
+    const normalizedKeys = countKeys(normalizedSpec);
+    const removedFields = originalKeys - normalizedKeys;
+    
+    if (removedFields > 0) {
+      console.log(`📝 Removed ${removedFields} volatile field(s) during normalization`);
+    }
+    
+  } catch (error: any) {
+    console.error(`❌ Error normalizing specification: ${error.message}`);
+    process.exit(1);
+  }
+}
+
+/**
+ * Recursively counts the number of keys in an object
+ * @param obj - Object to count keys in
+ * @returns Total number of keys
+ */
+function countKeys(obj: any): number {
+  if (!obj || typeof obj !== 'object' || Array.isArray(obj)) {
+    return 0;
+  }
+  
+  let count = Object.keys(obj).length;
+  
+  for (const value of Object.values(obj)) {
+    count += countKeys(value);
+  }
+  
+  return count;
+}
+
+/**
+ * CLI interface
+ */
+function main(): void {
+  const args = process.argv.slice(2);
+  
+  if (args.length === 0 || args.includes('--help') || args.includes('-h')) {
+    console.log(`
+Usage: normalize_spec.ts <input-file> [output-file]
+
+Examples:
+  normalize_spec.ts openapi/latest.json
+  normalize_spec.ts openapi/latest.json openapi/normalized.json
+  
+Description:
+  Normalizes OpenAPI specifications for diff stability by:
+  - Sorting object keys recursively
+  - Removing volatile metadata fields
+  - Cleaning version-specific information
+    `);
+    process.exit(args.includes('--help') || args.includes('-h') ? 0 : 1);
+  }
+  
+  const inputPath = path.resolve(args[0]);
+  const outputPath = args[1] ? path.resolve(args[1]) : undefined;
+  
+  normalizeSpec(inputPath, outputPath);
+}
+
+// Run if called directly
+if (require.main === module) {
+  main();
+}
+
+export { normalizeSpec, normalizeObject, cleanInfoSection };
