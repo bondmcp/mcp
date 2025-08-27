@@ -101,11 +101,11 @@ console.log(response.answer);
 - **Health Risk Assessment**: Evaluate health risks and get recommendations
 
 ### API Endpoints
-- `/v1/ask` - Health question answering
-- `/v1/labs` - Lab result analysis
-- `/v1/nutrition` - Nutrition analysis
-- `/v1/supplements` - Supplement recommendations
-- `/v1/health` - Health status check
+- `/ask` - Health question answering
+- `/labs` - Lab result analysis
+- `/nutrition` - Nutrition analysis
+- `/supplements` - Supplement recommendations
+- `/health` - Health status check
 
 ## 📚 **Documentation**
 

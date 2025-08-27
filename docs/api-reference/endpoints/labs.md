@@ -1,11 +1,11 @@
 # Lab Result Interpretation API
 
-The `/api/v1/labs/interpret` endpoint provides AI-powered interpretation of laboratory test results, helping to understand medical lab data in plain language.
+The `/api/labs/interpret` endpoint provides AI-powered interpretation of laboratory test results, helping to understand medical lab data in plain language.
 
 ## Endpoint
 
 ```
-POST /api/v1/labs/interpret
+POST /api/labs/interpret
 ```
 
 ## Authentication
@@ -93,7 +93,7 @@ Requires API key authentication via the `X-API-Key` header.
 ### cURL
 
 ```bash
-curl -X POST "https://api.bondmcp.com/api/v1/labs/interpret" \
+curl -X POST "https://api.bondmcp.com/api/labs/interpret" \
   -H "Content-Type: application/json" \
   -H "X-API-Key: YOUR_API_KEY" \
   -d '{

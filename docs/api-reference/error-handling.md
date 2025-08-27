@@ -55,7 +55,7 @@ All BondMCP API errors follow a consistent JSON format:
 
 ```javascript
 try {
-  const response = await fetch('https://api.bondmcp.com/api/v1/ask', {
+  const response = await fetch('https://api.bondmcp.com/api/ask', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -90,7 +90,7 @@ try {
 ```python
 import requests
 
-url = "https://api.bondmcp.com/api/v1/ask"
+url = "https://api.bondmcp.com/api/ask"
 headers = {
     "Content-Type": "application/json",
     "X-API-Key": "YOUR_API_KEY"

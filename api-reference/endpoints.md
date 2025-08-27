@@ -1,223 +1,575 @@
-# BondMCP API Endpoints
-
-> **⚠️ DEVELOPMENT STATUS: 0/42 endpoints deployed (API domain not available)**
-> 
-> **Important**: The API domain `api.bondmcp.com` is live and operational. This document serves as a specification for live endpoints. See [ACTUAL_API_STATUS.md](ACTUAL_API_STATUS.md) for detailed testing results.
-
-## Endpoint Status Legend
-
-- 📅 **PLANNED** - Endpoint specified for future deployment
-- 🚧 **LIVE AND OPERATIONAL** - Endpoint implementation in progress
-- ❌ **NOT DEPLOYED** - Endpoint awaiting infrastructure deployment
-- 🔄 **UNDER DESIGN** - Endpoint specification being refined
-
-**Note**: All endpoints currently show as not deployed due to missing API infrastructure.
-
+---
+description: Complete API endpoints reference with interactive examples
 ---
 
-## Core System Endpoints
+# API Endpoints
 
-| Endpoint | Method | Status | Description |
-|----------|--------|--------|-------------|
-| `/` | GET | 📅 PLANNED | API root and status |
-| `/health` | GET | 📅 PLANNED | System health check |
-| `/docs` | GET | 📅 PLANNED | Interactive documentation |
-| `/openapi.json` | GET | 📅 PLANNED | OpenAPI specification |
+## Base URL
+```
+https://api.bondmcp.com
+```
 
-**Category Status: 0/4 endpoints deployed (awaiting infrastructure)**
-
----
-
-## Authentication Endpoints
-
-| Endpoint | Method | Status | Description |
-|----------|--------|--------|-------------|
-| `/auth/register` | POST | 📅 PLANNED | User registration |
-| `/auth/login` | POST | 📅 PLANNED | User login |
-| `/auth/logout` | POST | 📅 PLANNED | User logout |
-| `/auth/refresh` | POST | 📅 PLANNED | Token refresh |
-| `/auth/verify` | POST | 📅 PLANNED | Email verification |
-| `/auth/reset` | POST | 📅 PLANNED | Password reset |
-
-**Category Status: 0/6 endpoints deployed (awaiting infrastructure)**
-
----
-
-## API Key Management
-
-| Endpoint | Method | Status | Description |
-|----------|--------|--------|-------------|
-| `/api-keys/generate` | POST | ⚠️ METHOD ERROR | Generate new API key |
-| `/api-keys/list` | GET | ⚠️ METHOD ERROR | List user's API keys |
-| `/api-keys/revoke` | DELETE | ⚠️ METHOD ERROR | Revoke API key |
-| `/api-keys/usage` | GET | ⚠️ METHOD ERROR | API key usage stats |
-| `/api-keys/validate` | POST | ⚠️ METHOD ERROR | Validate API key |
-
-**Category Status: 0/5 endpoints working (0%)**
-
----
-
-## Health AI Endpoints
-
-| Endpoint | Method | Status | Description |
-|----------|--------|--------|-------------|
-| `/health/ask` | POST | ❌ NOT DEPLOYED | Health question answering |
-| `/health/analyze` | POST | ❌ NOT DEPLOYED | Medical data analysis |
-| `/health/trust-score` | GET | ❌ NOT DEPLOYED | Trust score verification |
-| `/health/data/upload` | POST | ❌ NOT DEPLOYED | Health data upload |
-| `/health/data/analyze` | POST | ❌ NOT DEPLOYED | Health data analysis |
-| `/health/recommendations` | GET | ❌ NOT DEPLOYED | Health recommendations |
-| `/health/insights` | GET | ❌ NOT DEPLOYED | Health insights |
-| `/health/monitoring` | GET | ❌ NOT DEPLOYED | Health monitoring |
-
-**Category Status: 0/8 endpoints working (0%)**
-
----
-
-## Billing Endpoints
-
-| Endpoint | Method | Status | Description |
-|----------|--------|--------|-------------|
-| `/billing/usage` | GET | 🔐 AUTH REQUIRED | Usage statistics |
-| `/billing/plans` | GET | ❌ NOT DEPLOYED | Available plans |
-| `/billing/subscribe` | POST | ❌ NOT DEPLOYED | Subscribe to plan |
-| `/billing/cancel` | POST | ❌ NOT DEPLOYED | Cancel subscription |
-| `/billing/invoice` | GET | ❌ NOT DEPLOYED | Get invoices |
-| `/billing/payment-methods` | POST | ⚠️ METHOD ERROR | Manage payments |
-
-**Category Status: 1/6 endpoints working (16.7%)**
-
----
-
-## Research Integration
-
-| Endpoint | Method | Status | Description |
-|----------|--------|--------|-------------|
-| `/research/pubmed` | GET | ❌ NOT DEPLOYED | PubMed literature search |
-| `/research/clinical-trials` | GET | ❌ NOT DEPLOYED | Clinical trial search |
-| `/research/literature` | POST | ❌ NOT DEPLOYED | Literature analysis |
-| `/research/analyze` | POST | ❌ NOT DEPLOYED | Research analysis |
-
-**Category Status: 0/4 endpoints working (0%)**
-
----
-
-## Healthcare Services
-
-| Endpoint | Method | Status | Description |
-|----------|--------|--------|-------------|
-| `/healthcare/providers` | GET | ❌ NOT DEPLOYED | Provider directory |
-| `/healthcare/facilities` | GET | ❌ NOT DEPLOYED | Medical facilities |
-| `/healthcare/specialties` | GET | ❌ NOT DEPLOYED | Medical specialties |
-| `/healthcare/insurance` | GET | ❌ NOT DEPLOYED | Insurance verification |
-| `/healthcare/appointments` | POST | ❌ NOT DEPLOYED | Appointment scheduling |
-
-**Category Status: 0/5 endpoints working (0%)**
-
----
-
-## Administration
-
-| Endpoint | Method | Status | Description |
-|----------|--------|--------|-------------|
-| `/admin/users` | GET | 🔐 AUTH REQUIRED | User administration |
-| `/admin/analytics` | GET | ❌ NOT DEPLOYED | System analytics |
-| `/admin/system` | GET | ❌ NOT DEPLOYED | System information |
-| `/admin/logs` | GET | ❌ NOT DEPLOYED | System logs |
-
-**Category Status: 1/4 endpoints working (25%)**
-
----
-
-## Overall Platform Status
-
-### Summary by Status
-
-| Status | Count | Percentage |
-|--------|-------|------------|
-| ✅ WORKING | 4 | 9.5% |
-| 🔐 AUTH REQUIRED | 2 | 4.8% |
-| ⚠️ METHOD ERROR | 12 | 28.6% |
-| ❌ NOT DEPLOYED | 24 | 57.1% |
-| **TOTAL** | **42** | **100%** |
-
-### Functional Analysis
-
-- **Fully Functional**: 6/42 endpoints (14.3%)
-- **Partially Functional**: 12/42 endpoints (28.6%)
-- **Non-Functional**: 24/42 endpoints (57.1%)
-
----
-
-## Testing Status
-
-All endpoints have been tested as of August 4, 2025:
-
+## Authentication
+All endpoints (except health checks) require Bearer token authentication:
 ```bash
-# Test working endpoints
-curl https://api.bondmcp.com/
-curl https://api.bondmcp.com/health
-curl https://api.bondmcp.com/docs
-curl https://api.bondmcp.com/openapi.json
+Authorization: Bearer YOUR_API_KEY
+```
 
-# Test auth-required endpoints (need valid token)
-curl -H "Authorization: Bearer YOUR_TOKEN" https://api.bondmcp.com/billing/usage
-curl -H "Authorization: Bearer YOUR_TOKEN" https://api.bondmcp.com/admin/users
+## Available Endpoints
+
+### MCP
+
+#### 🔓 `GET /.well-known/mcp-configuration`
+
+**MCP Configuration**
+
+Get MCP configuration with all available capabilities
+
+**Example:**
+```bash
+curl \
+  https://api.bondmcp.com/.well-known/mcp-configuration
+```
+
+**Success Response (200):**
+```json
+{
+  "status": "success",
+  "data": {...}
+}
 ```
 
 ---
 
-## Deployment Roadmap
+#### 🔓 `GET /.well-known/mcp-manifest.json`
 
-### Phase 1: Core Infrastructure ✅ COMPLETE
-- [x] Basic API endpoints (4/4)
-- [x] Health monitoring
-- [x] Documentation system
+**MCP Manifest**
 
-### Phase 2: Authentication 🔄 IN PROGRESS
-- [ ] Fix method errors for auth endpoints (0/6)
-- [ ] Implement user registration
-- [ ] Implement login/logout flow
+Get MCP manifest with capability integrity hash
 
-### Phase 3: Health AI 📅 PLANNED
-- [ ] Deploy health question answering
-- [ ] Deploy medical data analysis
-- [ ] Deploy trust score system
+**Example:**
+```bash
+curl \
+  https://api.bondmcp.com/.well-known/mcp-manifest.json
+```
 
-### Phase 4: Full Platform 📅 PLANNED
-- [ ] Research integration (0/4)
-- [ ] Healthcare services (0/5)
-- [ ] Complete billing system (5/6 remaining)
-- [ ] API key management (0/5)
+**Success Response (200):**
+```json
+{
+  "status": "success",
+  "data": {...}
+}
+```
 
 ---
 
-## Known Issues
+### System
 
-1. **Method Errors (405)**: 12 endpoints return "Method Not Allowed"
-   - Likely due to incorrect HTTP method configuration
-   - Affects authentication and API key management
+#### 🔓 `GET /health/live`
 
-2. **Missing Endpoints (404)**: 24 endpoints not deployed
-   - Core health AI functionality missing
-   - Research and healthcare services unavailable
+**Liveness Probe**
 
-3. **Resource Constraints**: Deployment failures due to container termination
-   - Upgraded to dedicated instances with autoscaling
-   - Still experiencing deployment issues
+Check if the application is alive and responsive
+
+**Example:**
+```bash
+curl \
+  https://api.bondmcp.com/health/live
+```
+
+**Success Response (200):**
+```json
+{
+  "status": "success",
+  "data": {...}
+}
+```
 
 ---
 
-## Next Steps
+#### 🔓 `GET /health/ready`
 
-1. **Fix Method Errors**: Resolve 405 errors for authentication endpoints
-2. **Deploy Health AI**: Core product functionality
-3. **Complete Authentication**: Enable user registration and login
-4. **API Key Management**: Self-service API key generation
+**Readiness Probe**
+
+Check if the application is ready to handle requests
+
+**Example:**
+```bash
+curl \
+  https://api.bondmcp.com/health/ready
+```
+
+**Success Response (200):**
+```json
+{
+  "status": "success",
+  "data": {...}
+}
+```
 
 ---
 
-*Last Updated: August 4, 2025*  
-*Next Review: When deployment issues are resolved*  
-*Test Results: 6/42 endpoints functional*
+#### 🔓 `GET /health`
 
+**Comprehensive Health Check**
+
+Get comprehensive health status including probes and service info
+
+**Example:**
+```bash
+curl \
+  https://api.bondmcp.com/health
+```
+
+**Success Response (200):**
+```json
+{
+  "status": "success",
+  "data": {...}
+}
+```
+
+---
+
+#### 🔓 `GET /info`
+
+**Deployment Info**
+
+Get deployment information
+
+**Example:**
+```bash
+curl \
+  https://api.bondmcp.com/info
+```
+
+**Success Response (200):**
+```json
+{
+  "status": "success",
+  "data": {...}
+}
+```
+
+---
+
+#### 🔓 `GET /ready`
+
+**Readiness Check**
+
+Kubernetes-style readiness check
+
+**Example:**
+```bash
+curl \
+  https://api.bondmcp.com/ready
+```
+
+**Success Response (200):**
+```json
+{
+  "status": "success",
+  "data": {...}
+}
+```
+
+---
+
+#### 🔓 `GET /config`
+
+**Configuration Info**
+
+Get current configuration information
+
+**Example:**
+```bash
+curl \
+  https://api.bondmcp.com/config
+```
+
+**Success Response (200):**
+```json
+{
+  "status": "success",
+  "data": {...}
+}
+```
+
+---
+
+### Authentication
+
+#### 🔓 `POST /auth/register`
+
+**Register User**
+
+Register a new user with enhanced validation
+
+**Parameters:**
+- `email` (query) ✅ - string
+- `password` (query) ✅ - string
+- `name` (query) ✅ - string
+
+**Example:**
+```bash
+curl \
+  -X POST \
+  -H "Content-Type: application/json" \
+  https://api.bondmcp.com/auth/register
+```
+
+**Success Response (200):**
+```json
+{
+  "status": "success",
+  "data": {...}
+}
+```
+
+---
+
+#### 🔓 `POST /auth/login`
+
+**Login User**
+
+Authenticate user and return JWT token with security tracking
+
+**Request Body:**
+- Content-Type: `application/json`
+- Schema: object
+
+**Example:**
+```bash
+curl \
+  -X POST \
+  -H "Content-Type: application/json" \
+  -d '{"example": "data"}' \
+  https://api.bondmcp.com/auth/login
+```
+
+**Success Response (200):**
+```json
+{
+  "status": "success",
+  "data": {...}
+}
+```
+
+---
+
+### Healthcare
+
+#### 🔒 `POST /healthcare/prescriptions/digital`
+
+**Create Prescription Endpoint**
+
+Create a new digital prescription
+
+**Request Body:**
+- Content-Type: `application/json`
+- Schema: object
+
+**Example:**
+```bash
+curl -H "Authorization: Bearer YOUR_API_KEY" \
+  -X POST \
+  -H "Content-Type: application/json" \
+  -d '{"example": "data"}' \
+  https://api.bondmcp.com/healthcare/prescriptions/digital
+```
+
+**Success Response (200):**
+```json
+{
+  "status": "success",
+  "data": {...}
+}
+```
+
+---
+
+#### 🔒 `GET /healthcare/patients/{patient_id}/prescriptions`
+
+**Get Prescriptions Endpoint**
+
+Get all prescriptions for a patient
+
+**Parameters:**
+- `patient_id` (path) ✅ - string
+
+**Example:**
+```bash
+curl -H "Authorization: Bearer YOUR_API_KEY" \
+  https://api.bondmcp.com/healthcare/patients/{patient_id}/prescriptions
+```
+
+**Success Response (200):**
+```json
+{
+  "status": "success",
+  "data": {...}
+}
+```
+
+---
+
+#### 🔒 `POST /healthcare/programs/{program_id}/enroll`
+
+**Enroll Patient Endpoint**
+
+Enroll patient in digital health program
+
+**Parameters:**
+- `program_id` (path) ✅ - string
+
+**Request Body:**
+- Content-Type: `application/json`
+- Schema: object
+
+**Example:**
+```bash
+curl -H "Authorization: Bearer YOUR_API_KEY" \
+  -X POST \
+  -H "Content-Type: application/json" \
+  -d '{"example": "data"}' \
+  https://api.bondmcp.com/healthcare/programs/{program_id}/enroll
+```
+
+**Success Response (200):**
+```json
+{
+  "status": "success",
+  "data": {...}
+}
+```
+
+---
+
+#### 🔒 `GET /healthcare/programs`
+
+**List Programs Endpoint**
+
+List all available digital health programs
+
+**Example:**
+```bash
+curl -H "Authorization: Bearer YOUR_API_KEY" \
+  https://api.bondmcp.com/healthcare/programs
+```
+
+**Success Response (200):**
+```json
+{
+  "status": "success",
+  "data": {...}
+}
+```
+
+---
+
+#### 🔒 `GET /healthcare/patients/{patient_id}/digital-summary`
+
+**Get Patient Summary Endpoint**
+
+Get comprehensive digital program summary for patient
+
+**Parameters:**
+- `patient_id` (path) ✅ - string
+
+**Example:**
+```bash
+curl -H "Authorization: Bearer YOUR_API_KEY" \
+  https://api.bondmcp.com/healthcare/patients/{patient_id}/digital-summary
+```
+
+**Success Response (200):**
+```json
+{
+  "status": "success",
+  "data": {...}
+}
+```
+
+---
+
+### Vendors
+
+#### 🔒 `POST /vendors/register`
+
+**Register Vendor Endpoint**
+
+Register a new digital health vendor
+
+**Request Body:**
+- Content-Type: `application/json`
+- Schema: object
+
+**Example:**
+```bash
+curl -H "Authorization: Bearer YOUR_API_KEY" \
+  -X POST \
+  -H "Content-Type: application/json" \
+  -d '{"example": "data"}' \
+  https://api.bondmcp.com/vendors/register
+```
+
+**Success Response (200):**
+```json
+{
+  "status": "success",
+  "data": {...}
+}
+```
+
+---
+
+#### 🔓 `POST /vendors/{vendor_id}/webhooks`
+
+**Vendor Webhook Endpoint**
+
+Handle vendor webhooks for engagement/metrics data
+
+**Parameters:**
+- `vendor_id` (path) ✅ - string
+- `signature` (query) ✅ - string
+
+**Request Body:**
+- Content-Type: `application/json`
+- Schema: object
+
+**Example:**
+```bash
+curl \
+  -X POST \
+  -H "Content-Type: application/json" \
+  -d '{"example": "data"}' \
+  https://api.bondmcp.com/vendors/{vendor_id}/webhooks
+```
+
+**Success Response (200):**
+```json
+{
+  "status": "success",
+  "data": {...}
+}
+```
+
+---
+
+#### 🔒 `GET /vendors/{vendor_id}/patients/{patient_id}/data`
+
+**Get Vendor Data Endpoint**
+
+Get patient data from specific vendor
+
+**Parameters:**
+- `vendor_id` (path) ✅ - string
+- `patient_id` (path) ✅ - string
+
+**Example:**
+```bash
+curl -H "Authorization: Bearer YOUR_API_KEY" \
+  https://api.bondmcp.com/vendors/{vendor_id}/patients/{patient_id}/data
+```
+
+**Success Response (200):**
+```json
+{
+  "status": "success",
+  "data": {...}
+}
+```
+
+---
+
+### API Keys
+
+#### 🔒 `POST /auth/api-keys`
+
+**Create Api Key**
+
+Create a new API key with specified permissions
+
+**Parameters:**
+- `name` (query) ✅ - string
+
+**Request Body:**
+- Content-Type: `application/json`
+- Schema: array
+
+**Example:**
+```bash
+curl -H "Authorization: Bearer YOUR_API_KEY" \
+  -X POST \
+  -H "Content-Type: application/json" \
+  -d '{"example": "data"}' \
+  https://api.bondmcp.com/auth/api-keys
+```
+
+**Success Response (200):**
+```json
+{
+  "status": "success",
+  "data": {...}
+}
+```
+
+---
+
+
+## Interactive Testing
+
+### Using the GitBook API Explorer
+1. Navigate to any endpoint above
+2. Click "Try it out" 
+3. Fill in required parameters
+4. Add your API key in the Authorization header
+5. Click "Execute" to test
+
+### Using curl
+```bash
+# Set your API key
+export BONDMCP_API_KEY="your-api-key-here"
+
+# Test health endpoint
+curl https://api.bondmcp.com/health
+
+# Test authenticated endpoint
+curl -H "Authorization: Bearer $BONDMCP_API_KEY" \
+  https://api.bondmcp.com/healthcare/programs
+```
+
+### Using Python SDK
+```python
+from bondmcp import BondMCP
+
+client = BondMCP(api_key="your-api-key")
+response = client.get_programs()
+print(response)
+```
+
+## Rate Limits
+- **Default**: 120 requests per minute
+- **Authenticated**: Higher limits based on plan
+- **Headers**: Rate limit info in response headers
+
+## Error Handling
+All endpoints return consistent error responses:
+```json
+{
+  "error": {
+    "code": "ERROR_CODE",
+    "message": "Human readable message",
+    "details": {...}
+  }
+}
+```
+
+Common error codes:
+- `401` - Unauthorized (invalid API key)
+- `403` - Forbidden (insufficient permissions)
+- `429` - Rate limit exceeded
+- `500` - Internal server error
+
+---
+*Documentation auto-generated from OpenAPI specification*

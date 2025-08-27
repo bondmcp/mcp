@@ -12,7 +12,7 @@ This document provides an overview of the BondMCP public API for developers inte
 Query the AI with health-related questions and receive medically-informed responses with consensus verification.
 
 ```
-POST /api/v1/ask
+POST /api/ask
 ```
 
 **Request Body**:
@@ -47,7 +47,7 @@ POST /api/v1/ask
 Analyze health data and receive insights with consensus verification.
 
 ```
-POST /api/v1/health-data/analyze
+POST /api/health-data/analyze
 ```
 
 **Request Body**:

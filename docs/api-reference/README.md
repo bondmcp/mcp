@@ -15,13 +15,13 @@ Welcome to the comprehensive API reference for BondMCP - the premier healthcare 
 |----------|-------------|----------------|
 | [`/health`](../endpoints/README.md) | Health check and API status | None |
 | [`/api/v1/orchestrator/multi-llm`](../endpoints/README.md) | Multi-model consensus | API Key |
-| [`/api/v1/labs/interpret`](../endpoints/README.md) | Lab result analysis | API Key |
-| [`/api/v1/health-data/analyze`](../endpoints/README.md) | Health data insights | API Key |
-| [`/api/v1/keys`](../endpoints/README.md) | API key management | API Key |
-| [`/api/v1/ask`](../endpoints/README.md) | Health question answering | API Key |
+| [`/api/labs/interpret`](../endpoints/README.md) | Lab result analysis | API Key |
+| [`/api/health-data/analyze`](../endpoints/README.md) | Health data insights | API Key |
+| [`/api/keys`](../endpoints/README.md) | API key management | API Key |
+| [`/api/ask`](../endpoints/README.md) | Health question answering | API Key |
 | [`/api/v1/supplement/recommend`](../endpoints/README.md) | Supplement recommendations | API Key |
-| [`/api/v1/import/oura`](../endpoints/README.md) | Import health device data | API Key |
-| [`/api/v1/insights`](../endpoints/README.md) | Generate health insights | API Key |
+| [`/api/import/oura`](../endpoints/README.md) | Import health device data | API Key |
+| [`/api/insights`](../endpoints/README.md) | Generate health insights | API Key |
 
 ## SDK Integration
 

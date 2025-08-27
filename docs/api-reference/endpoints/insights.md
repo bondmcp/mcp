@@ -1,13 +1,13 @@
 # Health Insights API
 
-The `/api/v1/insights` endpoints provide AI-powered health insights based on user health data, lab results, and wearable metrics.
+The `/api/insights` endpoints provide AI-powered health insights based on user health data, lab results, and wearable metrics.
 
 ## Endpoints
 
 ### Generate Health Insights
 
 ```
-POST /api/v1/insights/generate
+POST /api/insights/generate
 ```
 
 #### Authentication
@@ -124,7 +124,7 @@ Requires API key authentication via the `X-API-Key` header.
 ### Get Insight History
 
 ```
-GET /api/v1/insights/history/{user_id}
+GET /api/insights/history/{user_id}
 ```
 
 #### Authentication
@@ -189,7 +189,7 @@ Requires API key authentication via the `X-API-Key` header.
 ### Get Insight Details
 
 ```
-GET /api/v1/insights/{insight_id}
+GET /api/insights/{insight_id}
 ```
 
 #### Authentication
@@ -255,7 +255,7 @@ Requires API key authentication via the `X-API-Key` header.
 #### cURL
 
 ```bash
-curl -X POST "https://api.bondmcp.com/api/v1/insights/generate" \
+curl -X POST "https://api.bondmcp.com/api/insights/generate" \
   -H "Content-Type: application/json" \
   -H "X-API-Key: YOUR_API_KEY" \
   -d '{
@@ -320,7 +320,7 @@ except Exception as e:
 #### cURL
 
 ```bash
-curl -X GET "https://api.bondmcp.com/api/v1/insights/history/usr_456def789ghi?limit=5&categories=sleep,energy" \
+curl -X GET "https://api.bondmcp.com/api/insights/history/usr_456def789ghi?limit=5&categories=sleep,energy" \
   -H "X-API-Key: YOUR_API_KEY"
 ```
 

@@ -11,13 +11,13 @@ The BondMCP platform is **fully operational** with the API live at `api.bondmcp.
 ## ✅ Live and Operational Features
 
 ### 🧠 Health AI Intelligence (Live Endpoints)
-- ✅ **Health Question Answering** (`POST /v1/ask`) - Multi-model AI consensus
-- ✅ **Lab Result Analysis** (`POST /v1/labs`) - Medical data interpretation  
-- ✅ **Nutrition Analysis** (`POST /v1/nutrition`) - Meal analysis and planning
-- ✅ **Supplement Recommendations** (`POST /v1/supplements`) - Personalized suggestions
-- ✅ **Health Data Import** (`POST /v1/import/*`) - Oura, Fitbit, Apple Health
-- ✅ **Health Insights** (`POST /v1/insights`) - Risk assessment and scoring
-- ✅ **System Health** (`GET /v1/health`) - API status monitoring
+- ✅ **Health Question Answering** (`POST /ask`) - Multi-model AI consensus
+- ✅ **Lab Result Analysis** (`POST /labs`) - Medical data interpretation  
+- ✅ **Nutrition Analysis** (`POST /nutrition`) - Meal analysis and planning
+- ✅ **Supplement Recommendations** (`POST /supplements`) - Personalized suggestions
+- ✅ **Health Data Import** (`POST /import/*`) - Oura, Fitbit, Apple Health
+- ✅ **Health Insights** (`POST /insights`) - Risk assessment and scoring
+- ✅ **System Health** (`GET /health`) - API status monitoring
 
 ### 🔐 Authentication & Security (Live)
 - ✅ **API Key Authentication** - Secure token-based access

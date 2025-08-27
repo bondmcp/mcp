@@ -9,13 +9,13 @@ The BondMCP Health AI API is now **fully deployed and operational** at:
 ## 🎉 What's Available Now
 
 ### Core Health AI Endpoints
-- ✅ **Health Question Answering** - `POST /v1/ask`
-- ✅ **Lab Result Analysis** - `POST /v1/labs`  
-- ✅ **Nutrition Analysis** - `POST /v1/nutrition`
-- ✅ **Supplement Recommendations** - `POST /v1/supplements`
-- ✅ **Health Data Import** - `POST /v1/import/*`
-- ✅ **Health Insights** - `POST /v1/insights`
-- ✅ **API Health Check** - `GET /v1/health`
+- ✅ **Health Question Answering** - `POST /ask`
+- ✅ **Lab Result Analysis** - `POST /labs`  
+- ✅ **Nutrition Analysis** - `POST /nutrition`
+- ✅ **Supplement Recommendations** - `POST /supplements`
+- ✅ **Health Data Import** - `POST /import/*`
+- ✅ **Health Insights** - `POST /insights`
+- ✅ **API Health Check** - `GET /health`
 
 ### Developer Tools
 - ✅ **CLI Tools** - `pip install bondmcp-cli`

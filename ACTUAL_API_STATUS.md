@@ -12,12 +12,12 @@ BondMCP API is **fully deployed and operational** at `api.bondmcp.com`. The plat
 - **Health AI**: All endpoints operational
 
 ### 🚀 Live Endpoints:
-- `GET /v1/health` - API health check
-- `POST /v1/ask` - Health question answering
-- `POST /v1/labs` - Lab result analysis  
-- `POST /v1/nutrition` - Nutrition analysis
-- `POST /v1/supplements` - Supplement recommendations
-- `POST /v1/import/*` - Health data import
+- `GET /health` - API health check
+- `POST /ask` - Health question answering
+- `POST /labs` - Lab result analysis  
+- `POST /nutrition` - Nutrition analysis
+- `POST /supplements` - Supplement recommendations
+- `POST /import/*` - Health data import
 
 ### ❌ Not Available:
 - Web-based user registration

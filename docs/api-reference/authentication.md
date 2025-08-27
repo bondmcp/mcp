@@ -17,7 +17,7 @@ X-API-Key: YOUR_API_KEY
 ### Example Request (cURL)
 
 ```bash
-curl -X POST "https://api.bondmcp.com/api/v1/ask" \
+curl -X POST "https://api.bondmcp.com/api/ask" \
   -H "Content-Type: application/json" \
   -H "X-API-Key: YOUR_API_KEY" \
   -d '{
@@ -29,7 +29,7 @@ curl -X POST "https://api.bondmcp.com/api/v1/ask" \
 ### Example Request (JavaScript)
 
 ```javascript
-const response = await fetch('https://api.bondmcp.com/api/v1/ask', {
+const response = await fetch('https://api.bondmcp.com/api/ask', {
   method: 'POST',
   headers: {
     'Content-Type': 'application/json',
@@ -50,7 +50,7 @@ console.log(data);
 ```python
 import requests
 
-url = "https://api.bondmcp.com/api/v1/ask"
+url = "https://api.bondmcp.com/api/ask"
 headers = {
     "Content-Type": "application/json",
     "X-API-Key": "YOUR_API_KEY"

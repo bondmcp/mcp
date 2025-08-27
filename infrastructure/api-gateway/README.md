@@ -14,7 +14,7 @@ The API Gateway serves as the entry point for all API requests to the BondMCP pl
 
 ### Authentication
 
-- `/api/v1/auth` (POST): Handles user authentication
+- `/api/auth` (POST): Handles user authentication
 - CORS enabled with OPTIONS method
 
 ### Dashboard Data
@@ -29,7 +29,7 @@ The API Gateway serves as the entry point for all API requests to the BondMCP pl
 
 ### Usage Statistics
 
-- `/api/v1/usage` (GET): Retrieves usage statistics for authenticated users
+- `/api/usage` (GET): Retrieves usage statistics for authenticated users
 - CORS enabled with OPTIONS method
 
 ## Integration
