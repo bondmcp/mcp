@@ -235,4 +235,4 @@ The repository now accurately represents the BondMCP platform's current developm
 
 **Report Prepared By**: Repository Alignment Audit  
 **Next Review**: When api.bondmcp.com infrastructure is deployed  
-**Contact**: See [PLATFORM_MIGRATION_GUIDE.md](PLATFORM_MIGRATION_GUIDE.md) for support information
+**Contact**: See [PLATFORM_MIGRATION_GUIDE.md](#cli-api-only-platform) for support information

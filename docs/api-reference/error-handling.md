@@ -183,8 +183,8 @@ try {
 If you encounter persistent errors or need assistance:
 
 1. Note the error `code` and `request_id`
-2. Check our [Troubleshooting Guide](./support/troubleshooting.md)
-3. Search the [FAQ](./support/faq.md)
+2. Check our **Troubleshooting Guide** (CLI/API only)
+3. Search the **FAQ** (CLI/API only)
 4. Contact support at support@bondmcp.com with the error details
 
 For more information on specific endpoint errors, refer to the individual endpoint documentation.

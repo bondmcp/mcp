@@ -27,4 +27,4 @@ Welcome to BondMCP, the #1 clinically-validated health monitoring platform. This
 
 ## Support
 
-Need help getting started? Check our [troubleshooting guide](../guides/troubleshooting.md) or contact our support team.
+Need help getting started? Check our [troubleshooting guide](../resources/troubleshooting.md) or contact our support team.

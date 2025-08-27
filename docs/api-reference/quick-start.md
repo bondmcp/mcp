@@ -68,7 +68,7 @@ curl -X POST https://api.bondmcp.com/api/v1/ask \
 
 ## Next Steps
 
-- Explore the [API Reference](./README.md) for detailed endpoint documentation
+- Explore the **API Reference** (CLI/API only) for detailed endpoint documentation
 - Check out our [SDK Documentation](https://docs.bondmcp.com/sdks) for language-specific guides
 - See [Examples](https://github.com/bondmcp/mcp/tree/main/examples) for integration patterns
 - Join our [Discord Community](https://discord.gg/bondmcp) for support and updates

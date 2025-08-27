@@ -220,7 +220,7 @@ The API supports recommendations for various health goals, including:
 - `hormone_balance` - Support healthy hormone levels
 - `longevity` - Support healthy aging and longevity
 
-For a complete list of supported goals, refer to our [Health Goals Reference Guide](../advanced/health-goals-reference.md).
+For a complete list of supported goals, refer to our **Health Goals Reference Guide** (CLI/API only).
 
 ## Error Responses
 
@@ -232,7 +232,7 @@ For a complete list of supported goals, refer to our [Health Goals Reference Gui
 | 422 | `validation_error` | Request validation failed (e.g., invalid goals) |
 | 429 | `rate_limit_exceeded` | Rate limit exceeded |
 
-For more details on error handling, see the [Error Handling Guide](../error-handling.md).
+For more details on error handling, see the **Error Handling Guide** (CLI/API only).
 
 ## Best Practices
 
@@ -252,6 +252,6 @@ For more details on error handling, see the [Error Handling Guide](../error-hand
 
 ## Related Endpoints
 
-- [Health Question Answering](./ask.md)
-- [Lab Result Interpretation](./labs.md)
-- [Health Data Analysis](./health-data.md)
+- **Health Question Answering** (CLI/API only)
+- **Lab Result Interpretation** (CLI/API only)
+- **Health Data Analysis** (CLI/API only)

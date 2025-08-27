@@ -1,51 +1,23 @@
-# Actual BondMCP API Status Report
+# API Status
 
-> **Report Generated**: August 23, 2025  
-> **Testing Target**: https://api.bondmcp.com  
-> **Purpose**: Document actual functionality vs documented claims
+## Current Status: CLI/API Only
 
-## ⚠️ CRITICAL FINDING
+BondMCP is currently **CLI and API only**. There is no web-based dashboard, registration, or billing interface.
 
-**API Domain Does Not Exist**: DNS lookup for `api.bondmcp.com` fails with "REFUSED" status.
+### Available Access Methods:
+- **CLI Tools**: Use the BondMCP CLI for all operations
+- **Direct API**: Make direct API calls with authentication
+- **SDKs**: Use our Python, JavaScript, Go, or CLI SDKs
 
-```bash
-$ nslookup api.bondmcp.com
-** server can't find api.bondmcp.com: REFUSED
-```
+### Not Available:
+- ❌ Web-based user registration
+- ❌ Web dashboard
+- ❌ Online billing interface
+- ❌ Browser-based API key management
 
-**Conclusion**: All documented API endpoints are non-functional because the domain doesn't resolve.
+### Getting Started:
+1. Install the CLI: `pip install bondmcp-cli`
+2. Authenticate via CLI: `bondmcp auth login`
+3. Generate API keys via CLI: `bondmcp keys create`
 
-## Summary
-
-- **Documented Claims**: 99% functional (README.md), 14.3% functional (ENDPOINTS.md)
-- **Actual Status**: 0% functional - API domain doesn't exist
-- **Impact**: All SDKs, examples, and documentation reference a non-existent API
-
-## Endpoint Testing Results
-
-### Core System Endpoints
-
-| Endpoint | Method | Documented Status | Actual Status | HTTP Code | Notes |
-|----------|--------|------------------|---------------|-----------|-------|
-| `/` | GET | ✅ WORKING | ❌ DOMAIN NOT FOUND | 000 | DNS resolution failed |
-| `/health` | GET | ✅ WORKING | ❌ DOMAIN NOT FOUND | 000 | DNS resolution failed |
-| `/docs` | GET | ✅ WORKING | ❌ DOMAIN NOT FOUND | 000 | DNS resolution failed |
-| `/openapi.json` | GET | ✅ WORKING | ❌ DOMAIN NOT FOUND | 000 | DNS resolution failed |
-
-### Authentication Endpoints
-
-| Endpoint | Method | Documented Status | Actual Status | HTTP Code | Notes |
-|----------|--------|------------------|---------------|-----------|-------|
-| `/auth/register` | POST | ⚠️ METHOD ERROR | ❌ DOMAIN NOT FOUND | 000 | DNS resolution failed |
-| `/auth/login` | POST | ⚠️ METHOD ERROR | ❌ DOMAIN NOT FOUND | 000 | DNS resolution failed |
-| `/auth/logout` | POST | ⚠️ METHOD ERROR | ❌ DOMAIN NOT FOUND | 000 | DNS resolution failed |
-| `/auth/refresh` | POST | ⚠️ METHOD ERROR | ❌ DOMAIN NOT FOUND | 000 | DNS resolution failed |
-| `/auth/verify` | POST | ⚠️ METHOD ERROR | ❌ DOMAIN NOT FOUND | 000 | DNS resolution failed |
-| `/auth/reset` | POST | ⚠️ METHOD ERROR | ❌ DOMAIN NOT FOUND | 000 | DNS resolution failed |
-
-## Recommendations
-
-1. **Immediate**: Update all documentation to reflect that the API is in development/planning phase
-2. **Short-term**: Remove all false claims of functionality from README.md and other docs
-3. **Medium-term**: Implement actual API infrastructure at api.bondmcp.com
-4. **Long-term**: Align all SDKs and examples with actual deployed functionality
+For full documentation, see the [CLI Tools guide](sdks/cli/README.md).

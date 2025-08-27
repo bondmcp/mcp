@@ -44,7 +44,7 @@ const { status, data } = await apiInstance.apiV1AskPost(
 
 ### Authorization
 
-[ApiKeyAuth](../README.md#ApiKeyAuth)
+**ApiKeyAuth** (CLI/API only)
 
 ### HTTP request headers
 
@@ -87,7 +87,7 @@ This endpoint does not have any parameters.
 
 ### Authorization
 
-[ApiKeyAuth](../README.md#ApiKeyAuth)
+**ApiKeyAuth** (CLI/API only)
 
 ### HTTP request headers
 
@@ -138,7 +138,7 @@ const { status, data } = await apiInstance.apiV1SymptomsPost(
 
 ### Authorization
 
-[ApiKeyAuth](../README.md#ApiKeyAuth)
+**ApiKeyAuth** (CLI/API only)
 
 ### HTTP request headers
 

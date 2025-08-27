@@ -51,18 +51,18 @@ All URIs are relative to *https://api.bondmcp.com*
 
 Class | Method | HTTP request | Description
 ------------ | ------------- | ------------- | -------------
-*DefaultApi* | [**apiV1AskPost**](docs/DefaultApi.md#apiv1askpost) | **POST** /api/v1/ask | Ask a health question
-*DefaultApi* | [**apiV1HealthGet**](docs/DefaultApi.md#apiv1healthget) | **GET** /api/v1/health | Health check endpoint
-*DefaultApi* | [**apiV1SymptomsPost**](docs/DefaultApi.md#apiv1symptomspost) | **POST** /api/v1/symptoms | Analyze symptoms (NEW in v1.0.1)
+*DefaultApi* | ****apiV1AskPost**** (CLI/API only) | **POST** /api/v1/ask | Ask a health question
+*DefaultApi* | ****apiV1HealthGet**** (CLI/API only) | **GET** /api/v1/health | Health check endpoint
+*DefaultApi* | ****apiV1SymptomsPost**** (CLI/API only) | **POST** /api/v1/symptoms | Analyze symptoms (NEW in v1.0.1)
 
 
 ### Documentation For Models
 
- - [ApiV1AskPost200Response](docs/ApiV1AskPost200Response.md)
- - [ApiV1AskPostRequest](docs/ApiV1AskPostRequest.md)
- - [ApiV1HealthGet200Response](docs/ApiV1HealthGet200Response.md)
- - [ApiV1SymptomsPost200Response](docs/ApiV1SymptomsPost200Response.md)
- - [ApiV1SymptomsPostRequest](docs/ApiV1SymptomsPostRequest.md)
+ - **ApiV1AskPost200Response** (CLI/API only)
+ - **ApiV1AskPostRequest** (CLI/API only)
+ - **ApiV1HealthGet200Response** (CLI/API only)
+ - **ApiV1SymptomsPost200Response** (CLI/API only)
+ - **ApiV1SymptomsPostRequest** (CLI/API only)
 
 
 <a id="documentation-for-authorization"></a>

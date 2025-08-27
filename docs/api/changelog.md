@@ -17,8 +17,8 @@ Each entry includes:
 ### Changes
 - API specification updated to version 1.0.1
 - **NEW**: Added `POST /api/v1/symptoms` endpoint for symptom analysis
-- Migration guide: [MIGRATIONS/1.0.0-to-1.0.1.md](../../MIGRATIONS/1.0.0-to-1.0.1.md)
-- Semantic diff: [openapi/history/diff-1.0.0-to-1.0.1.md](../../openapi/history/diff-1.0.0-to-1.0.1.md)
+- Migration guide: **MIGRATIONS/1.0.0-to-1.0.1.md** (CLI/API only)
+- Semantic diff: **openapi/history/diff-1.0.0-to-1.0.1.md** (CLI/API only)
 
 
 ---

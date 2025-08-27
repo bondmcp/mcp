@@ -1,36 +1,66 @@
----
-description: Complete API reference for BondMCP Health AI platform
----
-
 # API Reference
 
-Complete reference documentation for the BondMCP Health AI platform API. Our API provides access to advanced health intelligence, AI-powered health queries, and comprehensive health monitoring capabilities.
+Complete API documentation for the BondMCP Health AI platform.
 
-## API Overview
+## Overview
 
-- **Base URL**: `https://api.bondmcp.com`
-- **Authentication**: Bearer token (API key)
-- **Format**: JSON
-- **Rate Limits**: Varies by plan
-- **Current Endpoints**: 20+ endpoints across 5 categories
+BondMCP provides a REST API for health AI functionality. All endpoints require API key authentication.
 
-## Quick Navigation
+## Base URL
+```
+https://api.bondmcp.com/v1
+```
 
-* [Endpoints Reference](endpoints.md) - Complete list of all API endpoints
-* [Authentication](authentication.md) - API key setup and security
-* [Error Handling](error-handling.md) - Error codes and troubleshooting
-* [Rate Limiting](rate-limiting.md) - Usage limits and best practices
-* [OpenAPI Specification](openapi.md) - Machine-readable API specification
+## Authentication
+All API requests require an API key in the Authorization header:
+```bash
+Authorization: Bearer YOUR_API_KEY
+```
 
-## Getting Started
+## Core Endpoints
 
-1. [Get your API key](../getting-started/authentication.md)
-2. [Make your first API call](../getting-started/first-api-call.md)
-3. [Explore the interactive playground](../guides/api-playground.md)
+### Health Question Answering
+- `POST /ask` - Ask health questions and get AI-powered answers
 
-## SDKs Available
+### Lab Analysis  
+- `POST /labs/interpret` - Analyze and interpret lab results
 
-- [Python SDK](../sdks/python/README.md)
-- [JavaScript/TypeScript SDK](../sdks/javascript/README.md)
-- [CLI Tools](../sdks/cli/README.md)
-- [Go SDK](../sdks/go/README.md)
+### Health Data
+- `POST /health-data/analyze` - Analyze health metrics and data
+
+### Nutrition
+- `POST /nutrition/analyze` - Analyze meals and nutrition data
+
+### Supplements
+- `POST /supplement/recommend` - Get personalized supplement recommendations
+
+### Data Import
+- `POST /import/oura` - Import data from Oura ring
+- `POST /import/fitbit` - Import data from Fitbit
+- `POST /import/apple-health` - Import data from Apple Health
+
+### System
+- `GET /health` - API health check
+- `GET /status` - System status
+
+## Rate Limits
+- Free tier: 1,000 requests/month
+- Pro tier: 50,000 requests/month
+- Enterprise: Custom limits
+
+## Error Handling
+All errors return JSON with error details:
+```json
+{
+  "error": "error_code",
+  "message": "Human readable error message",
+  "details": {}
+}
+```
+
+## CLI Access
+All API functionality is also available via CLI:
+```bash
+pip install bondmcp-cli
+bondmcp --help
+```

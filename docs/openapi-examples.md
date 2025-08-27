@@ -271,6 +271,6 @@ gh workflow run openapi-generation.yml --field force_run=true
 
 For issues with the ingestion pipeline:
 
-- **Documentation**: [docs/openapi-pipeline.md](openapi-pipeline.md)
+- **Documentation**: **docs/openapi-pipeline.md** (CLI/API only)
 - **Testing**: `node scripts/test-pipeline.js test`
 - **Support**: support@bondmcp.com

@@ -1,0 +1,194 @@
+[
+  {
+    "file": "./ACTUAL_API_STATUS.md",
+    "link_text": "CLI Tools guide",
+    "link_url": "sdks/cli/README.md",
+    "line": 23
+  },
+  {
+    "file": "./API_OVERVIEW.md",
+    "link_text": "ENDPOINTS.md",
+    "link_url": "../api-reference/endpoints/README.md",
+    "line": 250
+  },
+  {
+    "file": "./PLATFORM_CAPABILITIES.md",
+    "link_text": "ACTUAL_API_STATUS.md",
+    "link_url": "ACTUAL_API_STATUS.md",
+    "line": 146
+  },
+  {
+    "file": "./PLATFORM_MIGRATION_GUIDE.md",
+    "link_text": "see ACTUAL_API_STATUS.md",
+    "link_url": "ACTUAL_API_STATUS.md",
+    "line": 180
+  },
+  {
+    "file": "./PLATFORM_MIGRATION_GUIDE.md",
+    "link_text": "ACTUAL_API_STATUS.md",
+    "link_url": "ACTUAL_API_STATUS.md",
+    "line": 202
+  },
+  {
+    "file": "./README.md",
+    "link_text": "Getting Started",
+    "link_url": "getting-started/README.md",
+    "line": 112
+  },
+  {
+    "file": "./README.md",
+    "link_text": "API Reference",
+    "link_url": "api-reference/README.md",
+    "line": 113
+  },
+  {
+    "file": "./README.md",
+    "link_text": "SDKs & Tools",
+    "link_url": "sdks/README.md",
+    "line": 114
+  },
+  {
+    "file": "./README.md",
+    "link_text": "CLI Documentation",
+    "link_url": "sdks/cli/README.md",
+    "line": 115
+  },
+  {
+    "file": "./README.md",
+    "link_text": "ACTUAL_API_STATUS.md",
+    "link_url": "ACTUAL_API_STATUS.md",
+    "line": 165
+  },
+  {
+    "file": "./SUMMARY.md",
+    "link_text": "Endpoints",
+    "link_url": "../endpoints/README.md",
+    "line": 11
+  },
+  {
+    "file": "./api-reference/endpoints.md",
+    "link_text": "ACTUAL_API_STATUS.md",
+    "link_url": "ACTUAL_API_STATUS.md",
+    "line": 5
+  },
+  {
+    "file": "./docs/api-reference/README.md",
+    "link_text": "`/health`",
+    "link_url": "../endpoints/README.md",
+    "line": 16
+  },
+  {
+    "file": "./docs/api-reference/README.md",
+    "link_text": "`/api/v1/orchestrator/multi-llm`",
+    "link_url": "../endpoints/README.md",
+    "line": 17
+  },
+  {
+    "file": "./docs/api-reference/README.md",
+    "link_text": "`/api/v1/labs/interpret`",
+    "link_url": "../endpoints/README.md",
+    "line": 18
+  },
+  {
+    "file": "./docs/api-reference/README.md",
+    "link_text": "`/api/v1/health-data/analyze`",
+    "link_url": "../endpoints/README.md",
+    "line": 19
+  },
+  {
+    "file": "./docs/api-reference/README.md",
+    "link_text": "`/api/v1/keys`",
+    "link_url": "../endpoints/README.md",
+    "line": 20
+  },
+  {
+    "file": "./docs/api-reference/README.md",
+    "link_text": "`/api/v1/ask`",
+    "link_url": "../endpoints/README.md",
+    "line": 21
+  },
+  {
+    "file": "./docs/api-reference/README.md",
+    "link_text": "`/api/v1/supplement/recommend`",
+    "link_url": "../endpoints/README.md",
+    "line": 22
+  },
+  {
+    "file": "./docs/api-reference/README.md",
+    "link_text": "`/api/v1/import/oura`",
+    "link_url": "../endpoints/README.md",
+    "line": 23
+  },
+  {
+    "file": "./docs/api-reference/README.md",
+    "link_text": "`/api/v1/insights`",
+    "link_url": "../endpoints/README.md",
+    "line": 24
+  },
+  {
+    "file": "./docs/api-reference/openapi.md",
+    "link_text": "Authentication",
+    "link_url": "authentication.md",
+    "line": 22
+  },
+  {
+    "file": "./getting-started/README.md",
+    "link_text": "Quick Start Guide",
+    "link_url": "quickstart.md",
+    "line": 11
+  },
+  {
+    "file": "./getting-started/README.md",
+    "link_text": "Authentication Setup",
+    "link_url": "authentication.md",
+    "line": 12
+  },
+  {
+    "file": "./getting-started/README.md",
+    "link_text": "First API Call",
+    "link_url": "first-api-call.md",
+    "line": 13
+  },
+  {
+    "file": "./getting-started/README.md",
+    "link_text": "troubleshooting guide",
+    "link_url": "../resources/troubleshooting.md",
+    "line": 30
+  },
+  {
+    "file": "./getting-started/quickstart.md",
+    "link_text": "Authentication Setup",
+    "link_url": "authentication.md",
+    "line": 80
+  },
+  {
+    "file": "./getting-started/quickstart.md",
+    "link_text": "First API Call",
+    "link_url": "first-api-call.md",
+    "line": 81
+  },
+  {
+    "file": "./getting-started/quickstart.md",
+    "link_text": "SDK Documentation",
+    "link_url": "../sdks/README.md",
+    "line": 82
+  },
+  {
+    "file": "./getting-started/first-api-call.md",
+    "link_text": "API Reference",
+    "link_url": "../api-reference/README.md",
+    "line": 50
+  },
+  {
+    "file": "./getting-started/first-api-call.md",
+    "link_text": "SDK Examples",
+    "link_url": "../sdks/README.md",
+    "line": 51
+  },
+  {
+    "file": "./getting-started/first-api-call.md",
+    "link_text": "CLI Documentation",
+    "link_url": "../sdks/cli/README.md",
+    "line": 52
+  }
+]

@@ -107,9 +107,9 @@ curl -X POST \
 
 ## References
 
-- [Pipeline Implementation Guide](openapi-pipeline.md)
-- [Usage Examples](openapi-examples.md)
-- [Migration Guide](../MIGRATIONS/README.md)
+- **Pipeline Implementation Guide** (CLI/API only)
+- **Usage Examples** (CLI/API only)
+- **Migration Guide** (CLI/API only)
 
 ---
 

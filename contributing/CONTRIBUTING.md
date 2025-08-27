@@ -81,4 +81,4 @@ gofmt -d $(git ls-files '*.go') | read; go vet ./...
 1. Tag a release matching the module version, e.g. `git tag sdks/go/vX.Y.Z` and push the tag.
 2. Users will fetch the new version via `go get`.
 
-After publishing, update the [CHANGELOG](CHANGELOG.md) and create a GitHub release.
+After publishing, update the **CHANGELOG** (CLI/API only) and create a GitHub release.

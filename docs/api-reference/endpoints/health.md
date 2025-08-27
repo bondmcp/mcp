@@ -108,4 +108,4 @@ except Exception as e:
 
 ## Related Endpoints
 
-- [API Key Management](./api-keys.md)
+- **API Key Management** (CLI/API only)

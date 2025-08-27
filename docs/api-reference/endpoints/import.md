@@ -327,7 +327,7 @@ The API currently supports importing data from:
 - **Garmin**: Coming soon
 - **Fitbit**: Coming soon
 
-For details on the expected format for each data source, refer to our [Health Data Format Guide](../advanced/health-data-formats.md).
+For details on the expected format for each data source, refer to our **Health Data Format Guide** (CLI/API only).
 
 ## Error Responses
 
@@ -340,7 +340,7 @@ For details on the expected format for each data source, refer to our [Health Da
 | 422 | `validation_error` | Request validation failed (e.g., invalid data format) |
 | 429 | `rate_limit_exceeded` | Rate limit exceeded |
 
-For more details on error handling, see the [Error Handling Guide](../error-handling.md).
+For more details on error handling, see the **Error Handling Guide** (CLI/API only).
 
 ## Best Practices
 
@@ -352,6 +352,6 @@ For more details on error handling, see the [Error Handling Guide](../error-hand
 
 ## Related Endpoints
 
-- [Health Data Analysis](./health-data.md)
-- [Lab Result Interpretation](./labs.md)
-- [Health Insights](./insights.md)
+- **Health Data Analysis** (CLI/API only)
+- **Lab Result Interpretation** (CLI/API only)
+- **Health Insights** (CLI/API only)

@@ -297,8 +297,8 @@ except Exception as e:
 | 404 | `key_not_found` | The specified API key ID was not found |
 | 429 | `rate_limit_exceeded` | Rate limit exceeded |
 
-For more details on error handling, see the [Error Handling Guide](../error-handling.md).
+For more details on error handling, see the **Error Handling Guide** (CLI/API only).
 
 ## Related Endpoints
 
-- [Health Check](./health.md)
+- **Health Check** (CLI/API only)
