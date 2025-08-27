@@ -4,9 +4,9 @@ description: BondMCP Health AI Platform - CLI and API Documentation
 
 # BondMCP - AI Health Answers You Can Trust
 
-## 🚀 **CLI/API Only Platform**
+## 🚀 **LIVE CLI/API Platform**
 
-BondMCP is a **command-line and API-only** health AI platform. There is no web-based dashboard, registration, or billing interface.
+BondMCP is a **fully operational command-line and API-only** health AI platform. The API is now live at `api.bondmcp.com`. There is no web-based dashboard, registration, or billing interface.
 
 ### Quick Start
 
@@ -43,7 +43,7 @@ bondmcp ask "What should I eat for breakfast?"
 curl -H "Authorization: Bearer YOUR_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{"question": "What are the benefits of exercise?"}' \
-  https://api.bondmcp.com/v1/ask
+  https://api.bondmcp.com/ask
 ```
 
 ### Using SDKs

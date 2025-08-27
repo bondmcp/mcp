@@ -1,23 +1,47 @@
 # API Status
 
-## Current Status: CLI/API Only
+## Current Status: LIVE and Operational ✅
 
-BondMCP is currently **CLI and API only**. There is no web-based dashboard, registration, or billing interface.
+BondMCP API is **fully deployed and operational** at `api.bondmcp.com`. The platform is CLI and API only with no web interface.
 
-### Available Access Methods:
-- **CLI Tools**: Use the BondMCP CLI for all operations
-- **Direct API**: Make direct API calls with authentication
-- **SDKs**: Use our Python, JavaScript, Go, or CLI SDKs
+### ✅ Available Services:
+- **CLI Tools**: Full command-line interface
+- **REST API**: Live at `https://api.bondmcp.com`
+- **SDKs**: Python, JavaScript, Go, and CLI SDKs
+- **Authentication**: API key based authentication
+- **Health AI**: All endpoints operational
 
-### Not Available:
-- ❌ Web-based user registration
-- ❌ Web dashboard
-- ❌ Online billing interface
-- ❌ Browser-based API key management
+### 🚀 Live Endpoints:
+- `GET /v1/health` - API health check
+- `POST /v1/ask` - Health question answering
+- `POST /v1/labs` - Lab result analysis  
+- `POST /v1/nutrition` - Nutrition analysis
+- `POST /v1/supplements` - Supplement recommendations
+- `POST /v1/import/*` - Health data import
+
+### ❌ Not Available:
+- Web-based user registration
+- Web dashboard
+- Online billing interface
+- Browser-based API key management
 
 ### Getting Started:
 1. Install the CLI: `pip install bondmcp-cli`
 2. Authenticate via CLI: `bondmcp auth login`
 3. Generate API keys via CLI: `bondmcp keys create`
+4. Start using: `bondmcp ask "What are the benefits of vitamin D?"`
+
+### Test the Live API:
+```bash
+# Health check
+curl https://api.bondmcp.com/health
+
+# Ask a health question (requires API key)
+curl -X POST https://api.bondmcp.com/ask \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"question": "What are the benefits of exercise?"}'
+```
 
 For full documentation, see the [CLI Tools guide](sdks/cli/README.md).
+

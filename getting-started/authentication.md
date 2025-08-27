@@ -24,7 +24,7 @@ bondmcp keys create --name "my-app"
 ### Using API Key
 ```bash
 curl -H "Authorization: Bearer YOUR_API_KEY" \
-  https://api.bondmcp.com/v1/health
+  https://api.bondmcp.com/health
 ```
 
 ### Environment Variable

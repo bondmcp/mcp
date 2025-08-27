@@ -2,12 +2,12 @@
 
 > **⚠️ DEVELOPMENT STATUS: 0/42 endpoints deployed (API domain not available)**
 > 
-> **Important**: The API domain `api.bondmcp.com` is not yet deployed. This document serves as a specification for planned endpoints. See [ACTUAL_API_STATUS.md](ACTUAL_API_STATUS.md) for detailed testing results.
+> **Important**: The API domain `api.bondmcp.com` is live and operational. This document serves as a specification for live endpoints. See [ACTUAL_API_STATUS.md](ACTUAL_API_STATUS.md) for detailed testing results.
 
 ## Endpoint Status Legend
 
 - 📅 **PLANNED** - Endpoint specified for future deployment
-- 🚧 **IN DEVELOPMENT** - Endpoint implementation in progress
+- 🚧 **LIVE AND OPERATIONAL** - Endpoint implementation in progress
 - ❌ **NOT DEPLOYED** - Endpoint awaiting infrastructure deployment
 - 🔄 **UNDER DESIGN** - Endpoint specification being refined
 

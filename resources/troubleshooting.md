@@ -34,7 +34,7 @@ export BONDMCP_API_KEY="your-new-key"
 bondmcp health check
 
 # Verify your internet connection
-curl -I https://api.bondmcp.com/v1/health
+curl -I https://api.bondmcp.com/health
 ```
 
 #### Rate limiting errors

@@ -1,6 +1,6 @@
 # Quick Start Guide
 
-Get up and running with BondMCP in minutes.
+Get up and running with the **live BondMCP API** in minutes! The API is now fully operational at `api.bondmcp.com`.
 
 ## 1. Install CLI
 
