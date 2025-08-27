@@ -5,6 +5,7 @@ on:
     workflows: ["Contract Ingest & SDK Generation Pipeline"]
     types:
       - completed
+name: Auto Ready on Green
 
 jobs:
   auto-ready:
@@ -141,3 +142,93 @@ jobs:
           echo "- **Trigger:** Contract Ingest Pipeline success" >> $GITHUB_STEP_SUMMARY
           echo "- **Required Label:** \`contract\`" >> $GITHUB_STEP_SUMMARY
           echo "- **SHA Matching:** Enhanced accuracy using workflow_run.head_sha" >> $GITHUB_STEP_SUMMARY
+      pull-requests: write
+      contents: read
+    
+    steps:
+      - name: Find and update draft PRs
+        uses: actions/github-script@v7
+        with:
+          script: |
+            console.log('Contract Ingest & SDK Pipeline completed successfully, checking for draft PRs...');
+            
+            // Get all open pull requests
+            const { data: pullRequests } = await github.rest.pulls.list({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'open'
+            });
+            
+            console.log(`Found ${pullRequests.length} open pull requests`);
+            
+            // Filter for draft PRs that match our criteria
+            const targetPRs = pullRequests.filter(pr => {
+              const isDraft = pr.draft;
+              const titleContainsContract = pr.title.toLowerCase().includes('feat(contract-ingest)');
+              const hasContractLabel = pr.labels.some(label => label.name === 'contract');
+              const hasWIPInTitle = pr.title.includes('[WIP]');
+              
+              return isDraft && (titleContainsContract || hasContractLabel);
+            });
+            
+            console.log(`Found ${targetPRs.length} draft PRs matching contract criteria`);
+            
+            for (const pr of targetPRs) {
+              console.log(`Processing PR #${pr.number}: "${pr.title}"`);
+              
+              try {
+                // Convert from draft to ready for review
+                await github.rest.pulls.update({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  pull_number: pr.number,
+                  draft: false
+                });
+                
+                console.log(`✅ Converted PR #${pr.number} from draft to ready for review`);
+                
+                // Remove [WIP] prefix from title if present
+                let newTitle = pr.title;
+                if (newTitle.includes('[WIP]')) {
+                  newTitle = newTitle.replace(/\[WIP\]\s*/gi, '').trim();
+                  
+                  await github.rest.pulls.update({
+                    owner: context.repo.owner,
+                    repo: context.repo.repo,
+                    pull_number: pr.number,
+                    title: newTitle
+                  });
+                  
+                  console.log(`✅ Removed [WIP] prefix from PR #${pr.number} title`);
+                }
+                
+                // Add 'ready-for-review' label
+                await github.rest.issues.addLabels({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  issue_number: pr.number,
+                  labels: ['ready-for-review']
+                });
+                
+                console.log(`✅ Added 'ready-for-review' label to PR #${pr.number}`);
+                
+                // Add a comment to notify about the auto-conversion
+                await github.rest.issues.createComment({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  issue_number: pr.number,
+                  body: `🚀 **Auto-Ready Conversion**\n\nThis PR has been automatically converted from draft to "Ready for Review" because the **Contract Ingest & SDK Pipeline** completed successfully.\n\n✅ Contract ingestion and SDK generation completed\n✅ PR is now ready for review\n✅ Added \`ready-for-review\` label\n${newTitle !== pr.title ? '✅ Removed [WIP] prefix from title\n' : ''}\nPlease ensure all items in the readiness checklist are completed before merging.`
+                });
+                
+                console.log(`✅ Added notification comment to PR #${pr.number}`);
+                
+              } catch (error) {
+                console.error(`❌ Failed to process PR #${pr.number}:`, error.message);
+              }
+            }
+            
+            if (targetPRs.length === 0) {
+              console.log('No draft PRs found matching contract criteria');
+            } else {
+              console.log(`✅ Successfully processed ${targetPRs.length} PR(s)`);
+            }

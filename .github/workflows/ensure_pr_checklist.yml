@@ -1,0 +1,84 @@
+name: Ensure PR Readiness Checklist
+
+on:
+  pull_request:
+    types: [opened, edited, synchronize, ready_for_review]
+
+jobs:
+  ensure-checklist:
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+      contents: read
+
+    steps:
+      - name: Check PR description for readiness checklist
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const prNumber = context.payload.pull_request.number;
+            const prBody = context.payload.pull_request.body || '';
+            
+            // Check if the readiness checklist marker exists
+            const checklistMarker = '## ✅ Readiness Checklist';
+            
+            if (!prBody.includes(checklistMarker)) {
+              console.log('Readiness checklist not found, adding default checklist...');
+              
+              // Default readiness checklist
+              const defaultChecklist = `
+
+            ${checklistMarker}
+
+            - [ ] **Code Quality**
+              - [ ] All linters pass (black, isort, flake8, mypy for Python; eslint for TypeScript)
+              - [ ] All tests pass
+              - [ ] Code follows existing patterns and conventions
+
+            - [ ] **Contract & SDK Changes** (if applicable)
+              - [ ] OpenAPI specification updated and validated
+              - [ ] SDK code generation completed successfully
+              - [ ] Breaking changes documented in CHANGELOG.md
+
+            - [ ] **Documentation**
+              - [ ] README updated (if needed)
+              - [ ] API documentation reflects changes
+              - [ ] Examples updated (if applicable)
+
+            - [ ] **Testing**
+              - [ ] New functionality has tests
+              - [ ] Integration tests pass
+              - [ ] Manual testing completed
+
+            - [ ] **Security & Compliance**
+              - [ ] No secrets or sensitive data in code
+              - [ ] HIPAA compliance considerations reviewed (if applicable)
+              - [ ] Security implications assessed
+
+            - [ ] **Deployment Readiness**
+              - [ ] No breaking changes for existing users
+              - [ ] Migration path documented (if needed)
+              - [ ] Rollback plan considered`;
+
+              // Update the PR description
+              const updatedBody = prBody + defaultChecklist;
+              
+              await github.rest.pulls.update({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                pull_number: prNumber,
+                body: updatedBody
+              });
+              
+              console.log('✅ Default readiness checklist added to PR description');
+              
+              // Add a comment to notify about the checklist addition
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: prNumber,
+                body: '🤖 **Readiness Checklist Added**\\n\\nI\\'ve added a readiness checklist to your PR description. Please review and check off items as you complete them. This helps ensure code quality and smooth deployments.\\n\\nYou can customize the checklist items based on your specific changes.'
+              });
+            } else {
+              console.log('✅ Readiness checklist already present in PR description');
+            }

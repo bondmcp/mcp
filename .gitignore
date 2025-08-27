@@ -23,3 +23,18 @@ build/
 .vscode/
 
 dist/
+# OpenAPI pipeline artifacts
+temp/
+temp_*.json
+temp_*.yaml
+javascript/generated/
+python/generated/
+*.egg-info/
+
+# SDK build artifacts
+javascript/dist/
+python/dist/
+
+# Test files
+temp_test_*.json
+
