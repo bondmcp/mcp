@@ -1,0 +1,139 @@
+{
+  "openapi": "3.0.2",
+  "info": {
+    "title": "BondMCP API",
+    "version": "1.0.1",
+    "description": "The Trusted Protocol for Health AI",
+    "contact": {
+      "name": "BondMCP Support",
+      "email": "support@bondmcp.com",
+      "url": "https://bondmcp.com"
+    }
+  },
+  "servers": [
+    {
+      "url": "https://api.bondmcp.com",
+      "description": "Production server"
+    }
+  ],
+  "paths": {
+    "/api/v1/health": {
+      "get": {
+        "summary": "Health check endpoint",
+        "responses": {
+          "200": {
+            "description": "Service is healthy",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": { "type": "string" },
+                    "timestamp": { "type": "string" }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/ask": {
+      "post": {
+        "summary": "Ask a health question",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "question": { "type": "string" },
+                  "detailed": { "type": "boolean", "default": false }
+                },
+                "required": ["question"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Health answer",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": { "type": "string" },
+                    "answer": { "type": "string" },
+                    "trustScore": { "type": "number" },
+                    "sources": {
+                      "type": "array",
+                      "items": { "type": "string" }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/symptoms": {
+      "post": {
+        "summary": "Analyze symptoms (NEW in v1.0.1)",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "symptoms": {
+                    "type": "array",
+                    "items": { "type": "string" }
+                  },
+                  "age": { "type": "integer" },
+                  "gender": { "type": "string" }
+                },
+                "required": ["symptoms"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Symptom analysis",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "analysis": { "type": "string" },
+                    "severity": { "type": "string" },
+                    "recommendations": {
+                      "type": "array",
+                      "items": { "type": "string" }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "ApiKeyAuth": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "X-API-Key"
+      }
+    }
+  },
+  "security": [
+    { "ApiKeyAuth": [] }
+  ]
+}

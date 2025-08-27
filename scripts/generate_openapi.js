@@ -1,25 +1,34 @@
-#!/usr/bin/env node
 
-/**
- * Dynamic OpenAPI Specification Generator for BondMCP
+
+ * This script is deprecated as of 2025-01-23 in favor of the new automated
+ * OpenAPI ingestion pipeline. See ADR-002 for details.
  * 
- * ⚠️  DEPRECATION NOTICE ⚠️
+ * The new pipeline provides:
+ * - Immutable versioning with complete audit trail
+ * - Automated SDK generation and publishing  
+ * - Semantic diff generation between versions
+ * - Platform-driven authoritative specs (not dynamic probing)
  * 
- * This script is DEPRECATED and should no longer be used for production 
- * OpenAPI generation. It has been replaced by the authoritative platform-dispatched
- * specification from the Contract Ingest & SDK Pipeline.
+ * Migration: Use the repository_dispatch workflow instead:
+ * .github/workflows/openapi-ingestion.yml
  * 
- * Using this script may cause divergence from the official API specification.
+ * For emergency use only - to be removed in Phase 3 of migration.
  * 
- * To override this deprecation (for development/testing only), set the 
- * environment variable: OVERRIDE_OPENAPI_DEPRECATION=true
+ * ---
  * 
+ * ORIGINAL PURPOSE:
+
  * This script automatically generates an OpenAPI specification by:
  * 1. Scanning the actual API endpoints at api.bondmcp.com
  * 2. Extracting endpoint metadata, parameters, and response schemas
  * 3. Generating a complete OpenAPI specification document
  * 4. Publishing to both the documentation site and openapi.bondmcp.com/openapi.bondmcp
  */
+
+console.warn('⚠️  WARNING: This script is DEPRECATED');
+console.warn('Use the new automated OpenAPI ingestion pipeline instead.');
+console.warn('See docs/ADR-002-automated-openapi-pipeline.md for details.');
+console.warn('');
 
 const fs = require('fs');
 const path = require('path');

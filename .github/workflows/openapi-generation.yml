@@ -1,26 +1,56 @@
-name: Dynamic OpenAPI Generation
+name: "[DEPRECATED] Dynamic OpenAPI Generation"
+
+# This workflow is deprecated and replaced by openapi-ingestion.yml
+# It will be removed in a future version once the new pipeline is stable.
 
 on:
-  # Run on schedule (daily)
-  schedule:
-    - cron: '0 0 * * *'  # Run at midnight UTC every day
+  # Temporarily disable automatic triggers
+  # schedule:
+  #   - cron: '0 0 * * *'  # Run at midnight UTC every day
   
-  # Run on API code changes
-  push:
-    branches:
-      - main
-    paths:
-      - 'api/**'
-      - 'src/**'
-      - 'lambda/**'
-      - 'scripts/generate_openapi.js'
+  # Disable push triggers  
+  # push:
+  #   branches:
+  #     - main
+  #   paths:
+  #     - 'api/**'
+  #     - 'src/**'
+  #     - 'lambda/**'
+  #     - 'scripts/generate_openapi.js'
   
-  # Allow manual trigger
+  # Allow manual trigger only for backward compatibility
   workflow_dispatch:
+    inputs:
+      force_run:
+        description: 'Force run this deprecated workflow'
+        required: true
+        default: 'false'
+        type: boolean
 
 jobs:
+  deprecation-notice:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deprecation Notice
+        run: |
+          echo "⚠️ DEPRECATION NOTICE: This workflow is deprecated"
+          echo "The dynamic OpenAPI generation has been replaced by the new ingestion pipeline."
+          echo "Please use the openapi-ingestion.yml workflow instead."
+          echo "This workflow accepts OpenAPI specs from the platform via repository_dispatch events."
+          echo ""
+          echo "For more information, see: .github/workflows/openapi-ingestion.yml"
+          
+          if [ "${{ github.event.inputs.force_run }}" != "true" ]; then
+            echo "Skipping execution. Set force_run=true to run anyway."
+            exit 0
+          fi
+          
+          echo "Proceeding with deprecated workflow as requested..."
+
   generate-openapi:
     runs-on: ubuntu-latest
+    needs: deprecation-notice
+    if: github.event.inputs.force_run == 'true'
     # Add permissions for GitHub token
     permissions:
       contents: write
