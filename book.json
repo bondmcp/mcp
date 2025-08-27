@@ -1,0 +1,203 @@
+{
+  "title": "BondMCP - AI Health Answers You Can Trust",
+  "description": "Complete documentation for the BondMCP Health AI platform - CLI and API only",
+  "author": "BondMCP Team",
+  "language": "en",
+  "direction": "ltr",
+  "gitbook": ">=3.2.0",
+  
+  "structure": {
+    "readme": "README.md",
+    "summary": "SUMMARY.md",
+    "glossary": "GLOSSARY.md",
+    "languages": "LANGS.md"
+  },
+  
+  "variables": {
+    "api_base_url": "https://api.bondmcp.com/v1",
+    "website_url": "https://www.bondmcp.com",
+    "github_repo": "https://github.com/bondmcp/mcp",
+    "cli_package": "bondmcp-cli",
+    "python_package": "bondmcp-python",
+    "js_package": "@bondmcp/sdk",
+    "go_package": "github.com/bondmcp/bondmcp-go",
+    "version": "1.0.0",
+    "platform_status": "CLI/API Only - No Web Interface"
+  },
+  
+  "plugins": [
+    "openapi",
+    "swagger", 
+    "search-pro",
+    "page-toc",
+    "code",
+    "analytics",
+    "sitemap",
+    "theme-api",
+    "expandable-chapters",
+    "github",
+    "edit-link",
+    "back-to-top-button",
+    "copy-code-button",
+    "prism",
+    "advanced-emoji",
+    "katex",
+    "mermaid",
+    "favicon",
+    "meta",
+    "canonical-link",
+    "structured-data"
+  ],
+  
+  "pluginsConfig": {
+    "openapi": {
+      "expandResponses": "all",
+      "showExtensions": true,
+      "tryItOutEnabled": true,
+      "theme": "outline",
+      "pathInMiddlePanel": true,
+      "defaultModelRendering": "example"
+    },
+    
+    "search-pro": {
+      "cutWordLib": "nodejieba",
+      "defineWord": [
+        "BondMCP", "API", "SDK", "Health AI", "CLI", "Authentication", 
+        "Endpoints", "Python", "JavaScript", "Go", "cURL", "REST",
+        "Health", "Medical", "Lab Results", "Nutrition", "Supplements"
+      ],
+      "searchMaxSuggestions": 10,
+      "searchSortBy": "title",
+      "searchHotkeys": {
+        "open": "/",
+        "close": "Escape"
+      }
+    },
+    
+    "page-toc": {
+      "selector": ".markdown-section h1, .markdown-section h2, .markdown-section h3, .markdown-section h4",
+      "position": "before-first",
+      "showByDefault": true,
+      "addClass": "nav",
+      "className": "toc"
+    },
+    
+    "code": {
+      "copyButtons": true
+    },
+    
+    "analytics": {
+      "google": "G-XXXXXXXXXX"
+    },
+    
+    "sitemap": {
+      "hostname": "https://www.bondmcp.com",
+      "changefreq": "weekly",
+      "priority": 0.8
+    },
+    
+    "theme-api": {
+      "languages": [
+        {"lang": "bash", "name": "cURL"},
+        {"lang": "python", "name": "Python"},
+        {"lang": "javascript", "name": "JavaScript"},
+        {"lang": "go", "name": "Go"}
+      ],
+      "split": false,
+      "theme": "dark"
+    },
+    
+    "expandable-chapters": {
+      "deep": true
+    },
+    
+    "github": {
+      "url": "https://github.com/bondmcp/mcp"
+    },
+    
+    "edit-link": {
+      "base": "https://github.com/bondmcp/mcp/edit/main",
+      "label": "Edit This Page"
+    },
+    
+    "back-to-top-button": {
+      "showLevelIcon": false
+    },
+    
+    "copy-code-button": {
+      "copyTitle": "Copy to clipboard",
+      "copySuccessful": "Copied!"
+    },
+    
+    "prism": {
+      "css": ["prismjs/themes/prism-okaidia.css"],
+      "lang": ["bash", "python", "javascript", "json", "yaml", "go", "curl"]
+    },
+    
+    "favicon": {
+      "shortcut": "assets/favicon.ico",
+      "bookmark": "assets/favicon.ico"
+    },
+    
+    "meta": {
+      "data": [
+        {
+          "name": "description",
+          "content": "BondMCP Health AI platform documentation - CLI and API only. Get AI-powered health answers, lab analysis, and nutrition insights."
+        },
+        {
+          "name": "keywords", 
+          "content": "health AI, medical API, lab analysis, nutrition, CLI tools, health data, BondMCP"
+        },
+        {
+          "property": "og:title",
+          "content": "BondMCP - AI Health Answers You Can Trust"
+        },
+        {
+          "property": "og:description",
+          "content": "Complete documentation for the BondMCP Health AI platform - CLI and API only"
+        },
+        {
+          "property": "og:type",
+          "content": "website"
+        },
+        {
+          "property": "og:url",
+          "content": "https://www.bondmcp.com"
+        },
+        {
+          "name": "twitter:card",
+          "content": "summary_large_image"
+        },
+        {
+          "name": "twitter:title",
+          "content": "BondMCP - AI Health Answers You Can Trust"
+        }
+      ]
+    },
+    
+    "canonical-link": {
+      "base": "https://www.bondmcp.com"
+    },
+    
+    "structured-data": {
+      "enable": true,
+      "type": "TechArticle"
+    }
+  },
+  
+  "pdf": {
+    "fontSize": 12,
+    "fontFamily": "Arial",
+    "paperSize": "a4",
+    "chapterMark": "pagebreak",
+    "pageBreaksBefore": "/",
+    "margin": {
+      "top": 56,
+      "bottom": 56,
+      "right": 62,
+      "left": 62
+    }
+  }
+}
+

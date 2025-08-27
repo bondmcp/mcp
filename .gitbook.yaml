@@ -4,18 +4,34 @@ structure:
   readme: README.md
   summary: SUMMARY.md
 
+# Enhanced GitBook configuration for optimal user experience
 plugins:
   - openapi
   - swagger
   - search-pro
   - page-toc
   - code
+  - analytics
+  - sitemap
+  - theme-api
+  - expandable-chapters
+  - github
+  - edit-link
+  - back-to-top-button
+  - copy-code-button
+  - prism
+  - advanced-emoji
+  - katex
+  - mermaid
 
 pluginsConfig:
   openapi:
     expandResponses: all
     showExtensions: true
     tryItOutEnabled: true
+    theme: "outline"
+    pathInMiddlePanel: true
+    
   search-pro:
     cutWordLib: nodejieba
     defineWord: 
@@ -23,19 +39,91 @@ pluginsConfig:
       - API
       - SDK
       - Health AI
+      - CLI
+      - Authentication
+      - Endpoints
+      - Python
+      - JavaScript
+      - Go
+    searchMaxSuggestions: 10
+    searchSortBy: "title"
+    
   page-toc:
-    selector: ".markdown-section h1, .markdown-section h2, .markdown-section h3"
+    selector: ".markdown-section h1, .markdown-section h2, .markdown-section h3, .markdown-section h4"
     position: "before-first"
     showByDefault: true
+    addClass: "nav"
+    className: "toc"
+    
   code:
     copyButtons: true
+    
+  analytics:
+    google: "G-XXXXXXXXXX"  # Replace with actual Google Analytics ID
+    
+  sitemap:
+    hostname: "https://www.bondmcp.com"
+    
+  theme-api:
+    languages:
+      - lang: "bash"
+        name: "cURL"
+      - lang: "python"
+        name: "Python"
+      - lang: "javascript"
+        name: "JavaScript"
+      - lang: "go"
+        name: "Go"
+    split: false
+    
+  expandable-chapters:
+    deep: true
+    
+  github:
+    url: "https://github.com/bondmcp/mcp"
+    
+  edit-link:
+    base: "https://github.com/bondmcp/mcp/edit/main"
+    label: "Edit This Page"
+    
+  back-to-top-button:
+    showLevelIcon: false
+    
+  copy-code-button:
+    copyTitle: "Copy to clipboard"
+    copySuccessful: "Copied!"
+    
+  prism:
+    css:
+      - "prismjs/themes/prism-okaidia.css"
+    lang:
+      - "bash"
+      - "python"
+      - "javascript"
+      - "json"
+      - "yaml"
+      - "go"
+      - "curl"
 
+# PDF export configuration
 pdf:
   fontSize: 12
   fontFamily: "Arial"
   paperSize: "a4"
+  chapterMark: "pagebreak"
+  pageBreaksBefore: "/"
   margin:
     top: 56
     bottom: 56
     right: 62
     left: 62
+
+# Variables for content customization
+variables:
+  api_base_url: "https://api.bondmcp.com/v1"
+  website_url: "https://www.bondmcp.com"
+  github_repo: "https://github.com/bondmcp/mcp"
+  cli_package: "bondmcp-cli"
+  python_package: "bondmcp-python"
+  js_package: "@bondmcp/sdk"
+  go_package: "github.com/bondmcp/bondmcp-go"
