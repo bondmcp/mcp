@@ -1,3 +1,5 @@
+root: ./
+
 structure:
   readme: README.md
   summary: SUMMARY.md
@@ -5,8 +7,35 @@ structure:
 plugins:
   - openapi
   - swagger
+  - search-pro
+  - page-toc
+  - code
 
 pluginsConfig:
   openapi:
     expandResponses: all
     showExtensions: true
+    tryItOutEnabled: true
+  search-pro:
+    cutWordLib: nodejieba
+    defineWord: 
+      - BondMCP
+      - API
+      - SDK
+      - Health AI
+  page-toc:
+    selector: ".markdown-section h1, .markdown-section h2, .markdown-section h3"
+    position: "before-first"
+    showByDefault: true
+  code:
+    copyButtons: true
+
+pdf:
+  fontSize: 12
+  fontFamily: "Arial"
+  paperSize: "a4"
+  margin:
+    top: 56
+    bottom: 56
+    right: 62
+    left: 62
