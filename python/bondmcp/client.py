@@ -19,6 +19,11 @@ class BondMCPError(Exception):
     pass
 
 
+class BondMCPInfrastructureError(BondMCPError):
+    """Exception raised when API infrastructure is not available."""
+    pass
+
+
 class BondMCPAPIError(BondMCPError):
     """Exception raised for API errors."""
     
@@ -70,6 +75,33 @@ class BondMCP:
             "Content-Type": "application/json",
             "User-Agent": "BondMCP-Python-SDK/1.0.0"
         })
+        
+        # Check API availability on initialization
+        self._api_available = None
+    
+    def _check_api_availability(self) -> bool:
+        """Check if the API infrastructure is available."""
+        if self._api_available is not None:
+            return self._api_available
+            
+        try:
+            # Try a simple DNS resolution and connection test
+            response = self.session.get(f"{self.base_url}/health", timeout=5)
+            self._api_available = True
+            return True
+        except (requests.exceptions.ConnectionError, 
+                requests.exceptions.Timeout):
+            self._api_available = False
+            return False
+    
+    def _handle_api_unavailable(self, method_name: str):
+        """Handle API unavailability with helpful error message."""
+        raise BondMCPInfrastructureError(
+            f"BondMCP API infrastructure is not yet deployed. "
+            f"The domain '{self.base_url}' is not available. "
+            f"Method '{method_name}' cannot be executed. "
+            f"See ACTUAL_API_STATUS.md for current deployment status."
+        )
     
     def ask(
         self,
@@ -91,8 +123,11 @@ class BondMCP:
             AskResponse object with the answer and metadata
             
         Raises:
+            BondMCPInfrastructureError: If API infrastructure is not deployed
             BondMCPAPIError: If the API request fails
         """
+        if not self._check_api_availability():
+            self._handle_api_unavailable("ask")
         request_data = AskRequest(
             query=query,
             conversation_id=conversation_id,

@@ -47,6 +47,80 @@ export interface SymptomAnalysisResponse {
   recommendations: string[];
 }
 
+export class BondMCPInfrastructureError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = 'BondMCPInfrastructureError';
+  }
+}
+
+export class BondMCPError extends Error {
+  public statusCode?: number;
+  public response?: any;
+
+  constructor(message: string, statusCode?: number, response?: any) {
+    super(message);
+    this.name = 'BondMCPError';
+    this.statusCode = statusCode;
+    this.response = response;
+  }
+}
+
+export class BondMCP {
+  private config: Required<BondMCPConfig>;
+  private baseURL: string;
+  private apiAvailable: boolean | null = null;
+
+  constructor(config: BondMCPConfig) {
+    this.config = {
+      environment: 'production',
+      timeout: 30000,
+      retries: 3,
+      rateLimit: { requests: 100, window: 60000 },
+      ...config,
+    };
+
+    this.baseURL = this.config.environment === 'production' 
+      ? 'https://api.bondmcp.com'
+      : 'https://api-staging.bondmcp.com';
+  }
+
+  private async checkApiAvailability(): Promise<boolean> {
+    if (this.apiAvailable !== null) {
+      return this.apiAvailable;
+    }
+
+    try {
+      const response = await fetch(`${this.baseURL}/health`, {
+        method: 'GET',
+        timeout: 5000,
+      });
+      this.apiAvailable = response.ok;
+      return this.apiAvailable;
+    } catch (error) {
+      this.apiAvailable = false;
+      return false;
+    }
+  }
+
+  private handleApiUnavailable(methodName: string): never {
+    throw new BondMCPInfrastructureError(
+      `BondMCP API infrastructure is not yet deployed. ` +
+      `The domain '${this.baseURL}' is not available. ` +
+      `Method '${methodName}' cannot be executed. ` +
+      `See ACTUAL_API_STATUS.md for current deployment status.`
+    );
+  }
+
+  /**
+   * Ask a health question using multi-model consensus
+   */
+  async ask(request: AskRequest): Promise<AskResponse> {
+    if (!(await this.checkApiAvailability())) {
+      this.handleApiUnavailable('ask');
+    }
+    return this.makeRequest('/ask', 'POST', request);
+  }
 // High-level client class
 import { Configuration, DefaultApi } from './generated';
 
