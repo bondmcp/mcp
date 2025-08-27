@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.0.1] - 2025-08-23
+
+### API Changes
+- Updated to OpenAPI specification version 1.0.1
+- Added new `/api/v1/symptoms` endpoint for symptom analysis
+- See `MIGRATIONS/1.0.0-to-1.0.1.md` for migration guide
+- View semantic diff in `openapi/history/diff-1.0.0-to-1.0.1.md`
+
+### SDK Updates
+- TypeScript SDK (@bondmcp/sdk) version 1.0.1
+- Python SDK (bondmcp_sdk) version 1.0.1
+
+
+
 All notable changes to the BondMCP Python SDK will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
