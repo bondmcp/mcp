@@ -29,16 +29,16 @@ curl -X POST "https://api.bondmcp.com/api/v1/ask" \
 ### Example Request (JavaScript)
 
 ```javascript
-const response = await fetch('https://api.bondmcp.com/api/v1/ask', {
-  method: 'POST',
+const response = await fetch("https://api.bondmcp.com/api/v1/ask", {
+  method: "POST",
   headers: {
-    'Content-Type': 'application/json',
-    'X-API-Key': 'YOUR_API_KEY'
+    "Content-Type": "application/json",
+    "X-API-Key": "YOUR_API_KEY",
   },
   body: JSON.stringify({
-    message: 'What are the symptoms of diabetes?',
-    context: 'health_consultation'
-  })
+    message: "What are the symptoms of diabetes?",
+    context: "health_consultation",
+  }),
 });
 
 const data = await response.json();
@@ -86,13 +86,13 @@ You can manage your API keys through the [BondMCP Developer Portal](https://bond
 
 If authentication fails, you'll receive one of these error responses:
 
-| Status Code | Error Type | Description |
-|-------------|------------|-------------|
-| 401 | Unauthorized | No API key was provided in the request |
-| 403 | Forbidden | The provided API key is invalid or has been revoked |
-| 429 | Too Many Requests | The API key has exceeded its rate limit |
+| Status Code | Error Type        | Description                                         |
+| ----------- | ----------------- | --------------------------------------------------- |
+| 401         | Unauthorized      | No API key was provided in the request              |
+| 403         | Forbidden         | The provided API key is invalid or has been revoked |
+| 429         | Too Many Requests | The API key has exceeded its rate limit             |
 
-For more information on handling errors, see the **Error Handling**  guide.
+For more information on handling errors, see the **Error Handling** guide.
 
 ## SDK Authentication
 
@@ -101,7 +101,7 @@ When using our official SDKs, authentication is handled automatically once you i
 ```javascript
 // JavaScript SDK
 const client = new BondMCPClient({
-  apiKey: 'YOUR_API_KEY'
+  apiKey: "YOUR_API_KEY",
 });
 ```
 
@@ -110,4 +110,4 @@ const client = new BondMCPClient({
 client = BondMCPClient(api_key="YOUR_API_KEY")
 ```
 
-For more information on using our SDKs, see the **SDK Integration**  guides.
+For more information on using our SDKs, see the **SDK Integration** guides.

@@ -133,7 +133,5 @@
       }
     }
   },
-  "security": [
-    { "ApiKeyAuth": [] }
-  ]
+  "security": [{ "ApiKeyAuth": [] }]
 }

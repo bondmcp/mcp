@@ -31,13 +31,13 @@ Requires API key authentication via the `X-API-Key` header.
 
 ##### Request Parameters
 
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| `user_id` | string | Yes | Unique identifier for the user |
-| `data_sources` | array | No | Specific data sources to include (defaults to all available sources) |
-| `time_range` | object | No | Time range for data analysis (defaults to last 30 days) |
-| `focus_areas` | array | No | Specific health areas to focus on (defaults to all areas) |
-| `include_recommendations` | boolean | No | Whether to include actionable recommendations (default: `true`) |
+| Parameter                 | Type    | Required | Description                                                          |
+| ------------------------- | ------- | -------- | -------------------------------------------------------------------- |
+| `user_id`                 | string  | Yes      | Unique identifier for the user                                       |
+| `data_sources`            | array   | No       | Specific data sources to include (defaults to all available sources) |
+| `time_range`              | object  | No       | Time range for data analysis (defaults to last 30 days)              |
+| `focus_areas`             | array   | No       | Specific health areas to focus on (defaults to all areas)            |
+| `include_recommendations` | boolean | No       | Whether to include actionable recommendations (default: `true`)      |
 
 #### Response Format
 
@@ -115,7 +115,7 @@ Requires API key authentication via the `X-API-Key` header.
   "data_coverage": {
     "health_data": 0.95,
     "labs": 0.75,
-    "wearables": 0.90
+    "wearables": 0.9
   },
   "user_id": "usr_456def789ghi"
 }
@@ -133,19 +133,19 @@ Requires API key authentication via the `X-API-Key` header.
 
 #### Path Parameters
 
-| Parameter | Description |
-|-----------|-------------|
+| Parameter | Description                    |
+| --------- | ------------------------------ |
 | `user_id` | Unique identifier for the user |
 
 #### Query Parameters
 
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| `limit` | integer | No | Maximum number of insights to return (default: `10`, max: `100`) |
-| `offset` | integer | No | Number of insights to skip (default: `0`) |
-| `categories` | string | No | Comma-separated list of categories to filter by |
-| `start_date` | string | No | ISO 8601 date to filter insights from |
-| `end_date` | string | No | ISO 8601 date to filter insights to |
+| Parameter    | Type    | Required | Description                                                      |
+| ------------ | ------- | -------- | ---------------------------------------------------------------- |
+| `limit`      | integer | No       | Maximum number of insights to return (default: `10`, max: `100`) |
+| `offset`     | integer | No       | Number of insights to skip (default: `0`)                        |
+| `categories` | string  | No       | Comma-separated list of categories to filter by                  |
+| `start_date` | string  | No       | ISO 8601 date to filter insights from                            |
+| `end_date`   | string  | No       | ISO 8601 date to filter insights to                              |
 
 #### Response Format
 
@@ -198,8 +198,8 @@ Requires API key authentication via the `X-API-Key` header.
 
 #### Path Parameters
 
-| Parameter | Description |
-|-----------|-------------|
+| Parameter    | Description                       |
+| ------------ | --------------------------------- |
 | `insight_id` | Unique identifier for the insight |
 
 #### Response Format
@@ -269,10 +269,10 @@ curl -X POST "https://api.bondmcp.com/api/v1/insights/generate" \
 #### JavaScript
 
 ```javascript
-import { BondMCPClient } from '@bondmcp/sdk';
+import { BondMCPClient } from "@bondmcp/sdk";
 
 const client = new BondMCPClient({
-  apiKey: 'YOUR_API_KEY'
+  apiKey: "YOUR_API_KEY",
 });
 
 async function generateHealthInsights() {
@@ -281,9 +281,9 @@ async function generateHealthInsights() {
       user_id: "usr_456def789ghi",
       data_sources: ["health_data", "labs", "wearables"],
       focus_areas: ["sleep", "energy"],
-      include_recommendations: true
+      include_recommendations: true,
     });
-    
+
     console.log("Insights:", response.insights);
     console.log("Summary:", response.summary);
   } catch (error) {
@@ -308,7 +308,7 @@ try:
         focus_areas=["sleep", "energy"],
         include_recommendations=True
     )
-    
+
     print("Insights:", response.insights)
     print("Summary:", response.summary)
 except Exception as e:
@@ -327,19 +327,19 @@ curl -X GET "https://api.bondmcp.com/api/v1/insights/history/usr_456def789ghi?li
 #### JavaScript
 
 ```javascript
-import { BondMCPClient } from '@bondmcp/sdk';
+import { BondMCPClient } from "@bondmcp/sdk";
 
 const client = new BondMCPClient({
-  apiKey: 'YOUR_API_KEY'
+  apiKey: "YOUR_API_KEY",
 });
 
 async function getInsightHistory() {
   try {
     const response = await client.insights.history("usr_456def789ghi", {
       limit: 5,
-      categories: "sleep,energy"
+      categories: "sleep,energy",
     });
-    
+
     console.log("Insight History:", response.insights);
     console.log("Total Insights:", response.pagination.total);
   } catch (error) {
@@ -363,7 +363,7 @@ try:
         limit=5,
         categories="sleep,energy"
     )
-    
+
     print("Insight History:", response.insights)
     print("Total Insights:", response.pagination.total)
 except Exception as e:
@@ -387,14 +387,14 @@ The API can generate insights for various health categories, including:
 
 ## Error Responses
 
-| Status Code | Error Code | Description |
-|-------------|------------|-------------|
-| 400 | `invalid_request` | Invalid request parameters |
-| 401 | `authentication_error` | Missing API key |
-| 403 | `permission_denied` | Invalid API key or insufficient permissions |
-| 404 | `not_found` | User or insight not found |
-| 422 | `insufficient_data` | Not enough data to generate insights |
-| 429 | `rate_limit_exceeded` | Rate limit exceeded |
+| Status Code | Error Code             | Description                                 |
+| ----------- | ---------------------- | ------------------------------------------- |
+| 400         | `invalid_request`      | Invalid request parameters                  |
+| 401         | `authentication_error` | Missing API key                             |
+| 403         | `permission_denied`    | Invalid API key or insufficient permissions |
+| 404         | `not_found`            | User or insight not found                   |
+| 422         | `insufficient_data`    | Not enough data to generate insights        |
+| 429         | `rate_limit_exceeded`  | Rate limit exceeded                         |
 
 For more details on error handling, see the **Error Handling Guide** .
 
@@ -415,6 +415,6 @@ For more details on error handling, see the **Error Handling Guide** .
 
 ## Related Endpoints
 
-- **Health Data Analysis** 
-- **Lab Result Interpretation** 
-- **Health Data Import** 
+- **Health Data Analysis**
+- **Lab Result Interpretation**
+- **Health Data Import**

@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+
 - OpenAPI change management workflows with diff guard
 - Automated SDK regeneration on specification changes
 - Spectral linting and schema validation
@@ -16,12 +17,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Comprehensive documentation for API change process
 
 ### Changed
+
 - Enhanced contributing guidelines with spec change workflow
 - Updated package scripts for OpenAPI operations
 
 ## [0.1.0] - 2025-01-23
 
 ### Added
+
 - Initial project setup
 - Basic OpenAPI contract ingestion pipeline
 - TypeScript, Python, and Go SDK scaffolding
@@ -29,5 +32,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Repository dispatch workflows for automated ingestion
 
 ### Security
+
 - Preflight checks to prevent duplicate package publications
 - Secure token management for publishing workflows

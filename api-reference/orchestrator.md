@@ -26,13 +26,13 @@ Requires API key authentication via the `X-API-Key` header.
 
 ### Request Parameters
 
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| `query` | string | Yes | The health-related query to process |
-| `context` | string | No | Context for the query (e.g., "patient_medication_review", "clinical_decision_support") |
-| `consensus_threshold` | number | No | Minimum agreement threshold between models (0.0-1.0, default: 0.8) |
-| `include_model_responses` | boolean | No | Whether to include individual model responses (default: `false`) |
-| `max_tokens` | integer | No | Maximum length of the response (default: `500`, max: `2000`) |
+| Parameter                 | Type    | Required | Description                                                                            |
+| ------------------------- | ------- | -------- | -------------------------------------------------------------------------------------- |
+| `query`                   | string  | Yes      | The health-related query to process                                                    |
+| `context`                 | string  | No       | Context for the query (e.g., "patient_medication_review", "clinical_decision_support") |
+| `consensus_threshold`     | number  | No       | Minimum agreement threshold between models (0.0-1.0, default: 0.8)                     |
+| `include_model_responses` | boolean | No       | Whether to include individual model responses (default: `false`)                       |
+| `max_tokens`              | integer | No       | Maximum length of the response (default: `500`, max: `2000`)                           |
 
 ## Response Format
 
@@ -79,15 +79,15 @@ Requires API key authentication via the `X-API-Key` header.
 
 ### Response Fields
 
-| Field | Type | Description |
-|-------|------|-------------|
-| `request_id` | string | Unique identifier for the request |
-| `timestamp` | string | ISO 8601 timestamp of when the response was generated |
-| `consensus_response` | string | The unified response generated from multiple models |
-| `confidence_score` | number | Overall confidence score between 0 and 1 |
-| `sources` | array | List of medical sources referenced |
-| `model_responses` | array | Individual responses from each model (if `include_model_responses` is `true`) |
-| `consensus_metrics` | object | Metrics about the consensus process |
+| Field                | Type   | Description                                                                   |
+| -------------------- | ------ | ----------------------------------------------------------------------------- |
+| `request_id`         | string | Unique identifier for the request                                             |
+| `timestamp`          | string | ISO 8601 timestamp of when the response was generated                         |
+| `consensus_response` | string | The unified response generated from multiple models                           |
+| `confidence_score`   | number | Overall confidence score between 0 and 1                                      |
+| `sources`            | array  | List of medical sources referenced                                            |
+| `model_responses`    | array  | Individual responses from each model (if `include_model_responses` is `true`) |
+| `consensus_metrics`  | object | Metrics about the consensus process                                           |
 
 ## Example Usage
 
@@ -107,23 +107,24 @@ curl -X POST "https://api.bondmcp.com/api/v1/orchestrator/multi-llm" \
 ### JavaScript
 
 ```javascript
-import { BondMCPClient } from '@bondmcp/sdk';
+import { BondMCPClient } from "@bondmcp/sdk";
 
 const client = new BondMCPClient({
-  apiKey: 'YOUR_API_KEY'
+  apiKey: "YOUR_API_KEY",
 });
 
 async function getConsensusResponse() {
   try {
     const response = await client.orchestrator.multiLlm({
-      query: "What are the potential drug interactions between metformin and lisinopril?",
+      query:
+        "What are the potential drug interactions between metformin and lisinopril?",
       context: "patient_medication_review",
-      include_model_responses: true
+      include_model_responses: true,
     });
-    
+
     console.log("Consensus Response:", response.consensus_response);
     console.log("Confidence Score:", response.confidence_score);
-    
+
     if (response.model_responses) {
       console.log("Individual Model Responses:", response.model_responses);
     }
@@ -148,10 +149,10 @@ try:
         context="patient_medication_review",
         include_model_responses=True
     )
-    
+
     print("Consensus Response:", response.consensus_response)
     print("Confidence Score:", response.confidence_score)
-    
+
     if response.model_responses:
         print("Individual Model Responses:", response.model_responses)
 except Exception as e:
@@ -178,13 +179,13 @@ The multi-model orchestration endpoint offers several advantages over single-mod
 
 ## Error Responses
 
-| Status Code | Error Code | Description |
-|-------------|------------|-------------|
-| 400 | `invalid_request` | Invalid request parameters |
-| 401 | `authentication_error` | Missing API key |
-| 403 | `permission_denied` | Invalid API key or insufficient permissions |
-| 422 | `validation_error` | Request validation failed |
-| 429 | `rate_limit_exceeded` | Rate limit exceeded |
+| Status Code | Error Code             | Description                                 |
+| ----------- | ---------------------- | ------------------------------------------- |
+| 400         | `invalid_request`      | Invalid request parameters                  |
+| 401         | `authentication_error` | Missing API key                             |
+| 403         | `permission_denied`    | Invalid API key or insufficient permissions |
+| 422         | `validation_error`     | Request validation failed                   |
+| 429         | `rate_limit_exceeded`  | Rate limit exceeded                         |
 
 For more details on error handling, see the **Error Handling Guide** .
 
@@ -205,5 +206,5 @@ For more details on error handling, see the **Error Handling Guide** .
 
 ## Related Endpoints
 
-- **Health Question Answering** 
-- **Lab Result Interpretation** 
+- **Health Question Answering**
+- **Lab Result Interpretation**

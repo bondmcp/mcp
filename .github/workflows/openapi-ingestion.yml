@@ -3,20 +3,20 @@ name: OpenAPI Spec Ingestion & SDK Publishing
 on:
   repository_dispatch:
     types: [openapi_spec_updated]
-  
+
   # Allow manual trigger for testing
   workflow_dispatch:
     inputs:
       spec_version:
-        description: 'Version of the OpenAPI spec'
+        description: "Version of the OpenAPI spec"
         required: true
-        default: '1.0.0'
+        default: "1.0.0"
       spec_url:
-        description: 'URL to the OpenAPI spec'
+        description: "URL to the OpenAPI spec"
         required: true
-        default: 'https://api.bondmcp.com/openapi.json'
+        default: "https://api.bondmcp.com/openapi.json"
       checksum:
-        description: 'SHA256 checksum of the spec'
+        description: "SHA256 checksum of the spec"
         required: true
 
 jobs:
@@ -25,7 +25,7 @@ jobs:
     permissions:
       contents: write
       packages: write
-    
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -36,19 +36,19 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
-          registry-url: 'https://registry.npmjs.org'
+          node-version: "20"
+          registry-url: "https://registry.npmjs.org"
 
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: '3.11'
+          python-version: "3.11"
 
       - name: Install dependencies
         run: |
           # Install Node.js tools
           npm install -g js-yaml @apidevtools/swagger-cli openapi-diff
-          
+
           # Install Python tools
           pip install hatch twine openapi-python-client
 
@@ -71,12 +71,12 @@ jobs:
           VERSION="${{ steps.event_data.outputs.version }}"
           CHECKSUM="${{ steps.event_data.outputs.checksum }}"
           SPEC_URL="${{ steps.event_data.outputs.spec_url }}"
-          
+
           echo "Downloading OpenAPI spec version $VERSION from $SPEC_URL"
-          
+
           # Download the spec
           curl -f -s -o temp_spec.json "$SPEC_URL"
-          
+
           # Verify checksum
           ACTUAL_CHECKSUM=$(sha256sum temp_spec.json | cut -d' ' -f1)
           if [ "$ACTUAL_CHECKSUM" != "$CHECKSUM" ]; then
@@ -85,7 +85,7 @@ jobs:
             echo "Actual: $ACTUAL_CHECKSUM"
             exit 1
           fi
-          
+
           echo "✅ Checksum verified: $CHECKSUM"
           echo "spec_path=temp_spec.json" >> $GITHUB_OUTPUT
 
@@ -100,7 +100,7 @@ jobs:
         run: |
           VERSION="${{ steps.event_data.outputs.version }}"
           HISTORY_FILE="openapi/history/openapi-$VERSION.json"
-          
+
           if [ -f "$HISTORY_FILE" ]; then
             echo "version_exists=true" >> $GITHUB_OUTPUT
             echo "⚠️ Version $VERSION already exists, skipping ingestion"
@@ -115,10 +115,10 @@ jobs:
           VERSION="${{ steps.event_data.outputs.version }}"
           CHECKSUM="${{ steps.event_data.outputs.checksum }}"
           SPEC_URL="${{ steps.event_data.outputs.spec_url }}"
-          
+
           # Store in history
           cp temp_spec.json "openapi/history/openapi-$VERSION.json"
-          
+
           # Update latest.json
           cat > openapi/latest.json << EOF
           {
@@ -128,7 +128,7 @@ jobs:
             "spec_url": "$SPEC_URL"
           }
           EOF
-          
+
           echo "✅ Stored immutable snapshot for version $VERSION"
 
       - name: Generate semantic diff
@@ -136,10 +136,10 @@ jobs:
         id: generate_diff
         run: |
           VERSION="${{ steps.event_data.outputs.version }}"
-          
+
           # Check if there's a previous version to compare against
           LATEST_HISTORY=$(ls -v openapi/history/openapi-*.json 2>/dev/null | tail -2 | head -1 || echo "")
-          
+
           if [ -n "$LATEST_HISTORY" ] && [ "$LATEST_HISTORY" != "openapi/history/openapi-$VERSION.json" ]; then
             PREV_VERSION=$(basename "$LATEST_HISTORY" .json | sed 's/openapi-//')
             echo "Generating semantic diff from $PREV_VERSION to $VERSION"
@@ -155,31 +155,31 @@ jobs:
             # Create migration notes stub
             cat > "MIGRATIONS/$PREV_VERSION-to-$VERSION.md" << EOF
           # Migration Guide: $PREV_VERSION to $VERSION
-          
+
           ## Overview
-          
+
           This guide helps you migrate from API version $PREV_VERSION to $VERSION.
-          
+
           ## Breaking Changes
-          
+
           *Review the semantic diff for detailed changes.*
-          
+
           ## New Features
-          
+
           *Check the API changelog for new endpoints and features.*
-          
+
           ## Migration Steps
-          
+
           1. Review the semantic diff: \`openapi/history/diff-$PREV_VERSION-to-$VERSION.md\`
           2. Update your code to handle breaking changes
           3. Test with the new API version
           4. Update your SDK version
-          
+
           ## Support
-          
+
           If you need help with migration, contact support@bondmcp.com
           EOF
-          
+
             echo "has_diff=true" >> $GITHUB_OUTPUT
             echo "prev_version=$PREV_VERSION" >> $GITHUB_OUTPUT
             echo "✅ Generated semantic diff and migration notes"
@@ -192,46 +192,46 @@ jobs:
         if: steps.check_version.outputs.version_exists == 'false'
         run: |
           echo "Generating TypeScript SDK..."
-          
+
           # Install SDK generation tools
           npm install -g @openapitools/openapi-generator-cli
-          
+
           # Generate TypeScript client
           openapi-generator-cli generate \
             -i temp_spec.json \
             -g typescript-axios \
             -o javascript/generated \
             --additional-properties=supportsES6=true,npmName=@bondmcp/sdk,npmVersion=${{ steps.event_data.outputs.version }}
-          
+
           # Copy generated files to proper structure
           mkdir -p javascript/src/generated
           cp -r javascript/generated/* javascript/src/generated/
-          
+
           # Update package.json version
           cd javascript
           npm version ${{ steps.event_data.outputs.version }} --no-git-tag-version
-          
+
           echo "✅ TypeScript SDK generated"
 
       - name: Generate Python SDK
         if: steps.check_version.outputs.version_exists == 'false'
         run: |
           echo "Generating Python SDK..."
-          
+
           # Generate Python client
           openapi-generator-cli generate \
             -i temp_spec.json \
             -g python \
             -o python/generated \
             --additional-properties=packageName=bondmcp_sdk,packageVersion=${{ steps.event_data.outputs.version }}
-          
+
           # Copy generated files to proper structure
           mkdir -p python/bondmcp_sdk/generated
           cp -r python/generated/bondmcp_sdk/* python/bondmcp_sdk/generated/
-          
+
           # Update pyproject.toml version
           sed -i 's/version = "[^"]*"/version = "${{ steps.event_data.outputs.version }}"/' pyproject.toml
-          
+
           echo "✅ Python SDK generated"
 
       - name: Build TypeScript SDK
@@ -279,30 +279,30 @@ jobs:
         run: |
           VERSION="${{ steps.event_data.outputs.version }}"
           DATE=$(date -u +"%Y-%m-%d")
-          
+
           # Create new changelog entry
           cat > temp_changelog.md << EOF
           # Changelog
-          
+
           ## [$VERSION] - $DATE
-          
+
           ### API Changes
           - Updated to OpenAPI specification version $VERSION
           - See \`MIGRATIONS/\` for migration guides if applicable
           - View semantic diff in \`openapi/history/\`
-          
+
           ### SDK Updates
           - TypeScript SDK (@bondmcp/sdk) version $VERSION
           - Python SDK (bondmcp_sdk) version $VERSION
-          
+
           EOF
-          
+
           # Append existing changelog if it exists
           if [ -f CHANGELOG.md ]; then
             echo "" >> temp_changelog.md
             tail -n +2 CHANGELOG.md >> temp_changelog.md
           fi
-          
+
           mv temp_changelog.md CHANGELOG.md
           echo "✅ Updated CHANGELOG.md"
 
@@ -311,43 +311,43 @@ jobs:
         run: |
           VERSION="${{ steps.event_data.outputs.version }}"
           DATE=$(date -u +"%Y-%m-%d")
-          
+
           # Update docs/api/changelog.md
           cat > temp_api_changelog.md << EOF
           # API Changelog
-          
+
           This file tracks all changes to the BondMCP API in reverse chronological order.
-          
+
           ## Format
-          
+
           Each entry includes:
           - **Version**: The API version number
           - **Date**: When the version was released
           - **Changes**: Summary of changes made
           - **Migration**: Link to migration guide if applicable
-          
+
           ---
-          
+
           ## [$VERSION] - $DATE
-          
+
           ### Changes
           - API specification updated to version $VERSION
           EOF
-          
+
           if [ "${{ steps.generate_diff.outputs.has_diff }}" = "true" ]; then
             PREV_VERSION="${{ steps.generate_diff.outputs.prev_version }}"
             echo "- Migration guide: [MIGRATIONS/$PREV_VERSION-to-$VERSION.md](../../MIGRATIONS/$PREV_VERSION-to-$VERSION.md)" >> temp_api_changelog.md
             echo "- Semantic diff: [openapi/history/diff-$PREV_VERSION-to-$VERSION.md](../../openapi/history/diff-$PREV_VERSION-to-$VERSION.md)" >> temp_api_changelog.md
           fi
-          
+
           echo "" >> temp_api_changelog.md
-          
+
           # Append existing content if it exists
           if [ -f docs/api/changelog.md ]; then
             # Skip the header and append the rest
             tail -n +12 docs/api/changelog.md >> temp_api_changelog.md
           fi
-          
+
           mv temp_api_changelog.md docs/api/changelog.md
           echo "✅ Updated API changelog"
 
@@ -355,16 +355,16 @@ jobs:
         if: steps.check_version.outputs.version_exists == 'false'
         run: |
           VERSION="${{ steps.event_data.outputs.version }}"
-          
+
           git config --global user.name "BondMCP Bot"
           git config --global user.email "bot@bondmcp.com"
-          
+
           # Add all changes
           git add openapi/ MIGRATIONS/ docs/api/ CHANGELOG.md javascript/ python/ pyproject.toml
-          
+
           # Clean up temporary files
           rm -f temp_spec.json javascript/generated python/generated
-          
+
           # Commit changes
           git commit -m "feat: ingest OpenAPI spec v$VERSION and publish SDKs
 
@@ -373,18 +373,18 @@ jobs:
           - Generated and published TypeScript SDK v$VERSION
           - Generated and published Python SDK v$VERSION
           - Updated documentation and changelogs
-          
+
           [automated]"
-          
+
           git push origin HEAD:${GITHUB_REF#refs/heads/}
-          
+
           echo "✅ Changes committed and pushed"
 
       - name: Summary
         if: always()
         run: |
           VERSION="${{ steps.event_data.outputs.version }}"
-          
+
           if [ "${{ steps.check_version.outputs.version_exists }}" = "true" ]; then
             echo "ℹ️ Version $VERSION already exists, no action taken"
           else

@@ -7,8 +7,8 @@ on:
   # Temporarily disable automatic triggers
   # schedule:
   #   - cron: '0 0 * * *'  # Run at midnight UTC every day
-  
-  # Disable push triggers  
+
+  # Disable push triggers
   # push:
   #   branches:
   #     - main
@@ -17,14 +17,14 @@ on:
   #     - 'src/**'
   #     - 'lambda/**'
   #     - 'scripts/generate_openapi.js'
-  
+
   # Allow manual trigger only for backward compatibility
   workflow_dispatch:
     inputs:
       force_run:
-        description: 'Force run this deprecated workflow'
+        description: "Force run this deprecated workflow"
         required: true
-        default: 'false'
+        default: "false"
         type: boolean
 
 jobs:
@@ -39,12 +39,12 @@ jobs:
           echo "This workflow accepts OpenAPI specs from the platform via repository_dispatch events."
           echo ""
           echo "For more information, see: .github/workflows/openapi-ingestion.yml"
-          
+
           if [ "${{ github.event.inputs.force_run }}" != "true" ]; then
             echo "Skipping execution. Set force_run=true to run anyway."
             exit 0
           fi
-          
+
           echo "Proceeding with deprecated workflow as requested..."
 
   generate-openapi:
@@ -65,7 +65,7 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '18'
+          node-version: "18"
 
       - name: Install dependencies
         run: |
@@ -77,7 +77,7 @@ jobs:
           echo "Generating OpenAPI specification from live API endpoints..."
           chmod +x ./scripts/generate_openapi.js
           node ./scripts/generate_openapi.js
-          
+
           # Verify generated files
           if [ -f "./spec/openapi.json" ] && [ -f "./spec/openapi.yaml" ]; then
             echo "✅ OpenAPI specification generated successfully"
@@ -91,7 +91,7 @@ jobs:
           echo "Validating OpenAPI specification..."
           npm install -g @apidevtools/swagger-cli
           swagger-cli validate ./spec/openapi.json
-          
+
           if [ $? -eq 0 ]; then
             echo "✅ OpenAPI specification is valid"
           else
@@ -106,7 +106,7 @@ jobs:
           AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION || 'us-east-1' }}
         run: |
           echo "Publishing OpenAPI JSON to openapi.bondmcp.com/openapi.bondmcp..."
-          
+
           # Install AWS CLI if not already installed
           if ! command -v aws &> /dev/null; then
             echo "Installing AWS CLI..."
@@ -115,7 +115,7 @@ jobs:
             sudo ./aws/install
             rm -rf awscliv2.zip aws/
           fi
-          
+
           # Upload to S3 (assuming S3 bucket hosts openapi.bondmcp.com)
           if [ -n "$AWS_ACCESS_KEY_ID" ] && [ -n "$AWS_SECRET_ACCESS_KEY" ]; then
             aws s3 cp ./spec/openapi.json s3://openapi.bondmcp.com/openapi.bondmcp --content-type "application/json" --cache-control "max-age=300"
@@ -128,9 +128,9 @@ jobs:
         run: |
           git config --global user.name "BondMCP Bot"
           git config --global user.email "bot@bondmcp.com"
-          
+
           git add ./spec/openapi.json ./spec/openapi.yaml
-          
+
           # Only commit if there are changes
           if git diff --staged --quiet; then
             echo "No changes to OpenAPI specification"

@@ -4,16 +4,16 @@ on:
   push:
     branches: [main, develop]
     paths:
-      - 'openapi/**'
-      - 'spec/**'
-      - '*.yaml'
-      - '*.json'
+      - "openapi/**"
+      - "spec/**"
+      - "*.yaml"
+      - "*.json"
   pull_request:
     paths:
-      - 'openapi/**'
-      - 'spec/**'
-      - '*.yaml'
-      - '*.json'
+      - "openapi/**"
+      - "spec/**"
+      - "*.yaml"
+      - "*.json"
 
 jobs:
   validate:
@@ -21,7 +21,7 @@ jobs:
     permissions:
       contents: read
       pull-requests: write
-    
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -29,8 +29,8 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
-          cache: 'npm'
+          node-version: "20"
+          cache: "npm"
 
       - name: Install dependencies
         run: |
@@ -76,46 +76,46 @@ jobs:
         id: find_specs
         run: |
           SPEC_FILES=""
-          
+
           # Primary spec locations
           if [ -f "spec/openapi.yaml" ]; then
             SPEC_FILES="$SPEC_FILES spec/openapi.yaml"
           fi
-          
+
           if [ -f "spec/openapi.json" ]; then
             SPEC_FILES="$SPEC_FILES spec/openapi.json"
           fi
-          
+
           if [ -f "openapi/latest.json" ]; then
             SPEC_FILES="$SPEC_FILES openapi/latest.json"
           fi
-          
+
           # Find additional spec files
           ADDITIONAL_SPECS=$(find openapi/ spec/ -name "*.yaml" -o -name "*.yml" -o -name "*.json" 2>/dev/null | grep -v node_modules | grep -v generated | head -10 || true)
-          
+
           if [ -n "$ADDITIONAL_SPECS" ]; then
             SPEC_FILES="$SPEC_FILES $ADDITIONAL_SPECS"
           fi
-          
+
           # Remove duplicates and empty entries
           SPEC_FILES=$(echo $SPEC_FILES | tr ' ' '\n' | sort -u | grep -v '^$' | tr '\n' ' ')
-          
+
           echo "Found spec files: $SPEC_FILES"
           echo "spec_files=$SPEC_FILES" >> $GITHUB_OUTPUT
 
       - name: Validate OpenAPI specifications
         run: |
           echo "🔍 Validating OpenAPI specifications..."
-          
+
           SPEC_FILES="${{ steps.find_specs.outputs.spec_files }}"
-          
+
           if [ -z "$SPEC_FILES" ]; then
             echo "❌ No OpenAPI specification files found"
             exit 1
           fi
-          
+
           VALIDATION_FAILED=false
-          
+
           for spec_file in $SPEC_FILES; do
             echo "📄 Validating: $spec_file"
             
@@ -135,7 +135,7 @@ jobs:
             
             echo ""
           done
-          
+
           if [ "$VALIDATION_FAILED" = true ]; then
             echo "❌ OpenAPI validation failed for one or more files"
             exit 1
@@ -146,10 +146,10 @@ jobs:
       - name: Lint with Spectral
         run: |
           echo "🔍 Linting OpenAPI specifications with Spectral..."
-          
+
           SPEC_FILES="${{ steps.find_specs.outputs.spec_files }}"
           LINT_FAILED=false
-          
+
           for spec_file in $SPEC_FILES; do
             echo "📄 Linting: $spec_file"
             
@@ -175,7 +175,7 @@ jobs:
             
             echo ""
           done
-          
+
           if [ "$LINT_FAILED" = true ]; then
             echo "❌ Spectral linting failed with errors"
             echo "💡 Fix error-level issues. Warning-level issues are acceptable."
@@ -187,11 +187,11 @@ jobs:
       - name: Bundle specifications
         run: |
           echo "📦 Bundling OpenAPI specifications..."
-          
+
           mkdir -p openapi/bundled
-          
+
           SPEC_FILES="${{ steps.find_specs.outputs.spec_files }}"
-          
+
           for spec_file in $SPEC_FILES; do
             # Skip if file doesn't exist
             if [ ! -f "$spec_file" ]; then
@@ -226,10 +226,10 @@ jobs:
       - name: Check for $ref resolution issues
         run: |
           echo "🔗 Checking for \$ref resolution issues..."
-          
+
           SPEC_FILES="${{ steps.find_specs.outputs.spec_files }}"
           REF_ISSUES=false
-          
+
           for spec_file in $SPEC_FILES; do
             if [ ! -f "$spec_file" ]; then
               continue
@@ -250,7 +250,7 @@ jobs:
             
             echo ""
           done
-          
+
           if [ "$REF_ISSUES" = true ]; then
             echo "❌ \$ref resolution issues detected"
             echo "💡 Check that all referenced schemas and paths are correctly defined"
@@ -263,35 +263,35 @@ jobs:
         if: always()
         run: |
           echo "📊 Generating validation report..."
-          
+
           cat > validation-report.md << 'EOF'
           # OpenAPI Validation Report
-          
+
           ## Summary
-          
+
           | Check | Status |
           |-------|--------|
           | OpenAPI Validation | ✅ Passed |
           | Spectral Linting | ✅ Passed |
           | Schema Bundling | ✅ Passed |
           | $ref Resolution | ✅ Passed |
-          
+
           ## Specifications Processed
-          
+
           EOF
-          
+
           SPEC_FILES="${{ steps.find_specs.outputs.spec_files }}"
-          
+
           for spec_file in $SPEC_FILES; do
             if [ -f "$spec_file" ]; then
               echo "- \`$spec_file\`" >> validation-report.md
             fi
           done
-          
+
           echo "" >> validation-report.md
           echo "## Bundled Outputs" >> validation-report.md
           echo "" >> validation-report.md
-          
+
           if [ -d "openapi/bundled" ]; then
             for bundled_file in openapi/bundled/*.bundled.json; do
               if [ -f "$bundled_file" ]; then
@@ -299,7 +299,7 @@ jobs:
               fi
             done
           fi
-          
+
           echo "" >> validation-report.md
           echo "*Generated at $(date -u)*" >> validation-report.md
 
@@ -326,27 +326,27 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
             const fs = require('fs');
-            
+
             let report = '## 📋 OpenAPI Validation Results\n\n';
-            
+
             try {
               const validationReport = fs.readFileSync('validation-report.md', 'utf8');
               report += validationReport;
             } catch (error) {
               report += '❌ Validation report not generated\n';
             }
-            
+
             // Find existing validation comment
             const { data: comments } = await github.rest.issues.listComments({
               owner: context.repo.owner,
               repo: context.repo.repo,
               issue_number: context.issue.number,
             });
-            
+
             const existingComment = comments.find(comment => 
               comment.body.includes('OpenAPI Validation Results')
             );
-            
+
             if (existingComment) {
               await github.rest.issues.updateComment({
                 owner: context.repo.owner,

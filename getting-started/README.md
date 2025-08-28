@@ -8,9 +8,9 @@ Welcome to BondMCP, the #1 clinically-validated health monitoring platform. This
 
 ## Quick Navigation
 
-* [Quick Start Guide](quickstart.md) - Get your first API call working
-* [Authentication Setup](authentication.md) - Configure API keys and security
-* [First API Call](first-api-call.md) - Make your first health AI query
+- [Quick Start Guide](quickstart.md) - Get your first API call working
+- [Authentication Setup](authentication.md) - Configure API keys and security
+- [First API Call](first-api-call.md) - Make your first health AI query
 
 ## What You'll Learn
 

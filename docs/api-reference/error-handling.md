@@ -26,28 +26,28 @@ All BondMCP API errors follow a consistent JSON format:
 
 ## Common HTTP Status Codes
 
-| Status Code | Description | Common Causes |
-|-------------|-------------|--------------|
-| 400 | Bad Request | Invalid request parameters or body format |
-| 401 | Unauthorized | Missing API key |
-| 403 | Forbidden | Invalid API key or insufficient permissions |
-| 404 | Not Found | Requested resource doesn't exist |
-| 422 | Unprocessable Entity | Request validation failed |
-| 429 | Too Many Requests | Rate limit exceeded |
-| 500 | Internal Server Error | Server-side issue |
-| 503 | Service Unavailable | Temporary service outage |
+| Status Code | Description           | Common Causes                               |
+| ----------- | --------------------- | ------------------------------------------- |
+| 400         | Bad Request           | Invalid request parameters or body format   |
+| 401         | Unauthorized          | Missing API key                             |
+| 403         | Forbidden             | Invalid API key or insufficient permissions |
+| 404         | Not Found             | Requested resource doesn't exist            |
+| 422         | Unprocessable Entity  | Request validation failed                   |
+| 429         | Too Many Requests     | Rate limit exceeded                         |
+| 500         | Internal Server Error | Server-side issue                           |
+| 503         | Service Unavailable   | Temporary service outage                    |
 
 ## Common Error Codes
 
-| Error Code | Description | Resolution |
-|------------|-------------|------------|
-| `invalid_request` | The request was malformed | Check your request format and parameters |
-| `authentication_error` | Authentication failed | Verify your API key is correct and active |
-| `permission_denied` | Insufficient permissions | Check your API key permissions |
-| `rate_limit_exceeded` | Too many requests | Implement backoff strategy and optimize requests |
-| `resource_not_found` | Requested resource not found | Verify resource identifiers |
-| `validation_error` | Request validation failed | Check the error details for specific field errors |
-| `service_error` | Internal service error | Retry with exponential backoff |
+| Error Code             | Description                  | Resolution                                        |
+| ---------------------- | ---------------------------- | ------------------------------------------------- |
+| `invalid_request`      | The request was malformed    | Check your request format and parameters          |
+| `authentication_error` | Authentication failed        | Verify your API key is correct and active         |
+| `permission_denied`    | Insufficient permissions     | Check your API key permissions                    |
+| `rate_limit_exceeded`  | Too many requests            | Implement backoff strategy and optimize requests  |
+| `resource_not_found`   | Requested resource not found | Verify resource identifiers                       |
+| `validation_error`     | Request validation failed    | Check the error details for specific field errors |
+| `service_error`        | Internal service error       | Retry with exponential backoff                    |
 
 ## Handling Errors in Your Code
 
@@ -55,20 +55,20 @@ All BondMCP API errors follow a consistent JSON format:
 
 ```javascript
 try {
-  const response = await fetch('https://api.bondmcp.com/api/v1/ask', {
-    method: 'POST',
+  const response = await fetch("https://api.bondmcp.com/api/v1/ask", {
+    method: "POST",
     headers: {
-      'Content-Type': 'application/json',
-      'X-API-Key': 'YOUR_API_KEY'
+      "Content-Type": "application/json",
+      "X-API-Key": "YOUR_API_KEY",
     },
     body: JSON.stringify({
-      message: 'What are the symptoms of diabetes?',
-      context: 'health_consultation'
-    })
+      message: "What are the symptoms of diabetes?",
+      context: "health_consultation",
+    }),
   });
-  
+
   const data = await response.json();
-  
+
   if (!response.ok) {
     // Handle error
     console.error(`Error ${data.error.code}: ${data.error.message}`);
@@ -76,12 +76,12 @@ try {
     // Implement appropriate error handling
     return;
   }
-  
+
   // Process successful response
   console.log(data);
 } catch (error) {
   // Handle network or parsing errors
-  console.error('Network or parsing error:', error);
+  console.error("Network or parsing error:", error);
 }
 ```
 
@@ -125,26 +125,29 @@ When encountering `429 Too Many Requests` errors, implement an exponential backo
 // JavaScript example of exponential backoff
 async function makeRequestWithRetry(url, options, maxRetries = 3) {
   let retries = 0;
-  
+
   while (retries < maxRetries) {
     try {
       const response = await fetch(url, options);
-      
+
       if (response.status === 429) {
         // Get retry-after header or use exponential backoff
-        const retryAfter = response.headers.get('Retry-After') || Math.pow(2, retries);
+        const retryAfter =
+          response.headers.get("Retry-After") || Math.pow(2, retries);
         console.log(`Rate limited. Retrying in ${retryAfter} seconds...`);
-        await new Promise(resolve => setTimeout(resolve, retryAfter * 1000));
+        await new Promise((resolve) => setTimeout(resolve, retryAfter * 1000));
         retries++;
         continue;
       }
-      
+
       return response;
     } catch (error) {
       if (retries >= maxRetries - 1) throw error;
       retries++;
       // Exponential backoff for network errors
-      await new Promise(resolve => setTimeout(resolve, Math.pow(2, retries) * 1000));
+      await new Promise((resolve) =>
+        setTimeout(resolve, Math.pow(2, retries) * 1000),
+      );
     }
   }
 }
@@ -159,7 +162,7 @@ Our SDKs provide built-in error handling with typed exceptions:
 try {
   const response = await client.ask({
     message: "What are the symptoms of diabetes?",
-    context: "health_consultation"
+    context: "health_consultation",
   });
   console.log(response);
 } catch (error) {
@@ -173,7 +176,7 @@ try {
     console.error(`Request ID: ${error.requestId}`);
   } else {
     // Handle unexpected errors
-    console.error('Unexpected error:', error);
+    console.error("Unexpected error:", error);
   }
 }
 ```
@@ -183,8 +186,8 @@ try {
 If you encounter persistent errors or need assistance:
 
 1. Note the error `code` and `request_id`
-2. Check our **Troubleshooting Guide** 
-3. Search the **FAQ** 
+2. Check our **Troubleshooting Guide**
+3. Search the **FAQ**
 4. Contact support at support@bondmcp.com with the error details
 
 For more information on specific endpoint errors, refer to the individual endpoint documentation.

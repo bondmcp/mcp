@@ -18,10 +18,10 @@ jobs:
           script: |
             const prNumber = context.payload.pull_request.number;
             const prBody = context.payload.pull_request.body || '';
-            
+
             // Check if the readiness checklist marker exists
             const checklistMarker = '## ✅ Readiness Checklist';
-            
+
             if (!prBody.includes(checklistMarker)) {
               console.log('Readiness checklist not found, adding default checklist...');
               

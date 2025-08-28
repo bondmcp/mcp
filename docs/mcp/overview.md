@@ -79,30 +79,31 @@ else:
 #### Node.js Example
 
 ```javascript
-const crypto = require('crypto');
+const crypto = require("crypto");
 
 async function verifyCapabilities() {
-    const [configResp, manifestResp] = await Promise.all([
-        fetch('https://api.bondmcp.com/.well-known/mcp-configuration'),
-        fetch('https://api.bondmcp.com/.well-known/mcp-manifest.json')
-    ]);
-    
-    const config = await configResp.json();
-    const manifest = await manifestResp.json();
-    
-    // Calculate hash of capabilities
-    const capabilitiesJson = JSON.stringify(config.capabilities);
-    const calculatedHash = crypto.createHash('sha256')
-        .update(capabilitiesJson)
-        .digest('hex');
-    
-    if (calculatedHash === manifest.capabilities_sha256) {
-        console.log('✓ Capabilities verified successfully');
-        return true;
-    } else {
-        console.log('✗ Capabilities hash mismatch');
-        return false;
-    }
+  const [configResp, manifestResp] = await Promise.all([
+    fetch("https://api.bondmcp.com/.well-known/mcp-configuration"),
+    fetch("https://api.bondmcp.com/.well-known/mcp-manifest.json"),
+  ]);
+
+  const config = await configResp.json();
+  const manifest = await manifestResp.json();
+
+  // Calculate hash of capabilities
+  const capabilitiesJson = JSON.stringify(config.capabilities);
+  const calculatedHash = crypto
+    .createHash("sha256")
+    .update(capabilitiesJson)
+    .digest("hex");
+
+  if (calculatedHash === manifest.capabilities_sha256) {
+    console.log("✓ Capabilities verified successfully");
+    return true;
+  } else {
+    console.log("✗ Capabilities hash mismatch");
+    return false;
+  }
 }
 ```
 
@@ -139,13 +140,13 @@ import requests
 
 def make_request_with_backoff(url, headers):
     response = requests.get(url, headers=headers)
-    
+
     if response.status_code == 429:
         retry_after = int(response.headers.get('Retry-After', 60))
         print(f"Rate limited. Waiting {retry_after} seconds...")
         time.sleep(retry_after)
         return make_request_with_backoff(url, headers)
-    
+
     return response
 ```
 
@@ -211,6 +212,7 @@ Never hardcode API keys or tokens in your application code.
 ### From Hardcoded Endpoints to Dynamic Discovery
 
 Before MCP:
+
 ```python
 # Hardcoded endpoint list
 ENDPOINTS = [
@@ -221,6 +223,7 @@ ENDPOINTS = [
 ```
 
 With MCP:
+
 ```python
 # Dynamic discovery
 config = requests.get("/.well-known/mcp-configuration").json()
@@ -230,6 +233,6 @@ available_endpoints = [cap["path"] for cap in config["capabilities"]]
 ### Benefits of Migration
 
 - **Future-proof**: Automatically discover new endpoints
-- **Resilient**: Handle deprecated endpoints gracefully  
+- **Resilient**: Handle deprecated endpoints gracefully
 - **Efficient**: Understand rate limits and auth requirements upfront
 - **Secure**: Verify system integrity with cryptographic hashes

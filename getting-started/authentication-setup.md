@@ -24,7 +24,7 @@ BondMCP provides multiple layers of security to protect your health data:
 ### Step 2: Enable Two-Factor Authentication
 
 1. **Go to Settings**: Navigate to Security → Two-Factor Authentication
-2. **Choose Method**: 
+2. **Choose Method**:
    - **Authenticator App** (Recommended): Google Authenticator, Authy, etc.
    - **SMS**: Text message verification
    - **Email**: Email-based verification
@@ -129,6 +129,7 @@ Enable secure biometric login:
 ### API Key Security
 
 ✅ **Do:**
+
 - Store API keys in environment variables
 - Use different keys for different applications
 - Rotate keys regularly (every 90 days)
@@ -136,6 +137,7 @@ Enable secure biometric login:
 - Use the minimum required permissions
 
 ❌ **Don't:**
+
 - Hardcode API keys in your source code
 - Share API keys via email or chat
 - Use the same key for multiple applications
@@ -145,6 +147,7 @@ Enable secure biometric login:
 ### Password Security
 
 ✅ **Strong Password Requirements:**
+
 - Minimum 12 characters
 - Mix of uppercase, lowercase, numbers, symbols
 - No common words or personal information
@@ -162,18 +165,21 @@ Enable secure biometric login:
 ### Common Issues
 
 **"Invalid API Key" Error**
+
 - Check that you're using the correct key
 - Verify the key hasn't been revoked
 - Ensure proper header format
 - Check IP restrictions if enabled
 
 **"Rate Limit Exceeded" Error**
+
 - Wait for the rate limit window to reset
 - Upgrade to a higher tier if needed
 - Implement exponential backoff in your code
 - Contact support for custom limits
 
 **Two-Factor Authentication Problems**
+
 - Check your device's time is correct
 - Try generating a new backup code
 - Contact support if locked out

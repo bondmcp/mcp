@@ -25,18 +25,22 @@ BondMCP is a **comprehensive health AI platform** providing intelligent health i
 ## 📚 **Developer Resources**
 
 ### SDKs
+
 - **TypeScript/JavaScript**: [`@bondmcp/sdk`](https://www.npmjs.com/package/@bondmcp/sdk) - Auto-generated TypeScript SDK
-- **Python**: [`bondmcp-sdk`](https://pypi.org/project/bondmcp-sdk/) - Auto-generated Python SDK  
+- **Python**: [`bondmcp-sdk`](https://pypi.org/project/bondmcp-sdk/) - Auto-generated Python SDK
 - **Go**: Import directly from this repository's `sdks/go` module
 
 ### Documentation
+
 - [API Reference](./docs/api/) - Complete API documentation
 - [SDK Publishing Guide](./docs/SDK_PUBLISHING.md) - How SDKs are built and released
 - [OpenAPI Style Guide](./docs/OPENAPI_STYLE.md) - API design conventions
 - [Contributing Guide](./contributing/CONTRIBUTING.md) - How to contribute
 
 ### Change Management
+
 Our API follows strict change management practices:
+
 - **Automated diff analysis** for all API changes
 - **Semantic versioning** enforcement
 - **Automatic SDK regeneration** on specification updates
@@ -45,18 +49,22 @@ Our API follows strict change management practices:
 ## 📋 **Getting Started**
 
 ### Web Platform
+
 Visit [app.bondmcp.com](https://app.bondmcp.com) to:
+
 - Create your account
 - Access the full dashboard
 - Manage your health data
 - Get AI-powered insights
 
 ### CLI Installation
+
 ```bash
 pip install bondmcp-cli
 ```
 
 ### Authentication
+
 ```bash
 # Login with credentials
 bondmcp auth login
@@ -66,6 +74,7 @@ export BONDMCP_API_KEY="your-api-key"
 ```
 
 ### First Health Query
+
 ```bash
 bondmcp ask "What should I eat for breakfast?"
 ```
@@ -73,6 +82,7 @@ bondmcp ask "What should I eat for breakfast?"
 ## 🔑 **API Access**
 
 ### Direct API Calls
+
 ```bash
 curl -H "Authorization: Bearer YOUR_API_KEY" \
   -H "Content-Type: application/json" \
@@ -83,6 +93,7 @@ curl -H "Authorization: Bearer YOUR_API_KEY" \
 ### Using SDKs
 
 #### Python
+
 ```bash
 pip install bondmcp-python
 ```
@@ -96,21 +107,25 @@ print(response.answer)
 ```
 
 #### JavaScript
+
 ```bash
 npm install @bondmcp/sdk
 ```
 
 ```javascript
-import { BondMCP } from '@bondmcp/sdk';
+import { BondMCP } from "@bondmcp/sdk";
 
-const client = new BondMCP({ apiKey: 'your-api-key' });
-const response = await client.ask('What are the health benefits of meditation?');
+const client = new BondMCP({ apiKey: "your-api-key" });
+const response = await client.ask(
+  "What are the health benefits of meditation?",
+);
 console.log(response.answer);
 ```
 
 ## 🎯 **Platform Access Methods**
 
 ### ✅ Available Access Methods
+
 - **Web Platform**: Full-featured web application at app.bondmcp.com
 - **Mobile Apps**: iOS and Android applications
 - **CLI Tools**: Command-line interface for developers
@@ -118,6 +133,7 @@ console.log(response.answer);
 - **SDKs**: Python, JavaScript, Go, and CLI libraries
 
 ### 🌟 Platform Features
+
 - **Interactive Dashboard**: Visual health insights and analytics
 - **Health Data Management**: Comprehensive health record management
 - **AI-Powered Analysis**: Advanced health AI with personalized recommendations
@@ -127,6 +143,7 @@ console.log(response.answer);
 ## 🧠 **Health AI Capabilities**
 
 ### Core Features
+
 - **Health Question Answering**: Get evidence-based answers to health questions
 - **Lab Result Analysis**: Interpret blood work and lab results with AI insights
 - **Nutrition Analysis**: Analyze meals and get personalized nutritional guidance
@@ -136,6 +153,7 @@ console.log(response.answer);
 - **Medication Interactions**: Check drug interactions and side effects
 
 ### API Endpoints
+
 - `/ask` - Health question answering
 - `/labs/interpret` - Lab result analysis
 - `/nutrition/analyze` - Nutrition analysis
@@ -156,6 +174,7 @@ console.log(response.answer);
 ## 🔧 **CLI Commands**
 
 ### Authentication
+
 ```bash
 bondmcp auth login          # Login with credentials
 bondmcp auth logout         # Logout
@@ -163,6 +182,7 @@ bondmcp auth status         # Check auth status
 ```
 
 ### API Keys
+
 ```bash
 bondmcp keys create         # Create new API key
 bondmcp keys list           # List all keys
@@ -170,6 +190,7 @@ bondmcp keys revoke         # Revoke a key
 ```
 
 ### Health Queries
+
 ```bash
 bondmcp ask "question"      # Ask health question
 bondmcp analyze --data      # Analyze health data
@@ -179,6 +200,7 @@ bondmcp symptoms --check    # Check symptoms
 ```
 
 ### Data Management
+
 ```bash
 bondmcp data sync           # Sync health data
 bondmcp data export         # Export health records
@@ -205,11 +227,13 @@ Billing available through web dashboard, mobile apps, or CLI.
 ## 📱 **Platform Integrations**
 
 ### Healthcare Systems
+
 - **Epic Integration**: Direct EHR integration
 - **Cerner Compatibility**: Healthcare system connectivity
 - **HL7 FHIR Support**: Standard healthcare data exchange
 
 ### Wearables & Devices
+
 - **Apple Health**: iOS health data integration
 - **Google Fit**: Android health data sync
 - **Fitbit**: Activity and health tracking
@@ -217,6 +241,7 @@ Billing available through web dashboard, mobile apps, or CLI.
 - **Continuous Glucose Monitors**: Real-time glucose data
 
 ### Third-Party Apps
+
 - **MyFitnessPal**: Nutrition tracking integration
 - **Strava**: Fitness activity data
 - **Headspace**: Meditation and wellness tracking
@@ -241,4 +266,3 @@ Billing available through web dashboard, mobile apps, or CLI.
 ---
 
 **BondMCP provides comprehensive health AI through web, mobile, CLI, and API access methods. Choose the platform that works best for your needs - from casual health questions to enterprise healthcare integrations.**
-

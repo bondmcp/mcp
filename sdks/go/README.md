@@ -23,7 +23,7 @@ import (
     "context"
     "fmt"
     "log"
-    
+
     "github.com/bondmcp/mcp/go/bondmcp"
 )
 
@@ -50,12 +50,14 @@ func main() {
 ## 📚 Features
 
 ### ⚡ **High Performance**
+
 - Zero-allocation JSON parsing
 - Connection pooling
 - Concurrent request handling
 - Memory-efficient streaming
 
 ### 🛡️ **Enterprise Ready**
+
 - Context-aware cancellation
 - Structured logging
 - Metrics and tracing
@@ -63,6 +65,7 @@ func main() {
 - Retry with exponential backoff
 
 ### 🔧 **Developer Friendly**
+
 - Idiomatic Go interfaces
 - Comprehensive error handling
 - Rich type definitions
@@ -115,6 +118,7 @@ client := bondmcp.NewClient(&bondmcp.Config{
 ### Core Methods
 
 #### `client.Ask(ctx, req)`
+
 Multi-model consensus health AI query.
 
 ```go
@@ -127,6 +131,7 @@ response, err := client.Ask(ctx, &bondmcp.AskRequest{
 ```
 
 #### `client.Labs.Interpret(ctx, req)`
+
 Interpret laboratory results.
 
 ```go
@@ -148,6 +153,7 @@ interpretation, err := client.Labs.Interpret(ctx, &bondmcp.LabInterpretRequest{
 ```
 
 #### `client.Supplements.Recommend(ctx, req)`
+
 Get personalized supplement recommendations.
 
 ```go
@@ -179,7 +185,7 @@ for {
     if err != nil {
         log.Fatal(err)
     }
-    
+
     fmt.Print(chunk.Content)
 }
 ```
@@ -207,7 +213,7 @@ for {
         log.Printf("WebSocket error: %v", err)
         break
     }
-    
+
     fmt.Printf("Received: %+v\\n", msg)
 }
 ```
@@ -221,7 +227,7 @@ package main
 
 import (
     "net/http"
-    
+
     "github.com/gin-gonic/gin"
     "github.com/bondmcp/mcp/go/bondmcp"
 )
@@ -232,12 +238,12 @@ func main() {
     })
 
     r := gin.Default()
-    
+
     r.POST("/health-query", func(c *gin.Context) {
         var req struct {
             Query string `json:"query"`
         }
-        
+
         if err := c.ShouldBindJSON(&req); err != nil {
             c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
             return
@@ -321,7 +327,7 @@ import (
     "context"
     "fmt"
     "sync"
-    
+
     "github.com/bondmcp/mcp/go/bondmcp"
 )
 
@@ -343,7 +349,7 @@ func main() {
         wg.Add(1)
         go func(q string) {
             defer wg.Done()
-            
+
             response, err := client.Ask(context.Background(), &bondmcp.AskRequest{
                 Query: q,
             })
@@ -351,7 +357,7 @@ func main() {
                 fmt.Printf("Error for query '%s': %v\\n", q, err)
                 return
             }
-            
+
             results <- response
         }(query)
     }
@@ -360,7 +366,7 @@ func main() {
     close(results)
 
     for response := range results {
-        fmt.Printf("Answer: %s (Confidence: %.2f)\\n", 
+        fmt.Printf("Answer: %s (Confidence: %.2f)\\n",
             response.Answer, response.ConfidenceScore)
     }
 }
@@ -420,7 +426,7 @@ package main
 import (
     "context"
     "testing"
-    
+
     "github.com/stretchr/testify/assert"
     "github.com/stretchr/testify/mock"
     "github.com/bondmcp/mcp/go/bondmcp"
@@ -429,7 +435,7 @@ import (
 func TestBondMCPClient(t *testing.T) {
     // Create a mock client
     mockClient := &bondmcp.MockClient{}
-    
+
     // Set up expectations
     mockClient.On("Ask", mock.Anything, mock.AnythingOfType("*bondmcp.AskRequest")).
         Return(&bondmcp.AskResponse{
@@ -446,7 +452,7 @@ func TestBondMCPClient(t *testing.T) {
     assert.NotNil(t, response)
     assert.Equal(t, "Diabetes is a metabolic disorder...", response.Answer)
     assert.Equal(t, 0.95, response.ConfidenceScore)
-    
+
     mockClient.AssertExpectations(t)
 }
 ```
@@ -578,7 +584,7 @@ func putRequest(req *bondmcp.AskRequest) {
 
 ## 📄 License
 
-This project is licensed under the MIT License - see the **LICENSE**  file for details.
+This project is licensed under the MIT License - see the **LICENSE** file for details.
 
 ## 🔗 Links
 
@@ -592,4 +598,3 @@ This project is licensed under the MIT License - see the **LICENSE**  file for d
 <div align="center">
   <strong>Built with ❤️ for Go developers</strong>
 </div>
-

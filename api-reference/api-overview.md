@@ -27,24 +27,28 @@ Authorization: Bearer YOUR_API_KEY
 ## 📊 API Capabilities
 
 ### Core Health AI
+
 - **Health Q&A**: Natural language health questions and answers
 - **Symptom Analysis**: AI-powered symptom checking and triage
 - **Health Risk Assessment**: Comprehensive health risk evaluation
 - **Medical Information**: Evidence-based medical information lookup
 
 ### Lab & Diagnostics
+
 - **Lab Result Analysis**: AI interpretation of blood work and lab tests
 - **Biomarker Tracking**: Monitor health biomarkers over time
 - **Reference Ranges**: Compare results to age/gender-specific ranges
 - **Trend Analysis**: Identify patterns in lab results
 
 ### Nutrition & Lifestyle
+
 - **Nutrition Analysis**: Detailed nutritional breakdown of foods and meals
 - **Supplement Recommendations**: Evidence-based supplement advice
 - **Diet Planning**: Personalized meal planning and dietary guidance
 - **Calorie Tracking**: Advanced calorie and macronutrient tracking
 
 ### Medication & Interactions
+
 - **Drug Information**: Comprehensive medication information
 - **Interaction Checking**: Drug-drug and drug-food interactions
 - **Side Effect Analysis**: Potential side effects and contraindications
@@ -68,6 +72,7 @@ curl -X POST https://api.bondmcp.com/ask \
 ```
 
 **Response:**
+
 ```json
 {
   "answer": "Omega-3 fatty acids provide numerous health benefits including...",
@@ -86,45 +91,59 @@ curl -X POST https://api.bondmcp.com/ask \
 ## 📋 Core Endpoints
 
 ### Health Q&A
+
 ```http
 POST /ask
 ```
+
 Ask natural language health questions and get evidence-based answers.
 
 ### Lab Analysis
+
 ```http
 POST /labs/interpret
 ```
+
 Upload lab results for AI-powered interpretation and insights.
 
 ### Nutrition Analysis
+
 ```http
 POST /nutrition/analyze
 ```
+
 Analyze foods, meals, or dietary patterns for nutritional insights.
 
 ### Supplement Recommendations
+
 ```http
 POST /supplements/recommend
 ```
+
 Get personalized supplement recommendations based on health goals.
 
 ### Symptom Checking
+
 ```http
 POST /symptoms/check
 ```
+
 Analyze symptoms and get potential causes and recommendations.
 
 ### Medication Information
+
 ```http
 POST /medications/check
 ```
+
 Check drug interactions, side effects, and dosing information.
 
 ### Health Assessment
+
 ```http
 POST /health/assess
 ```
+
 Comprehensive health risk assessment based on multiple factors.
 
 ## 📈 Response Format
@@ -147,6 +166,7 @@ All API responses follow a consistent format:
 ```
 
 ### Error Responses
+
 ```json
 {
   "success": false,
@@ -167,12 +187,14 @@ All API responses follow a consistent format:
 ## 🔒 Security Features
 
 ### Data Protection
+
 - **End-to-end encryption** for all API communications
 - **Zero-knowledge architecture** - we cannot access your health data
 - **HIPAA compliance** for healthcare data protection
 - **SOC 2 Type II** certified security controls
 
 ### Access Control
+
 - **API key rotation** - regularly rotate your API keys
 - **Rate limiting** - automatic request throttling
 - **IP whitelisting** - restrict access to specific IP addresses
@@ -183,16 +205,19 @@ All API responses follow a consistent format:
 Rate limits vary by subscription tier:
 
 ### Free Tier
+
 - **100 requests per month**
 - **10 requests per minute**
 - **Basic endpoints only**
 
 ### Pro Tier ($29/month)
+
 - **5,000 requests per month**
 - **100 requests per minute**
 - **All endpoints available**
 
 ### Enterprise (Custom)
+
 - **Unlimited requests**
 - **Custom rate limits**
 - **Priority processing**
@@ -201,6 +226,7 @@ Rate limits vary by subscription tier:
 ## 🌍 Global Availability
 
 Our API is available globally with data centers in:
+
 - **North America**: US East (Virginia), US West (California)
 - **Europe**: EU West (Ireland), EU Central (Frankfurt)
 - **Asia Pacific**: Asia Southeast (Singapore), Asia Northeast (Tokyo)
@@ -225,6 +251,7 @@ We provide official SDKs for popular programming languages:
 ## 🔄 API Versioning
 
 We use semantic versioning for our API:
+
 - **Current Version**: 2.1.0
 - **Supported Versions**: 2.0.x, 2.1.x
 - **Deprecation Policy**: 12 months notice for breaking changes

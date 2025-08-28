@@ -5,8 +5,8 @@
  * Used by release workflows to generate GitHub Release notes
  */
 
-import * as fs from 'fs';
-import * as path from 'path';
+import * as fs from "fs";
+import * as path from "path";
 
 interface ChangelogEntry {
   version: string;
@@ -17,13 +17,16 @@ interface ChangelogEntry {
 /**
  * Extract changelog section for a specific version
  */
-function extractChangelogSection(changelogPath: string, version: string): ChangelogEntry | null {
+function extractChangelogSection(
+  changelogPath: string,
+  version: string,
+): ChangelogEntry | null {
   if (!fs.existsSync(changelogPath)) {
     throw new Error(`Changelog file not found: ${changelogPath}`);
   }
 
-  const content = fs.readFileSync(changelogPath, 'utf-8');
-  const lines = content.split('\n');
+  const content = fs.readFileSync(changelogPath, "utf-8");
+  const lines = content.split("\n");
 
   let inSection = false;
   let sectionLines: string[] = [];
@@ -34,10 +37,10 @@ function extractChangelogSection(changelogPath: string, version: string): Change
 
     // Look for version header (## [version] - date or ## [version])
     const versionMatch = line.match(/^##\s*\[([^\]]+)\](?:\s*-\s*(.+))?$/);
-    
+
     if (versionMatch) {
       const [, foundVersion, date] = versionMatch;
-      
+
       if (foundVersion === version) {
         inSection = true;
         extractedDate = date?.trim();
@@ -50,7 +53,7 @@ function extractChangelogSection(changelogPath: string, version: string): Change
 
     if (inSection) {
       // Stop if we hit another ## header (next version)
-      if (line.startsWith('## ') && !line.startsWith('### ')) {
+      if (line.startsWith("## ") && !line.startsWith("### ")) {
         break;
       }
       sectionLines.push(line);
@@ -62,14 +65,17 @@ function extractChangelogSection(changelogPath: string, version: string): Change
   }
 
   // Remove trailing empty lines
-  while (sectionLines.length > 0 && sectionLines[sectionLines.length - 1].trim() === '') {
+  while (
+    sectionLines.length > 0 &&
+    sectionLines[sectionLines.length - 1].trim() === ""
+  ) {
     sectionLines.pop();
   }
 
   return {
     version,
     date: extractedDate,
-    content: sectionLines.join('\n').trim()
+    content: sectionLines.join("\n").trim(),
   };
 }
 
@@ -79,7 +85,7 @@ function extractChangelogSection(changelogPath: string, version: string): Change
 function main(): void {
   const args = process.argv.slice(2);
 
-  if (args.length === 0 || args.includes('--help') || args.includes('-h')) {
+  if (args.length === 0 || args.includes("--help") || args.includes("-h")) {
     console.log(`
 Usage: extract-changelog-section.ts <version> [changelog-path]
 
@@ -95,11 +101,11 @@ Description:
   Extracts the changelog section for a specific version for use in
   GitHub Release notes and other documentation.
     `);
-    process.exit(args.includes('--help') || args.includes('-h') ? 0 : 1);
+    process.exit(args.includes("--help") || args.includes("-h") ? 0 : 1);
   }
 
   const version = args[0];
-  const changelogPath = path.resolve(args[1] || 'CHANGELOG.md');
+  const changelogPath = path.resolve(args[1] || "CHANGELOG.md");
 
   try {
     const entry = extractChangelogSection(changelogPath, version);
@@ -113,8 +119,9 @@ Description:
     console.log(entry.content);
 
     // Also output metadata to stderr for debugging
-    console.error(`✅ Extracted changelog for version ${version}${entry.date ? ` (${entry.date})` : ''}`);
-
+    console.error(
+      `✅ Extracted changelog for version ${version}${entry.date ? ` (${entry.date})` : ""}`,
+    );
   } catch (error: any) {
     console.error(`❌ Error extracting changelog: ${error.message}`);
     process.exit(1);

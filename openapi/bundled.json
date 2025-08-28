@@ -484,9 +484,7 @@
             "type": "string"
           }
         },
-        "required": [
-          "message"
-        ]
+        "required": ["message"]
       },
       "AskResponse": {
         "type": "object",

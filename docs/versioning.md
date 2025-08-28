@@ -4,11 +4,11 @@ BondMCP follows [semantic versioning](https://semver.org/). The current stable A
 
 The table below shows which SDK versions are designed to work with this API version.
 
-| SDK | Current Version | Supported API Versions | Notes |
-|-----|-----------------|-----------------------|-------|
-| Python (`bondmcp` package) | >=1.0.0 | v1 | Use on Python 3.8+ |
-| TypeScript / JavaScript | >=2.0.0 | v1 | Package `@bondmcp/typescript-sdk` |
-| Go | >=2.0.0 | v1 | Module `github.com/bondmcp/mcp/sdks/go` |
+| SDK                        | Current Version | Supported API Versions | Notes                                   |
+| -------------------------- | --------------- | ---------------------- | --------------------------------------- |
+| Python (`bondmcp` package) | >=1.0.0         | v1                     | Use on Python 3.8+                      |
+| TypeScript / JavaScript    | >=2.0.0         | v1                     | Package `@bondmcp/typescript-sdk`       |
+| Go                         | >=2.0.0         | v1                     | Module `github.com/bondmcp/mcp/sdks/go` |
 
 ## Legacy SDKs
 

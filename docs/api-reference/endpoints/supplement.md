@@ -36,12 +36,12 @@ Requires API key authentication via the `X-API-Key` header.
 
 ### Request Parameters
 
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| `goals` | array | Yes | Health goals for supplement recommendations |
-| `lab_results` | object | No | Key-value pairs of relevant lab test results |
-| `user_context` | object | No | User health context to improve recommendation relevance |
-| `include_evidence` | boolean | No | Whether to include scientific evidence (default: `true`) |
+| Parameter          | Type    | Required | Description                                              |
+| ------------------ | ------- | -------- | -------------------------------------------------------- |
+| `goals`            | array   | Yes      | Health goals for supplement recommendations              |
+| `lab_results`      | object  | No       | Key-value pairs of relevant lab test results             |
+| `user_context`     | object  | No       | User health context to improve recommendation relevance  |
+| `include_evidence` | boolean | No       | Whether to include scientific evidence (default: `true`) |
 
 ## Response Format
 
@@ -93,20 +93,20 @@ Requires API key authentication via the `X-API-Key` header.
 
 ### Response Fields
 
-| Field | Type | Description |
-|-------|------|-------------|
-| `request_id` | string | Unique identifier for the request |
-| `timestamp` | string | ISO 8601 timestamp of when the response was generated |
-| `recommendations` | array | List of supplement recommendations |
-| `recommendations[].supplement` | string | Name of the recommended supplement |
-| `recommendations[].dosage` | string | Suggested dosage range |
-| `recommendations[].frequency` | string | How often to take the supplement |
-| `recommendations[].priority` | string | Priority level ("high", "medium", "low") |
-| `recommendations[].rationale` | string | Explanation for the recommendation |
-| `recommendations[].evidence` | array | Scientific evidence supporting the recommendation (if `include_evidence` is `true`) |
-| `recommendations[].considerations` | array | Important considerations for taking the supplement |
-| `general_guidance` | string | Overall guidance about the recommendations |
-| `confidence_score` | number | Confidence score between 0 and 1 |
+| Field                              | Type   | Description                                                                         |
+| ---------------------------------- | ------ | ----------------------------------------------------------------------------------- |
+| `request_id`                       | string | Unique identifier for the request                                                   |
+| `timestamp`                        | string | ISO 8601 timestamp of when the response was generated                               |
+| `recommendations`                  | array  | List of supplement recommendations                                                  |
+| `recommendations[].supplement`     | string | Name of the recommended supplement                                                  |
+| `recommendations[].dosage`         | string | Suggested dosage range                                                              |
+| `recommendations[].frequency`      | string | How often to take the supplement                                                    |
+| `recommendations[].priority`       | string | Priority level ("high", "medium", "low")                                            |
+| `recommendations[].rationale`      | string | Explanation for the recommendation                                                  |
+| `recommendations[].evidence`       | array  | Scientific evidence supporting the recommendation (if `include_evidence` is `true`) |
+| `recommendations[].considerations` | array  | Important considerations for taking the supplement                                  |
+| `general_guidance`                 | string | Overall guidance about the recommendations                                          |
+| `confidence_score`                 | number | Confidence score between 0 and 1                                                    |
 
 ## Example Usage
 
@@ -137,10 +137,10 @@ curl -X POST "https://api.bondmcp.com/api/v1/supplement/recommend" \
 ### JavaScript
 
 ```javascript
-import { BondMCPClient } from '@bondmcp/sdk';
+import { BondMCPClient } from "@bondmcp/sdk";
 
 const client = new BondMCPClient({
-  apiKey: 'YOUR_API_KEY'
+  apiKey: "YOUR_API_KEY",
 });
 
 async function getSupplementRecommendations() {
@@ -150,7 +150,7 @@ async function getSupplementRecommendations() {
       lab_results: {
         vitamin_d: 25,
         ferritin: 30,
-        b12: 400
+        b12: 400,
       },
       user_context: {
         age: 42,
@@ -158,10 +158,10 @@ async function getSupplementRecommendations() {
         conditions: ["hypothyroidism"],
         medications: ["levothyroxine"],
         diet: "vegetarian",
-        activity_level: "moderate"
-      }
+        activity_level: "moderate",
+      },
     });
-    
+
     console.log("Recommendations:", response.recommendations);
     console.log("General guidance:", response.general_guidance);
   } catch (error) {
@@ -196,7 +196,7 @@ try:
             "activity_level": "moderate"
         }
     )
-    
+
     print("Recommendations:", response.recommendations)
     print("General guidance:", response.general_guidance)
 except Exception as e:
@@ -224,13 +224,13 @@ For a complete list of supported goals, refer to our **Health Goals Reference Gu
 
 ## Error Responses
 
-| Status Code | Error Code | Description |
-|-------------|------------|-------------|
-| 400 | `invalid_request` | Invalid request parameters |
-| 401 | `authentication_error` | Missing API key |
-| 403 | `permission_denied` | Invalid API key or insufficient permissions |
-| 422 | `validation_error` | Request validation failed (e.g., invalid goals) |
-| 429 | `rate_limit_exceeded` | Rate limit exceeded |
+| Status Code | Error Code             | Description                                     |
+| ----------- | ---------------------- | ----------------------------------------------- |
+| 400         | `invalid_request`      | Invalid request parameters                      |
+| 401         | `authentication_error` | Missing API key                                 |
+| 403         | `permission_denied`    | Invalid API key or insufficient permissions     |
+| 422         | `validation_error`     | Request validation failed (e.g., invalid goals) |
+| 429         | `rate_limit_exceeded`  | Rate limit exceeded                             |
 
 For more details on error handling, see the **Error Handling Guide** .
 
@@ -252,6 +252,6 @@ For more details on error handling, see the **Error Handling Guide** .
 
 ## Related Endpoints
 
-- **Health Question Answering** 
-- **Lab Result Interpretation** 
-- **Health Data Analysis** 
+- **Health Question Answering**
+- **Lab Result Interpretation**
+- **Health Data Analysis**

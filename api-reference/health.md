@@ -34,16 +34,16 @@ This endpoint does not require any parameters.
 
 ### Response Fields
 
-| Field | Type | Description |
-|-------|------|-------------|
-| `status` | string | Overall status of the API (e.g., "healthy", "degraded", "maintenance") |
-| `version` | string | Current API version |
-| `timestamp` | string | ISO 8601 timestamp of the health check |
-| `environment` | string | Deployment environment (e.g., "production", "staging") |
-| `services` | object | Status of key dependent services |
-| `services.llm` | string | Status of the AI model service |
-| `services.redis` | string | Status of the caching service |
-| `services.database` | string | Status of the database service |
+| Field               | Type   | Description                                                            |
+| ------------------- | ------ | ---------------------------------------------------------------------- |
+| `status`            | string | Overall status of the API (e.g., "healthy", "degraded", "maintenance") |
+| `version`           | string | Current API version                                                    |
+| `timestamp`         | string | ISO 8601 timestamp of the health check                                 |
+| `environment`       | string | Deployment environment (e.g., "production", "staging")                 |
+| `services`          | object | Status of key dependent services                                       |
+| `services.llm`      | string | Status of the AI model service                                         |
+| `services.redis`    | string | Status of the caching service                                          |
+| `services.database` | string | Status of the database service                                         |
 
 ## Example Usage
 
@@ -56,10 +56,10 @@ curl -X GET "https://api.bondmcp.com/api/v1/health"
 ### JavaScript
 
 ```javascript
-import { BondMCPClient } from '@bondmcp/sdk';
+import { BondMCPClient } from "@bondmcp/sdk";
 
 const client = new BondMCPClient({
-  apiKey: 'YOUR_API_KEY' // Not required for health check but SDK may expect it
+  apiKey: "YOUR_API_KEY", // Not required for health check but SDK may expect it
 });
 
 async function checkApiHealth() {
@@ -94,10 +94,10 @@ except Exception as e:
 
 ## Status Codes
 
-| Status Code | Description |
-|-------------|-------------|
-| 200 | API is healthy and operational |
-| 503 | API is degraded or in maintenance mode |
+| Status Code | Description                            |
+| ----------- | -------------------------------------- |
+| 200         | API is healthy and operational         |
+| 503         | API is degraded or in maintenance mode |
 
 ## Best Practices
 
@@ -108,4 +108,4 @@ except Exception as e:
 
 ## Related Endpoints
 
-- **API Key Management** 
+- **API Key Management**

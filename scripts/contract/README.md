@@ -7,11 +7,13 @@ This directory contains utility scripts for contract ingestion and SDK generatio
 ### normalize_spec.ts
 
 Normalizes OpenAPI specifications for diff stability by:
+
 - Recursively sorting object keys
 - Removing volatile metadata fields (timestamps, build info, etc.)
 - Cleaning version-specific information
 
 **Usage:**
+
 ```bash
 # Normalize in place
 ./scripts/contract/normalize_spec.sh openapi/latest.json
@@ -24,6 +26,7 @@ npx ts-node scripts/contract/normalize_spec.ts spec/openapi.json
 ```
 
 **Removed Fields:**
+
 - `x-generated-at`
 - `x-timestamp`
 - `x-build-time`
@@ -36,6 +39,7 @@ npx ts-node scripts/contract/normalize_spec.ts spec/openapi.json
 Checks for duplicate package versions before publishing to prevent collisions.
 
 **Usage:**
+
 ```bash
 # Auto-detect packages from project files
 ./scripts/contract/publish_preflight.sh --auto
@@ -51,12 +55,14 @@ Checks for duplicate package versions before publishing to prevent collisions.
 ```
 
 **Exit Codes:**
+
 - `0`: Safe to publish (package versions don't exist)
 - `20`: Package version(s) already exist (skip publish gracefully)
 - `1`: Error occurred during check
 
 **Auto-Detection:**
 The script automatically detects packages from:
+
 - `package.json` files (npm packages)
 - `pyproject.toml` files (PyPI packages)
 

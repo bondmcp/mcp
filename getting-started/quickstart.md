@@ -29,16 +29,19 @@ bondmcp ask "What are the health benefits of exercise?"
 ## 5. Try Different Endpoints
 
 ### Health Analysis
+
 ```bash
 bondmcp analyze --data "blood_pressure: 120/80, heart_rate: 70"
 ```
 
 ### Lab Results
+
 ```bash
 bondmcp labs analyze --file "my_lab_results.json"
 ```
 
 ### Nutrition
+
 ```bash
 bondmcp nutrition analyze --meal "grilled chicken, brown rice, broccoli"
 ```
@@ -46,6 +49,7 @@ bondmcp nutrition analyze --meal "grilled chicken, brown rice, broccoli"
 ## Using SDKs
 
 ### Python
+
 ```bash
 pip install bondmcp-python
 ```
@@ -59,15 +63,16 @@ print(response.answer)
 ```
 
 ### JavaScript
+
 ```bash
 npm install @bondmcp/sdk
 ```
 
 ```javascript
-import { BondMCP } from '@bondmcp/sdk';
+import { BondMCP } from "@bondmcp/sdk";
 
-const client = new BondMCP({ apiKey: 'your-api-key' });
-const response = await client.ask('What should I eat for breakfast?');
+const client = new BondMCP({ apiKey: "your-api-key" });
+const response = await client.ask("What should I eat for breakfast?");
 console.log(response.answer);
 ```
 

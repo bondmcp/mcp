@@ -1,9 +1,11 @@
 # ADR-002: Automated OpenAPI Ingestion & Multi-SDK Publishing Pipeline
 
 ## Status
+
 **ACCEPTED** - Implemented in PR #[number]
 
 ## Context
+
 The previous OpenAPI workflow relied on dynamic generation through endpoint probing and manual sync processes. This approach had several limitations:
 
 1. **Reliability Issues**: Dynamic probing could fail or return inconsistent results
@@ -12,6 +14,7 @@ The previous OpenAPI workflow relied on dynamic generation through endpoint prob
 4. **SDK Maintenance**: Manual SDK updates were error-prone and often delayed
 
 ## Decision
+
 We have implemented a comprehensive automated pipeline that transforms the OpenAPI workflow from dynamic generation to a **code-first contract system** where the platform is the authoritative source.
 
 ### Key Components
@@ -38,6 +41,7 @@ We have implemented a comprehensive automated pipeline that transforms the OpenA
 ## Implementation Details
 
 ### Workflow Trigger
+
 ```yaml
 on:
   repository_dispatch:
@@ -45,6 +49,7 @@ on:
 ```
 
 ### Directory Structure
+
 ```
 openapi/
 ├── latest.json                      # Current version metadata
@@ -59,6 +64,7 @@ MIGRATIONS/
 ```
 
 ### Platform Integration
+
 ```bash
 curl -X POST \
   -H "Authorization: token $GITHUB_TOKEN" \
@@ -77,7 +83,7 @@ curl -X POST \
 ## Migration Strategy
 
 - **Phase 1** (Current): New pipeline active, old workflows deprecated but available
-- **Phase 2** (Next): Platform integration complete, old system disabled  
+- **Phase 2** (Next): Platform integration complete, old system disabled
 - **Phase 3** (Future): Remove deprecated workflows entirely
 
 ## Alternatives Considered
@@ -89,12 +95,14 @@ curl -X POST \
 ## Consequences
 
 ### Positive
+
 - Reliable, automated SDK generation and publishing
 - Complete audit trail of API changes
 - Improved developer experience with better tooling
 - Reduced manual intervention and human error
 
 ### Negative
+
 - Initial complexity in setup and configuration
 - Dependency on GitHub Actions for automation
 - Need for platform team to implement dispatch triggers
@@ -107,9 +115,9 @@ curl -X POST \
 
 ## References
 
-- **Pipeline Implementation Guide** 
-- **Usage Examples** 
-- **Migration Guide** 
+- **Pipeline Implementation Guide**
+- **Usage Examples**
+- **Migration Guide**
 
 ---
 

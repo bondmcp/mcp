@@ -55,14 +55,14 @@ Requires API key authentication via the `X-API-Key` header.
 
 ##### Request Parameters
 
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| `data` | object | Yes | Oura Ring data organized by category |
-| `data.sleep` | array | No | Sleep data records |
-| `data.activity` | array | No | Activity data records |
-| `data.readiness` | array | No | Readiness data records |
-| `user_id` | string | No | Unique identifier for the user |
-| `generate_insights` | boolean | No | Whether to generate insights from the imported data (default: `false`) |
+| Parameter           | Type    | Required | Description                                                            |
+| ------------------- | ------- | -------- | ---------------------------------------------------------------------- |
+| `data`              | object  | Yes      | Oura Ring data organized by category                                   |
+| `data.sleep`        | array   | No       | Sleep data records                                                     |
+| `data.activity`     | array   | No       | Activity data records                                                  |
+| `data.readiness`    | array   | No       | Readiness data records                                                 |
+| `user_id`           | string  | No       | Unique identifier for the user                                         |
+| `generate_insights` | boolean | No       | Whether to generate insights from the imported data (default: `false`) |
 
 #### Response Format
 
@@ -101,13 +101,14 @@ Requires API key authentication via the `X-API-Key` header.
 
 This endpoint accepts `multipart/form-data` with a CSV file upload.
 
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| `file` | file | Yes | CSV file containing lab results |
-| `user_id` | string | No | Unique identifier for the user |
-| `generate_interpretation` | boolean | No | Whether to generate interpretation of the lab results (default: `false`) |
+| Parameter                 | Type    | Required | Description                                                              |
+| ------------------------- | ------- | -------- | ------------------------------------------------------------------------ |
+| `file`                    | file    | Yes      | CSV file containing lab results                                          |
+| `user_id`                 | string  | No       | Unique identifier for the user                                           |
+| `generate_interpretation` | boolean | No       | Whether to generate interpretation of the lab results (default: `false`) |
 
 The CSV file should have the following format:
+
 ```
 test_name,value,unit,reference_range,date
 hdl,60,mg/dL,>40,2025-05-15
@@ -185,10 +186,10 @@ curl -X POST "https://api.bondmcp.com/api/v1/import/oura" \
 #### JavaScript
 
 ```javascript
-import { BondMCPClient } from '@bondmcp/sdk';
+import { BondMCPClient } from "@bondmcp/sdk";
 
 const client = new BondMCPClient({
-  apiKey: 'YOUR_API_KEY'
+  apiKey: "YOUR_API_KEY",
 });
 
 async function importOuraData() {
@@ -203,14 +204,14 @@ async function importOuraData() {
             rem_sleep_minutes: 120,
             light_sleep_minutes: 227,
             awake_minutes: 15,
-            sleep_score: 88
-          }
-        ]
+            sleep_score: 88,
+          },
+        ],
       },
       user_id: "usr_123abc456def",
-      generate_insights: true
+      generate_insights: true,
     });
-    
+
     console.log("Import Status:", response.import_summary.status);
     console.log("Insights:", response.insights);
   } catch (error) {
@@ -246,7 +247,7 @@ try:
         user_id="usr_123abc456def",
         generate_insights=True
     )
-    
+
     print("Import Status:", response.import_summary.status)
     print("Insights:", response.insights)
 except Exception as e:
@@ -268,23 +269,23 @@ curl -X POST "https://api.bondmcp.com/api/v1/import/labs/csv" \
 #### JavaScript
 
 ```javascript
-import { BondMCPClient } from '@bondmcp/sdk';
-import fs from 'fs';
+import { BondMCPClient } from "@bondmcp/sdk";
+import fs from "fs";
 
 const client = new BondMCPClient({
-  apiKey: 'YOUR_API_KEY'
+  apiKey: "YOUR_API_KEY",
 });
 
 async function importLabResults() {
   try {
-    const file = fs.readFileSync('lab_results.csv');
-    
+    const file = fs.readFileSync("lab_results.csv");
+
     const response = await client.import.labsCsv({
       file: file,
       user_id: "usr_123abc456def",
-      generate_interpretation: true
+      generate_interpretation: true,
     });
-    
+
     console.log("Import Status:", response.import_summary.status);
     console.log("Interpretation:", response.interpretation);
   } catch (error) {
@@ -309,7 +310,7 @@ try:
             user_id="usr_123abc456def",
             generate_interpretation=True
         )
-    
+
     print("Import Status:", response.import_summary.status)
     print("Interpretation:", response.interpretation)
 except Exception as e:
@@ -331,14 +332,14 @@ For details on the expected format for each data source, refer to our **Health D
 
 ## Error Responses
 
-| Status Code | Error Code | Description |
-|-------------|------------|-------------|
-| 400 | `invalid_request` | Invalid request parameters |
-| 401 | `authentication_error` | Missing API key |
-| 403 | `permission_denied` | Invalid API key or insufficient permissions |
-| 415 | `unsupported_media_type` | Invalid file format |
-| 422 | `validation_error` | Request validation failed (e.g., invalid data format) |
-| 429 | `rate_limit_exceeded` | Rate limit exceeded |
+| Status Code | Error Code               | Description                                           |
+| ----------- | ------------------------ | ----------------------------------------------------- |
+| 400         | `invalid_request`        | Invalid request parameters                            |
+| 401         | `authentication_error`   | Missing API key                                       |
+| 403         | `permission_denied`      | Invalid API key or insufficient permissions           |
+| 415         | `unsupported_media_type` | Invalid file format                                   |
+| 422         | `validation_error`       | Request validation failed (e.g., invalid data format) |
+| 429         | `rate_limit_exceeded`    | Rate limit exceeded                                   |
 
 For more details on error handling, see the **Error Handling Guide** .
 
@@ -352,6 +353,6 @@ For more details on error handling, see the **Error Handling Guide** .
 
 ## Related Endpoints
 
-- **Health Data Analysis** 
-- **Lab Result Interpretation** 
-- **Health Insights** 
+- **Health Data Analysis**
+- **Lab Result Interpretation**
+- **Health Insights**

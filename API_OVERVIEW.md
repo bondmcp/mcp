@@ -16,6 +16,7 @@ POST /api/v1/ask
 ```
 
 **Request Body**:
+
 ```json
 {
   "question": "What are the symptoms of diabetes?",
@@ -26,6 +27,7 @@ POST /api/v1/ask
 ```
 
 **Response**:
+
 ```json
 {
   "id": "resp_12345abcde",
@@ -51,18 +53,19 @@ POST /api/v1/health-data/analyze
 ```
 
 **Request Body**:
+
 ```json
 {
   "data": {
     "bloodGlucose": [
-      {"value": 120, "unit": "mg/dL", "timestamp": "2025-06-10T08:00:00Z"},
-      {"value": 145, "unit": "mg/dL", "timestamp": "2025-06-10T12:00:00Z"}
+      { "value": 120, "unit": "mg/dL", "timestamp": "2025-06-10T08:00:00Z" },
+      { "value": 145, "unit": "mg/dL", "timestamp": "2025-06-10T12:00:00Z" }
     ],
     "bloodPressure": [
-      {"systolic": 130, "diastolic": 85, "timestamp": "2025-06-10T08:00:00Z"}
+      { "systolic": 130, "diastolic": 85, "timestamp": "2025-06-10T08:00:00Z" }
     ],
     "medications": [
-      {"name": "Metformin", "dosage": "500mg", "frequency": "twice daily"}
+      { "name": "Metformin", "dosage": "500mg", "frequency": "twice daily" }
     ]
   },
   "detailed": true,
@@ -71,6 +74,7 @@ POST /api/v1/health-data/analyze
 ```
 
 **Response**:
+
 ```json
 {
   "id": "analysis_67890fghij",
@@ -111,9 +115,11 @@ GET /api/v1/trust-score/{responseId}
 ```
 
 **Parameters**:
+
 - `responseId` (path): ID of the response to get the trust score for
 
 **Response**:
+
 ```json
 {
   "responseId": "resp_12345abcde",
@@ -123,12 +129,7 @@ GET /api/v1/trust-score/{responseId}
     "sourceReliability": 95,
     "clinicalValidation": 97
   },
-  "models": [
-    "GPT-4",
-    "Claude",
-    "Gemini",
-    "MedicalLLM-v2"
-  ],
+  "models": ["GPT-4", "Claude", "Gemini", "MedicalLLM-v2"],
   "timestamp": "2025-06-13T10:15:35Z"
 }
 ```
@@ -142,6 +143,7 @@ POST /api/v1/users
 ```
 
 **Request Body**:
+
 ```json
 {
   "email": "user@example.com",
@@ -152,6 +154,7 @@ POST /api/v1/users
 ```
 
 **Response**:
+
 ```json
 {
   "id": "user_12345abcde",
@@ -171,6 +174,7 @@ POST /api/v1/api-keys
 ```
 
 **Request Body**:
+
 ```json
 {
   "name": "New Project Key",
@@ -179,6 +183,7 @@ POST /api/v1/api-keys
 ```
 
 **Response**:
+
 ```json
 {
   "id": "key_abcde12345",
@@ -199,11 +204,13 @@ GET /api/v1/medical-knowledge/search
 ```
 
 **Parameters**:
+
 - `query` (query): Search query
 - `limit` (query): Maximum number of results to return (default: 10)
 - `offset` (query): Number of results to skip (default: 0)
 
 **Response**:
+
 ```json
 {
   "results": [

@@ -8,6 +8,7 @@
 **Endpoints Available**: Yes
 
 ### Live Endpoints:
+
 - `GET /health` - API health check ✅
 - `POST /ask` - Health question answering ✅
 - `POST /labs` - Lab result analysis ✅
@@ -16,11 +17,13 @@
 - `POST /insights` - Health insights ✅
 
 ### Service Status:
+
 - **Api**: operational ✅
 - **Authentication**: operational ✅
 - **Billing**: operational ✅
 
 ### Quick Test:
+
 ```bash
 # Test the live API
 curl https://api.bondmcp.com/health
@@ -29,10 +32,12 @@ curl https://api.bondmcp.com/health
 ```
 
 ### Getting Started:
+
 1. Install CLI: `pip install bondmcp-cli`
 2. Authenticate: `bondmcp auth login`
 3. Create API key: `bondmcp keys create`
 4. Start using: `bondmcp ask "health question"`
 
 ---
-*Auto-updated from live API status*
+
+_Auto-updated from live API status_

@@ -3,23 +3,27 @@
 This generator creates TypeScript/JavaScript client that utilizes [axios](https://github.com/axios/axios). The generated Node module can be used in the following environments:
 
 Environment
-* Node.js
-* Webpack
-* Browserify
+
+- Node.js
+- Webpack
+- Browserify
 
 Language level
-* ES5 - you must have a Promises/A+ library installed
-* ES6
+
+- ES5 - you must have a Promises/A+ library installed
+- ES6
 
 Module system
-* CommonJS
-* ES6 module system
+
+- CommonJS
+- ES6 module system
 
 It can be used in both TypeScript and JavaScript. In TypeScript, the definition will be automatically resolved via `package.json`. ([Reference](https://www.typescriptlang.org/docs/handbook/declaration-files/consumption.html))
 
 ### Building
 
 To build and compile the typescript sources to javascript use:
+
 ```
 npm install
 npm run build
@@ -49,31 +53,29 @@ npm install PATH_TO_GENERATED_PACKAGE --save
 
 All URIs are relative to *https://api.bondmcp.com*
 
-Class | Method | HTTP request | Description
------------- | ------------- | ------------- | -------------
-*DefaultApi* | ****apiV1AskPost****  | **POST** /api/v1/ask | Ask a health question
-*DefaultApi* | ****apiV1HealthGet****  | **GET** /api/v1/health | Health check endpoint
-*DefaultApi* | ****apiV1SymptomsPost****  | **POST** /api/v1/symptoms | Analyze symptoms (NEW in v1.0.1)
-
+| Class        | Method                        | HTTP request              | Description                      |
+| ------------ | ----------------------------- | ------------------------- | -------------------------------- |
+| _DefaultApi_ | \***\*apiV1AskPost\*\***      | **POST** /api/v1/ask      | Ask a health question            |
+| _DefaultApi_ | \***\*apiV1HealthGet\*\***    | **GET** /api/v1/health    | Health check endpoint            |
+| _DefaultApi_ | \***\*apiV1SymptomsPost\*\*** | **POST** /api/v1/symptoms | Analyze symptoms (NEW in v1.0.1) |
 
 ### Documentation For Models
 
- - **ApiV1AskPost200Response** 
- - **ApiV1AskPostRequest** 
- - **ApiV1HealthGet200Response** 
- - **ApiV1SymptomsPost200Response** 
- - **ApiV1SymptomsPostRequest** 
-
+- **ApiV1AskPost200Response**
+- **ApiV1AskPostRequest**
+- **ApiV1HealthGet200Response**
+- **ApiV1SymptomsPost200Response**
+- **ApiV1SymptomsPostRequest**
 
 <a id="documentation-for-authorization"></a>
-## Documentation For Authorization
 
+## Documentation For Authorization
 
 Authentication schemes defined for the API:
 <a id="ApiKeyAuth"></a>
+
 ### ApiKeyAuth
 
 - **Type**: API key
 - **API key parameter name**: X-API-Key
 - **Location**: HTTP header
-

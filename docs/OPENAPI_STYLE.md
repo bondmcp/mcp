@@ -127,7 +127,7 @@ parameters:
     description: Maximum number of items to return
 
 responses:
-  '200':
+  "200":
     content:
       application/json:
         schema:
@@ -136,7 +136,7 @@ responses:
             data:
               type: array
               items:
-                $ref: '#/components/schemas/User'
+                $ref: "#/components/schemas/User"
             pagination:
               type: object
               properties:
@@ -169,7 +169,7 @@ parameters:
       default: 20
 
 responses:
-  '200':
+  "200":
     content:
       application/json:
         schema:
@@ -178,7 +178,7 @@ responses:
             data:
               type: array
               items:
-                $ref: '#/components/schemas/User'
+                $ref: "#/components/schemas/User"
             meta:
               type: object
               properties:
@@ -227,12 +227,12 @@ components:
 
 # Usage in responses
 responses:
-  '400':
+  "400":
     description: Bad Request
     content:
       application/json:
         schema:
-          $ref: '#/components/schemas/Error'
+          $ref: "#/components/schemas/Error"
         example:
           error:
             code: VALIDATION_ERROR
@@ -342,25 +342,25 @@ Use appropriate HTTP status codes:
 ```yaml
 # ✅ Good: Appropriate status codes
 responses:
-  '200':
+  "200":
     description: Success (GET, PUT, PATCH)
-  '201':
+  "201":
     description: Created (POST)
-  '204':
+  "204":
     description: No Content (DELETE)
-  '400':
+  "400":
     description: Bad Request
-  '401':
+  "401":
     description: Unauthorized
-  '403':
+  "403":
     description: Forbidden
-  '404':
+  "404":
     description: Not Found
-  '422':
+  "422":
     description: Unprocessable Entity (validation errors)
-  '429':
+  "429":
     description: Too Many Requests
-  '500':
+  "500":
     description: Internal Server Error
 ```
 
@@ -441,9 +441,9 @@ UserStatus:
 UserRole:
   type: string
   enum:
-    - admin      # Full system access
-    - user       # Standard user access
-    - guest      # Limited read-only access
+    - admin # Full system access
+    - user # Standard user access
+    - guest # Limited read-only access
   description: User role determining access permissions
 ```
 
@@ -483,7 +483,7 @@ properties:
     description: |
       This endpoint is deprecated and will be removed in v2.0.0.
       Use /api/v1/new-endpoint instead.
-      
+
       Migration guide: https://docs.bondmcp.com/migration/legacy-endpoint
 ```
 
@@ -497,7 +497,7 @@ get:
   summary: Get user profile
   description: |
     Retrieves the profile information for a specific user.
-    
+
     This endpoint returns public profile data including the user's
     display name, avatar, and public settings. Private information
     such as email addresses are only returned for the authenticated
@@ -571,6 +571,7 @@ The following Spectral rules are enforced:
 ### Custom Validation
 
 Additional validation checks:
+
 - All schemas must have examples
 - All error responses must use standard error format
 - All list endpoints must include pagination
@@ -591,6 +592,7 @@ npm run spec:bundle
 ### SDK Generation
 
 The spec must be compatible with OpenAPI Generator for:
+
 - TypeScript (typescript-axios generator)
 - Python (python generator)
 - Go (go generator)

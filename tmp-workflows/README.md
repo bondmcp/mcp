@@ -5,7 +5,9 @@ This directory contains GitHub Actions workflow files that should be moved to `.
 ## Files
 
 ### `verify-api-status.yml`
+
 Automated workflow that:
+
 - Tests API endpoint availability daily
 - Verifies documentation accuracy against actual API status
 - Updates `ACTUAL_API_STATUS.md` with test results

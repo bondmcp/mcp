@@ -5,6 +5,7 @@ BondMCP uses API key authentication for all requests.
 ## API Key Authentication
 
 ### Getting an API Key
+
 ```bash
 # Install CLI
 pip install bondmcp-cli
@@ -19,12 +20,14 @@ bondmcp keys create --name "my-app"
 ### Using API Keys
 
 #### HTTP Header
+
 ```bash
 curl -H "Authorization: Bearer YOUR_API_KEY" \
   https://api.bondmcp.com/v1/health
 ```
 
 #### Environment Variable
+
 ```bash
 export BONDMCP_API_KEY="your-api-key"
 bondmcp ask "What are the benefits of exercise?"
@@ -33,6 +36,7 @@ bondmcp ask "What are the benefits of exercise?"
 ### SDK Authentication
 
 #### Python
+
 ```python
 from bondmcp import BondMCP
 
@@ -40,25 +44,29 @@ client = BondMCP(api_key="your-api-key")
 ```
 
 #### JavaScript
-```javascript
-import { BondMCP } from '@bondmcp/sdk';
 
-const client = new BondMCP({ apiKey: 'your-api-key' });
+```javascript
+import { BondMCP } from "@bondmcp/sdk";
+
+const client = new BondMCP({ apiKey: "your-api-key" });
 ```
 
 ## Key Management
 
 ### Create Keys
+
 ```bash
 bondmcp keys create --name "production-app"
 ```
 
 ### List Keys
+
 ```bash
 bondmcp keys list
 ```
 
 ### Revoke Keys
+
 ```bash
 bondmcp keys revoke --key-id "key-id"
 ```

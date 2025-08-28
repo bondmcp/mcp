@@ -5,6 +5,7 @@
 ### Authentication Problems
 
 #### "Authentication failed" error
+
 ```bash
 # Check your credentials
 bondmcp auth status
@@ -15,6 +16,7 @@ bondmcp auth login
 ```
 
 #### "Invalid API key" error
+
 ```bash
 # Check if key exists
 bondmcp keys list
@@ -29,6 +31,7 @@ export BONDMCP_API_KEY="your-new-key"
 ### API Connection Issues
 
 #### "Connection refused" error
+
 ```bash
 # Check API status
 bondmcp health check
@@ -38,6 +41,7 @@ curl -I https://api.bondmcp.com/v1/health
 ```
 
 #### Rate limiting errors
+
 ```bash
 # Check your usage
 bondmcp usage show
@@ -49,6 +53,7 @@ bondmcp billing status
 ### CLI Installation Issues
 
 #### "Command not found: bondmcp"
+
 ```bash
 # Reinstall CLI
 pip uninstall bondmcp-cli
@@ -60,6 +65,7 @@ which bondmcp
 ```
 
 #### Permission errors
+
 ```bash
 # Install with user flag
 pip install --user bondmcp-cli
@@ -71,6 +77,7 @@ sudo pip install bondmcp-cli
 ### SDK Issues
 
 #### Python SDK import errors
+
 ```bash
 # Reinstall Python SDK
 pip uninstall bondmcp-python
@@ -78,6 +85,7 @@ pip install bondmcp-python
 ```
 
 #### JavaScript SDK module errors
+
 ```bash
 # Reinstall JavaScript SDK
 npm uninstall @bondmcp/sdk
@@ -87,12 +95,14 @@ npm install @bondmcp/sdk
 ## Getting Help
 
 ### CLI Help
+
 ```bash
 bondmcp --help
 bondmcp <command> --help
 ```
 
 ### Check Status
+
 ```bash
 bondmcp auth status
 bondmcp usage show
@@ -100,6 +110,7 @@ bondmcp health check
 ```
 
 ### Debug Mode
+
 ```bash
 # Enable verbose logging
 bondmcp --verbose ask "test question"

@@ -4,10 +4,10 @@ on:
     branches:
       - main
     paths:
-      - '**/*.md'
-      - 'spec/**'
-      - '.gitbook.yaml'
-      - 'SUMMARY.md'
+      - "**/*.md"
+      - "spec/**"
+      - ".gitbook.yaml"
+      - "SUMMARY.md"
   workflow_dispatch:
 
 jobs:
@@ -22,7 +22,7 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '18'
+          node-version: "18"
 
       - name: Install GitBook CLI
         run: |
@@ -38,10 +38,10 @@ jobs:
           # Install js-yaml for robust YAML to JSON conversion
           echo "Installing js-yaml for OpenAPI conversion..."
           npm install -g js-yaml
-          
+
           # Create backup of original YAML
           cp ./spec/openapi.yaml ./spec/openapi.yaml.bak
-          
+
           # Validate YAML syntax first
           echo "Validating OpenAPI YAML syntax..."
           if js-yaml ./spec/openapi.yaml > /dev/null; then
@@ -51,7 +51,7 @@ jobs:
             # Basic attempt to fix common YAML issues could be added here
             # For now, we'll continue with the original file
           fi
-          
+
           # Convert YAML to JSON with error handling
           echo "Converting OpenAPI YAML to JSON..."
           if js-yaml ./spec/openapi.yaml > ./spec/openapi.json; then
@@ -67,7 +67,7 @@ jobs:
               exit 1
             fi
           fi
-          
+
           # Validate the generated JSON
           echo "Validating generated JSON..."
           if cat ./spec/openapi.json | jq . > /dev/null; then
@@ -101,10 +101,10 @@ jobs:
             echo "GITBOOK_TOKEN not found, falling back to username/password"
             gitbook login --username "${{ secrets.GITBOOK_EMAIL }}" --password "${{ secrets.GITBOOK_PASSWORD }}"
           fi
-          
+
           echo "Syncing repository with GitBook..."
           gitbook sync docs.bondmcp.com
-          
+
           echo "Sync completed successfully!"
 
       - name: Publish OpenAPI JSON to API endpoint
@@ -114,7 +114,7 @@ jobs:
           AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION || 'us-east-1' }}
         run: |
           echo "Publishing OpenAPI JSON to openapi.bondmcp.com/openapi.bondmcp..."
-          
+
           # Install AWS CLI if not already installed
           if ! command -v aws &> /dev/null; then
             echo "Installing AWS CLI..."
@@ -123,7 +123,7 @@ jobs:
             sudo ./aws/install
             rm -rf awscliv2.zip aws/
           fi
-          
+
           # Upload to S3 (assuming S3 bucket hosts openapi.bondmcp.com)
           if [ -n "$AWS_ACCESS_KEY_ID" ] && [ -n "$AWS_SECRET_ACCESS_KEY" ]; then
             aws s3 cp ./spec/openapi.json s3://openapi.bondmcp.com/openapi.bondmcp --content-type "application/json" --cache-control "max-age=300"

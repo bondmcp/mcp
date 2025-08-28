@@ -2,22 +2,22 @@
 
 /**
  * OpenAPI Spec Utilities
- * 
+ *
  * This script provides utilities for managing OpenAPI specifications,
  * including validation, diffing, and SDK generation.
  */
 
-const fs = require('fs');
-const path = require('path');
-const { execSync } = require('child_process');
-const crypto = require('crypto');
+const fs = require("fs");
+const path = require("path");
+const { execSync } = require("child_process");
+const crypto = require("crypto");
 
 class OpenAPIManager {
   constructor() {
-    this.specDir = path.join(__dirname, '..', 'openapi');
-    this.historyDir = path.join(this.specDir, 'history');
-    this.latestFile = path.join(this.specDir, 'latest.json');
-    
+    this.specDir = path.join(__dirname, "..", "openapi");
+    this.historyDir = path.join(this.specDir, "history");
+    this.latestFile = path.join(this.specDir, "latest.json");
+
     // Ensure directories exist
     this.ensureDirectories();
   }
@@ -36,9 +36,9 @@ class OpenAPIManager {
    */
   calculateChecksum(filePath) {
     const fileBuffer = fs.readFileSync(filePath);
-    const hashSum = crypto.createHash('sha256');
+    const hashSum = crypto.createHash("sha256");
     hashSum.update(fileBuffer);
-    return hashSum.digest('hex');
+    return hashSum.digest("hex");
   }
 
   /**
@@ -46,25 +46,28 @@ class OpenAPIManager {
    */
   validateSpec(specPath) {
     try {
-      const spec = JSON.parse(fs.readFileSync(specPath, 'utf8'));
-      
+      const spec = JSON.parse(fs.readFileSync(specPath, "utf8"));
+
       // Basic validation
       if (!spec.openapi) {
-        throw new Error('Missing openapi version field');
+        throw new Error("Missing openapi version field");
       }
-      
+
       if (!spec.info || !spec.info.title || !spec.info.version) {
-        throw new Error('Missing required info fields');
+        throw new Error("Missing required info fields");
       }
-      
+
       if (!spec.paths) {
-        throw new Error('Missing paths object');
+        throw new Error("Missing paths object");
       }
-      
-      console.log('✅ OpenAPI specification is valid');
+
+      console.log("✅ OpenAPI specification is valid");
       return true;
     } catch (error) {
-      console.error('❌ OpenAPI specification validation failed:', error.message);
+      console.error(
+        "❌ OpenAPI specification validation failed:",
+        error.message,
+      );
       return false;
     }
   }
@@ -74,7 +77,7 @@ class OpenAPIManager {
    */
   getLatestVersion() {
     try {
-      const latest = JSON.parse(fs.readFileSync(this.latestFile, 'utf8'));
+      const latest = JSON.parse(fs.readFileSync(this.latestFile, "utf8"));
       return latest.version;
     } catch (error) {
       return null;
@@ -86,14 +89,15 @@ class OpenAPIManager {
    */
   listVersions() {
     try {
-      const files = fs.readdirSync(this.historyDir)
-        .filter(file => file.startsWith('openapi-') && file.endsWith('.json'))
-        .map(file => file.replace('openapi-', '').replace('.json', ''))
+      const files = fs
+        .readdirSync(this.historyDir)
+        .filter((file) => file.startsWith("openapi-") && file.endsWith(".json"))
+        .map((file) => file.replace("openapi-", "").replace(".json", ""))
         .sort((a, b) => {
           // Simple version comparison (works for semver)
-          const aParts = a.split('.').map(Number);
-          const bParts = b.split('.').map(Number);
-          
+          const aParts = a.split(".").map(Number);
+          const bParts = b.split(".").map(Number);
+
           for (let i = 0; i < Math.max(aParts.length, bParts.length); i++) {
             const aDiff = aParts[i] || 0;
             const bDiff = bParts[i] || 0;
@@ -103,7 +107,7 @@ class OpenAPIManager {
           }
           return 0;
         });
-      
+
       return files;
     } catch (error) {
       return [];
@@ -129,24 +133,24 @@ class OpenAPIManager {
    */
   storeVersion(specPath, version, checksum, specUrl) {
     const versionPath = this.getVersionPath(version);
-    
+
     if (this.versionExists(version)) {
       throw new Error(`Version ${version} already exists`);
     }
-    
+
     // Copy spec to history
     fs.copyFileSync(specPath, versionPath);
-    
+
     // Update latest.json
     const latestData = {
       version,
       checksum,
       timestamp: new Date().toISOString(),
-      spec_url: specUrl
+      spec_url: specUrl,
     };
-    
+
     fs.writeFileSync(this.latestFile, JSON.stringify(latestData, null, 2));
-    
+
     console.log(`✅ Stored version ${version}`);
     return versionPath;
   }
@@ -157,25 +161,35 @@ class OpenAPIManager {
   generateDiff(fromVersion, toVersion) {
     const fromPath = this.getVersionPath(fromVersion);
     const toPath = this.getVersionPath(toVersion);
-    
+
     if (!fs.existsSync(fromPath)) {
       throw new Error(`Version ${fromVersion} not found`);
     }
-    
+
     if (!fs.existsSync(toPath)) {
       throw new Error(`Version ${toVersion} not found`);
     }
-    
-    const diffJsonPath = path.join(this.historyDir, `diff-${fromVersion}-to-${toVersion}.json`);
-    const diffMdPath = path.join(this.historyDir, `diff-${fromVersion}-to-${toVersion}.md`);
-    
+
+    const diffJsonPath = path.join(
+      this.historyDir,
+      `diff-${fromVersion}-to-${toVersion}.json`,
+    );
+    const diffMdPath = path.join(
+      this.historyDir,
+      `diff-${fromVersion}-to-${toVersion}.md`,
+    );
+
     try {
       // Generate JSON diff
-      execSync(`openapi-diff "${fromPath}" "${toPath}" --format json > "${diffJsonPath}"`);
-      
+      execSync(
+        `openapi-diff "${fromPath}" "${toPath}" --format json > "${diffJsonPath}"`,
+      );
+
       // Generate Markdown diff
-      execSync(`openapi-diff "${fromPath}" "${toPath}" --format markdown > "${diffMdPath}"`);
-      
+      execSync(
+        `openapi-diff "${fromPath}" "${toPath}" --format markdown > "${diffMdPath}"`,
+      );
+
       console.log(`✅ Generated diff from ${fromVersion} to ${toVersion}`);
       return { jsonPath: diffJsonPath, mdPath: diffMdPath };
     } catch (error) {
@@ -188,13 +202,16 @@ class OpenAPIManager {
    * Generate migration notes stub
    */
   generateMigrationNotes(fromVersion, toVersion) {
-    const migrationsDir = path.join(__dirname, '..', 'MIGRATIONS');
-    const migrationFile = path.join(migrationsDir, `${fromVersion}-to-${toVersion}.md`);
-    
+    const migrationsDir = path.join(__dirname, "..", "MIGRATIONS");
+    const migrationFile = path.join(
+      migrationsDir,
+      `${fromVersion}-to-${toVersion}.md`,
+    );
+
     if (!fs.existsSync(migrationsDir)) {
       fs.mkdirSync(migrationsDir, { recursive: true });
     }
-    
+
     const migrationContent = `# Migration Guide: ${fromVersion} to ${toVersion}
 
 ## Overview
@@ -231,52 +248,54 @@ If you need help with migration, contact support@bondmcp.com
 if (require.main === module) {
   const manager = new OpenAPIManager();
   const command = process.argv[2];
-  
+
   switch (command) {
-    case 'validate':
+    case "validate":
       const specPath = process.argv[3];
       if (!specPath) {
-        console.error('Usage: node openapi-utils.js validate <spec-path>');
+        console.error("Usage: node openapi-utils.js validate <spec-path>");
         process.exit(1);
       }
       const isValid = manager.validateSpec(specPath);
       process.exit(isValid ? 0 : 1);
       break;
-      
-    case 'checksum':
+
+    case "checksum":
       const filePath = process.argv[3];
       if (!filePath) {
-        console.error('Usage: node openapi-utils.js checksum <file-path>');
+        console.error("Usage: node openapi-utils.js checksum <file-path>");
         process.exit(1);
       }
       console.log(manager.calculateChecksum(filePath));
       break;
-      
-    case 'list':
+
+    case "list":
       const versions = manager.listVersions();
       if (versions.length === 0) {
-        console.log('No versions found');
+        console.log("No versions found");
       } else {
-        console.log('Available versions:');
-        versions.forEach(version => console.log(`  ${version}`));
+        console.log("Available versions:");
+        versions.forEach((version) => console.log(`  ${version}`));
       }
       break;
-      
-    case 'latest':
+
+    case "latest":
       const latest = manager.getLatestVersion();
       if (latest) {
         console.log(latest);
       } else {
-        console.log('No latest version found');
+        console.log("No latest version found");
         process.exit(1);
       }
       break;
-      
-    case 'diff':
+
+    case "diff":
       const fromVer = process.argv[3];
       const toVer = process.argv[4];
       if (!fromVer || !toVer) {
-        console.error('Usage: node openapi-utils.js diff <from-version> <to-version>');
+        console.error(
+          "Usage: node openapi-utils.js diff <from-version> <to-version>",
+        );
         process.exit(1);
       }
       try {
@@ -285,17 +304,19 @@ if (require.main === module) {
         process.exit(1);
       }
       break;
-      
-    case 'migration':
+
+    case "migration":
       const fromVerMig = process.argv[3];
       const toVerMig = process.argv[4];
       if (!fromVerMig || !toVerMig) {
-        console.error('Usage: node openapi-utils.js migration <from-version> <to-version>');
+        console.error(
+          "Usage: node openapi-utils.js migration <from-version> <to-version>",
+        );
         process.exit(1);
       }
       manager.generateMigrationNotes(fromVerMig, toVerMig);
       break;
-      
+
     default:
       console.log(`OpenAPI Utilities
 

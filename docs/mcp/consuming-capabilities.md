@@ -30,17 +30,17 @@ print(f"Available capabilities: {len(config['capabilities'])}")
 def discover_health_capabilities(client):
     """Discover all health-related endpoints dynamically."""
     config = client.get_mcp_configuration()
-    
+
     health_capabilities = [
-        cap for cap in config["capabilities"] 
+        cap for cap in config["capabilities"]
         if "health" in cap["path"] and not cap.get("deprecated", False)
     ]
-    
+
     print("Available Health Endpoints:")
     for cap in health_capabilities:
         auth_req = "🔐" if cap["auth_required"] else "🌐"
         print(f"  {auth_req} {cap['method']} {cap['path']} - {cap['name']}")
-        
+
     return health_capabilities
 
 # Usage
@@ -59,31 +59,31 @@ class MCPHealthAnalyzer:
         self.base_url = "https://api.bondmcp.com"
         self.session = requests.Session()
         self.session.headers.update({"X-API-Key": api_key})
-        
+
         # Discover capabilities on initialization
         self.capabilities = self._discover_capabilities()
-    
+
     def _discover_capabilities(self):
         """Fetch and cache MCP capabilities."""
         response = self.session.get(f"{self.base_url}/.well-known/mcp-configuration")
         response.raise_for_status()
         return {cap["id"]: cap for cap in response.json()["capabilities"]}
-    
+
     def analyze_health_data(self, data_type, data_payload):
         """Analyze health data using appropriate endpoint."""
         # Find the right capability for health analysis
         analyze_cap = next(
-            (cap for cap in self.capabilities.values() 
+            (cap for cap in self.capabilities.values()
              if "analyze" in cap["path"] and cap["method"] == "POST"),
             None
         )
-        
+
         if not analyze_cap:
             raise ValueError("Health analysis capability not available")
-        
+
         if analyze_cap.get("deprecated"):
             print(f"Warning: {analyze_cap['name']} is deprecated")
-        
+
         # Make the analysis request
         response = self.session.post(
             f"{self.base_url}{analyze_cap['path']}",
@@ -93,13 +93,13 @@ class MCPHealthAnalyzer:
                 "options": {"detailed": True}
             }
         )
-        
+
         # Handle rate limiting
         if response.status_code == 429:
             retry_after = int(response.headers.get('Retry-After', 60))
             print(f"Rate limited. Retry after {retry_after} seconds")
             return None
-            
+
         response.raise_for_status()
         return response.json()
 
@@ -132,7 +132,7 @@ def mcp_retry_with_backoff(max_retries=3, base_delay=1):
             for attempt in range(max_retries):
                 try:
                     response = func(*args, **kwargs)
-                    
+
                     if hasattr(response, 'status_code'):
                         if response.status_code == 429:
                             # Handle rate limiting
@@ -147,9 +147,9 @@ def mcp_retry_with_backoff(max_retries=3, base_delay=1):
                                 print(f"Server error on attempt {attempt + 1}. Retrying in {delay}s...")
                                 time.sleep(delay)
                                 continue
-                    
+
                     return response
-                    
+
                 except requests.exceptions.RequestException as e:
                     if attempt < max_retries - 1:
                         delay = base_delay * (2 ** attempt)
@@ -157,7 +157,7 @@ def mcp_retry_with_backoff(max_retries=3, base_delay=1):
                         time.sleep(delay)
                         continue
                     raise
-                    
+
             return response
         return wrapper
     return decorator
@@ -177,116 +177,123 @@ def get_health_insights():
 
 ```typescript
 interface MCPConfiguration {
-    service: {
-        name: string;
-        version: string;
-        description: string;
-    };
-    auth: {
-        supported_methods: string[];
-        required: boolean;
-    };
-    capabilities: MCPCapability[];
-    rate_limits: {
-        requests_per_minute: number;
-        requests_per_hour: number;
-        requests_per_day: number;
-    };
-    contact: {
-        email: string;
-        support_url: string;
-    };
-    updated_at: string;
+  service: {
+    name: string;
+    version: string;
+    description: string;
+  };
+  auth: {
+    supported_methods: string[];
+    required: boolean;
+  };
+  capabilities: MCPCapability[];
+  rate_limits: {
+    requests_per_minute: number;
+    requests_per_hour: number;
+    requests_per_day: number;
+  };
+  contact: {
+    email: string;
+    support_url: string;
+  };
+  updated_at: string;
 }
 
 interface MCPCapability {
-    id: string;
-    method: string;
-    path: string;
-    name: string;
-    description: string;
-    auth_required: boolean;
-    tags: string[];
-    rate_limit_tier: 'basic' | 'standard' | 'premium';
-    deprecated?: boolean;
+  id: string;
+  method: string;
+  path: string;
+  name: string;
+  description: string;
+  auth_required: boolean;
+  tags: string[];
+  rate_limit_tier: "basic" | "standard" | "premium";
+  deprecated?: boolean;
 }
 
 class BondMCPClient {
-    private apiKey: string;
-    private baseUrl: string;
-    private capabilities: Map<string, MCPCapability> = new Map();
+  private apiKey: string;
+  private baseUrl: string;
+  private capabilities: Map<string, MCPCapability> = new Map();
 
-    constructor(apiKey: string, baseUrl = 'https://api.bondmcp.com') {
-        this.apiKey = apiKey;
-        this.baseUrl = baseUrl;
+  constructor(apiKey: string, baseUrl = "https://api.bondmcp.com") {
+    this.apiKey = apiKey;
+    this.baseUrl = baseUrl;
+  }
+
+  async initialize(): Promise<void> {
+    const config = await this.getMCPConfiguration();
+    config.capabilities.forEach((cap) => {
+      this.capabilities.set(cap.id, cap);
+    });
+  }
+
+  async getMCPConfiguration(): Promise<MCPConfiguration> {
+    const response = await fetch(
+      `${this.baseUrl}/.well-known/mcp-configuration`,
+    );
+    if (!response.ok) {
+      throw new Error(
+        `Failed to fetch MCP configuration: ${response.statusText}`,
+      );
+    }
+    return response.json();
+  }
+
+  private async makeRequest(
+    endpoint: string,
+    options: RequestInit = {},
+  ): Promise<Response> {
+    const headers = {
+      "X-API-Key": this.apiKey,
+      "Content-Type": "application/json",
+      ...options.headers,
+    };
+
+    const response = await fetch(`${this.baseUrl}${endpoint}`, {
+      ...options,
+      headers,
+    });
+
+    // Handle rate limiting
+    if (response.status === 429) {
+      const retryAfter = parseInt(response.headers.get("Retry-After") || "60");
+      console.warn(`Rate limited. Retry after ${retryAfter} seconds`);
+      throw new Error(`Rate limited. Retry after ${retryAfter} seconds`);
     }
 
-    async initialize(): Promise<void> {
-        const config = await this.getMCPConfiguration();
-        config.capabilities.forEach(cap => {
-            this.capabilities.set(cap.id, cap);
-        });
+    return response;
+  }
+
+  async analyzeHealthData(dataType: string, data: any): Promise<any> {
+    // Find the analyze capability
+    const analyzeCap = Array.from(this.capabilities.values()).find(
+      (cap) => cap.path.includes("analyze") && cap.method === "POST",
+    );
+
+    if (!analyzeCap) {
+      throw new Error("Health analysis capability not available");
     }
 
-    async getMCPConfiguration(): Promise<MCPConfiguration> {
-        const response = await fetch(`${this.baseUrl}/.well-known/mcp-configuration`);
-        if (!response.ok) {
-            throw new Error(`Failed to fetch MCP configuration: ${response.statusText}`);
-        }
-        return response.json();
+    if (analyzeCap.deprecated) {
+      console.warn(`Warning: ${analyzeCap.name} is deprecated`);
     }
 
-    private async makeRequest(endpoint: string, options: RequestInit = {}): Promise<Response> {
-        const headers = {
-            'X-API-Key': this.apiKey,
-            'Content-Type': 'application/json',
-            ...options.headers
-        };
+    const response = await this.makeRequest(analyzeCap.path, {
+      method: "POST",
+      body: JSON.stringify({
+        data_type: dataType,
+        data: data,
+      }),
+    });
 
-        const response = await fetch(`${this.baseUrl}${endpoint}`, {
-            ...options,
-            headers
-        });
-
-        // Handle rate limiting
-        if (response.status === 429) {
-            const retryAfter = parseInt(response.headers.get('Retry-After') || '60');
-            console.warn(`Rate limited. Retry after ${retryAfter} seconds`);
-            throw new Error(`Rate limited. Retry after ${retryAfter} seconds`);
-        }
-
-        return response;
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.error?.message || "Analysis failed");
     }
 
-    async analyzeHealthData(dataType: string, data: any): Promise<any> {
-        // Find the analyze capability
-        const analyzeCap = Array.from(this.capabilities.values()).find(
-            cap => cap.path.includes('analyze') && cap.method === 'POST'
-        );
-
-        if (!analyzeCap) {
-            throw new Error('Health analysis capability not available');
-        }
-
-        if (analyzeCap.deprecated) {
-            console.warn(`Warning: ${analyzeCap.name} is deprecated`);
-        }
-
-        const response = await this.makeRequest(analyzeCap.path, {
-            method: 'POST',
-            body: JSON.stringify({
-                data_type: dataType,
-                data: data
-            })
-        });
-
-        if (!response.ok) {
-            const error = await response.json();
-            throw new Error(error.error?.message || 'Analysis failed');
-        }
-
-        return response.json();
-    }
+    return response.json();
+  }
 }
 ```
 
@@ -322,9 +329,9 @@ export function useMCP(apiKey: string): UseMCPResult {
 
             const mcpClient = new BondMCPClient(apiKey);
             await mcpClient.initialize();
-            
+
             const config = await mcpClient.getMCPConfiguration();
-            
+
             setClient(mcpClient);
             setCapabilities(config.capabilities);
         } catch (err) {
@@ -385,72 +392,72 @@ function HealthAnalysisComponent() {
 ### Node.js Server Integration
 
 ```javascript
-const express = require('express');
-const { BondMCPClient } = require('@bondmcp/sdk');
+const express = require("express");
+const { BondMCPClient } = require("@bondmcp/sdk");
 
 const app = express();
 app.use(express.json());
 
 // Initialize MCP client
 const mcpClient = new BondMCPClient({
-    apiKey: process.env.BOND_API_KEY,
-    baseUrl: 'https://api.bondmcp.com'
+  apiKey: process.env.BOND_API_KEY,
+  baseUrl: "https://api.bondmcp.com",
 });
 
 // Middleware to ensure MCP is initialized
 let mcpInitialized = false;
 const initializeMCP = async () => {
-    if (!mcpInitialized) {
-        await mcpClient.initialize();
-        mcpInitialized = true;
-        console.log('MCP client initialized');
-    }
+  if (!mcpInitialized) {
+    await mcpClient.initialize();
+    mcpInitialized = true;
+    console.log("MCP client initialized");
+  }
 };
 
 // Health analysis endpoint
-app.post('/analyze-health', async (req, res) => {
-    try {
-        await initializeMCP();
-        
-        const { dataType, data } = req.body;
-        const result = await mcpClient.analyzeHealthData(dataType, data);
-        
-        res.json({
-            success: true,
-            analysis: result
-        });
-    } catch (error) {
-        console.error('Health analysis error:', error);
-        res.status(500).json({
-            success: false,
-            error: error.message
-        });
-    }
+app.post("/analyze-health", async (req, res) => {
+  try {
+    await initializeMCP();
+
+    const { dataType, data } = req.body;
+    const result = await mcpClient.analyzeHealthData(dataType, data);
+
+    res.json({
+      success: true,
+      analysis: result,
+    });
+  } catch (error) {
+    console.error("Health analysis error:", error);
+    res.status(500).json({
+      success: false,
+      error: error.message,
+    });
+  }
 });
 
 // Get available capabilities
-app.get('/capabilities', async (req, res) => {
-    try {
-        await initializeMCP();
-        const config = await mcpClient.getMCPConfiguration();
-        
-        res.json({
-            capabilities: config.capabilities.map(cap => ({
-                id: cap.id,
-                name: cap.name,
-                method: cap.method,
-                path: cap.path,
-                authRequired: cap.auth_required,
-                deprecated: cap.deprecated || false
-            }))
-        });
-    } catch (error) {
-        res.status(500).json({ error: error.message });
-    }
+app.get("/capabilities", async (req, res) => {
+  try {
+    await initializeMCP();
+    const config = await mcpClient.getMCPConfiguration();
+
+    res.json({
+      capabilities: config.capabilities.map((cap) => ({
+        id: cap.id,
+        name: cap.name,
+        method: cap.method,
+        path: cap.path,
+        authRequired: cap.auth_required,
+        deprecated: cap.deprecated || false,
+      })),
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
 });
 
 app.listen(3000, () => {
-    console.log('Server running on port 3000');
+  console.log("Server running on port 3000");
 });
 ```
 
@@ -469,7 +476,7 @@ class MCPCache:
         self.ttl_seconds = ttl_seconds
         self.config = None
         self.last_fetch = 0
-    
+
     def get_config(self, client) -> dict:
         now = time.time()
         if not self.config or (now - self.last_fetch) > self.ttl_seconds:
@@ -483,28 +490,32 @@ class MCPCache:
 Handle missing capabilities gracefully:
 
 ```typescript
-function findCapability(capabilities: MCPCapability[], pattern: string): MCPCapability | null {
-    return capabilities.find(cap => 
-        cap.path.includes(pattern) && !cap.deprecated
-    ) || null;
+function findCapability(
+  capabilities: MCPCapability[],
+  pattern: string,
+): MCPCapability | null {
+  return (
+    capabilities.find((cap) => cap.path.includes(pattern) && !cap.deprecated) ||
+    null
+  );
 }
 
 async function analyzeWithFallback(client: BondMCPClient, data: any) {
-    const capabilities = await client.getCapabilities();
-    
-    // Try advanced analysis first
-    const advancedCap = findCapability(capabilities, 'advanced-analyze');
-    if (advancedCap) {
-        return client.makeRequest(advancedCap.path, { method: 'POST', body: data });
-    }
-    
-    // Fallback to basic analysis
-    const basicCap = findCapability(capabilities, 'analyze');
-    if (basicCap) {
-        return client.makeRequest(basicCap.path, { method: 'POST', body: data });
-    }
-    
-    throw new Error('No analysis capabilities available');
+  const capabilities = await client.getCapabilities();
+
+  // Try advanced analysis first
+  const advancedCap = findCapability(capabilities, "advanced-analyze");
+  if (advancedCap) {
+    return client.makeRequest(advancedCap.path, { method: "POST", body: data });
+  }
+
+  // Fallback to basic analysis
+  const basicCap = findCapability(capabilities, "analyze");
+  if (basicCap) {
+    return client.makeRequest(basicCap.path, { method: "POST", body: data });
+  }
+
+  throw new Error("No analysis capabilities available");
 }
 ```
 
@@ -516,11 +527,11 @@ Use capability metadata to optimize request patterns:
 def optimize_request_pattern(capabilities):
     """Group capabilities by rate limit tier for optimal usage."""
     tiers = {'basic': [], 'standard': [], 'premium': []}
-    
+
     for cap in capabilities:
         tier = cap.get('rate_limit_tier', 'basic')
         tiers[tier].append(cap)
-    
+
     # Use premium endpoints for critical operations
     # Use basic endpoints for background tasks
     return tiers

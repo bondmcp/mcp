@@ -1,1 +1,870 @@
-{"openapi":"3.1.0","info":{"title":"BondMCP Healthcare Platform","description":"Comprehensive healthcare AI and MCP platform with security-focused architecture","version":"2.1.0"},"paths":{"/.well-known/mcp-configuration":{"get":{"tags":["MCP","MCP"],"summary":"MCP Configuration","description":"Get MCP configuration with all available capabilities","operationId":"get_mcp_configuration__well_known_mcp_configuration_get","responses":{"200":{"description":"Successful Response","content":{"application/json":{"schema":{"$ref":"#/components/schemas/MCPConfiguration"}}}}}}},"/.well-known/mcp-manifest.json":{"get":{"tags":["MCP","MCP"],"summary":"MCP Manifest","description":"Get MCP manifest with capability integrity hash","operationId":"get_mcp_manifest__well_known_mcp_manifest_json_get","responses":{"200":{"description":"Successful Response","content":{"application/json":{"schema":{"$ref":"#/components/schemas/MCPManifest"}}}}}}},"/health/live":{"get":{"tags":["System","System"],"summary":"Liveness Probe","description":"Check if the application is alive and responsive","operationId":"health_liveness_health_live_get","responses":{"200":{"description":"Successful Response","content":{"application/json":{"schema":{"additionalProperties":true,"type":"object","title":"Response Health Liveness Health Live Get"}}}}}}},"/health/ready":{"get":{"tags":["System","System"],"summary":"Readiness Probe","description":"Check if the application is ready to handle requests","operationId":"health_readiness_health_ready_get","responses":{"200":{"description":"Successful Response","content":{"application/json":{"schema":{}}}}}}},"/health":{"get":{"tags":["System","System"],"summary":"Comprehensive Health Check","description":"Get comprehensive health status including probes and service info","operationId":"health_comprehensive_health_get","responses":{"200":{"description":"Successful Response","content":{"application/json":{"schema":{"additionalProperties":true,"type":"object","title":"Response Health Comprehensive Health Get"}}}}}}},"/auth/register":{"post":{"tags":["Authentication"],"summary":"Register User","description":"Register a new user with enhanced validation","operationId":"register_user_auth_register_post","parameters":[{"name":"email","in":"query","required":true,"schema":{"type":"string","title":"Email"}},{"name":"password","in":"query","required":true,"schema":{"type":"string","title":"Password"}},{"name":"name","in":"query","required":true,"schema":{"type":"string","title":"Name"}}],"responses":{"200":{"description":"Successful Response","content":{"application/json":{"schema":{}}}},"422":{"description":"Validation Error","content":{"application/json":{"schema":{"$ref":"#/components/schemas/HTTPValidationError"}}}}}}},"/auth/login":{"post":{"tags":["Authentication"],"summary":"Login User","description":"Authenticate user and return JWT token with security tracking","operationId":"login_user_auth_login_post","requestBody":{"content":{"application/json":{"schema":{"$ref":"#/components/schemas/LoginRequest"}}},"required":true},"responses":{"200":{"description":"Successful Response","content":{"application/json":{"schema":{}}}},"422":{"description":"Validation Error","content":{"application/json":{"schema":{"$ref":"#/components/schemas/HTTPValidationError"}}}}}}},"/auth/api-keys":{"post":{"tags":["API Keys"],"summary":"Create Api Key","description":"Create a new API key with specified permissions","operationId":"create_api_key_auth_api_keys_post","security":[{"HTTPBearer":[]}],"parameters":[{"name":"name","in":"query","required":true,"schema":{"type":"string","title":"Name"}}],"requestBody":{"required":true,"content":{"application/json":{"schema":{"type":"array","items":{"type":"string"},"title":"Permissions"}}}},"responses":{"200":{"description":"Successful Response","content":{"application/json":{"schema":{}}}},"422":{"description":"Validation Error","content":{"application/json":{"schema":{"$ref":"#/components/schemas/HTTPValidationError"}}}}}}},"/healthcare/prescriptions/digital":{"post":{"tags":["Healthcare"],"summary":"Create Prescription Endpoint","description":"Create a new digital prescription","operationId":"create_prescription_endpoint_healthcare_prescriptions_digital_post","requestBody":{"content":{"application/json":{"schema":{"additionalProperties":true,"type":"object","title":"Prescription Data"}}},"required":true},"responses":{"200":{"description":"Successful Response","content":{"application/json":{"schema":{}}}},"422":{"description":"Validation Error","content":{"application/json":{"schema":{"$ref":"#/components/schemas/HTTPValidationError"}}}}},"security":[{"HTTPBearer":[]}]}},"/healthcare/patients/{patient_id}/prescriptions":{"get":{"tags":["Healthcare"],"summary":"Get Prescriptions Endpoint","description":"Get all prescriptions for a patient","operationId":"get_prescriptions_endpoint_healthcare_patients__patient_id__prescriptions_get","security":[{"HTTPBearer":[]}],"parameters":[{"name":"patient_id","in":"path","required":true,"schema":{"type":"string","title":"Patient Id"}}],"responses":{"200":{"description":"Successful Response","content":{"application/json":{"schema":{}}}},"422":{"description":"Validation Error","content":{"application/json":{"schema":{"$ref":"#/components/schemas/HTTPValidationError"}}}}}}},"/healthcare/programs/{program_id}/enroll":{"post":{"tags":["Healthcare"],"summary":"Enroll Patient Endpoint","description":"Enroll patient in digital health program","operationId":"enroll_patient_endpoint_healthcare_programs__program_id__enroll_post","security":[{"HTTPBearer":[]}],"parameters":[{"name":"program_id","in":"path","required":true,"schema":{"type":"string","title":"Program Id"}}],"requestBody":{"required":true,"content":{"application/json":{"schema":{"type":"object","additionalProperties":true,"title":"Enrollment Data"}}}},"responses":{"200":{"description":"Successful Response","content":{"application/json":{"schema":{}}}},"422":{"description":"Validation Error","content":{"application/json":{"schema":{"$ref":"#/components/schemas/HTTPValidationError"}}}}}}},"/healthcare/programs":{"get":{"tags":["Healthcare"],"summary":"List Programs Endpoint","description":"List all available digital health programs","operationId":"list_programs_endpoint_healthcare_programs_get","responses":{"200":{"description":"Successful Response","content":{"application/json":{"schema":{}}}}},"security":[{"HTTPBearer":[]}]}},"/vendors/register":{"post":{"tags":["Vendors"],"summary":"Register Vendor Endpoint","description":"Register a new digital health vendor","operationId":"register_vendor_endpoint_vendors_register_post","requestBody":{"content":{"application/json":{"schema":{"additionalProperties":true,"type":"object","title":"Vendor Data"}}},"required":true},"responses":{"200":{"description":"Successful Response","content":{"application/json":{"schema":{}}}},"422":{"description":"Validation Error","content":{"application/json":{"schema":{"$ref":"#/components/schemas/HTTPValidationError"}}}}},"security":[{"HTTPBearer":[]}]}},"/vendors/{vendor_id}/webhooks":{"post":{"tags":["Vendors"],"summary":"Vendor Webhook Endpoint","description":"Handle vendor webhooks for engagement/metrics data","operationId":"vendor_webhook_endpoint_vendors__vendor_id__webhooks_post","parameters":[{"name":"vendor_id","in":"path","required":true,"schema":{"type":"string","title":"Vendor Id"}},{"name":"signature","in":"query","required":true,"schema":{"type":"string","title":"Signature"}}],"requestBody":{"required":true,"content":{"application/json":{"schema":{"type":"object","additionalProperties":true,"title":"Webhook Data"}}}},"responses":{"200":{"description":"Successful Response","content":{"application/json":{"schema":{}}}},"422":{"description":"Validation Error","content":{"application/json":{"schema":{"$ref":"#/components/schemas/HTTPValidationError"}}}}}}},"/vendors/{vendor_id}/patients/{patient_id}/data":{"get":{"tags":["Vendors"],"summary":"Get Vendor Data Endpoint","description":"Get patient data from specific vendor","operationId":"get_vendor_data_endpoint_vendors__vendor_id__patients__patient_id__data_get","security":[{"HTTPBearer":[]}],"parameters":[{"name":"vendor_id","in":"path","required":true,"schema":{"type":"string","title":"Vendor Id"}},{"name":"patient_id","in":"path","required":true,"schema":{"type":"string","title":"Patient Id"}}],"responses":{"200":{"description":"Successful Response","content":{"application/json":{"schema":{}}}},"422":{"description":"Validation Error","content":{"application/json":{"schema":{"$ref":"#/components/schemas/HTTPValidationError"}}}}}}},"/healthcare/patients/{patient_id}/digital-summary":{"get":{"tags":["Healthcare"],"summary":"Get Patient Summary Endpoint","description":"Get comprehensive digital program summary for patient","operationId":"get_patient_summary_endpoint_healthcare_patients__patient_id__digital_summary_get","security":[{"HTTPBearer":[]}],"parameters":[{"name":"patient_id","in":"path","required":true,"schema":{"type":"string","title":"Patient Id"}}],"responses":{"200":{"description":"Successful Response","content":{"application/json":{"schema":{}}}},"422":{"description":"Validation Error","content":{"application/json":{"schema":{"$ref":"#/components/schemas/HTTPValidationError"}}}}}}},"/info":{"get":{"tags":["System"],"summary":"Deployment Info","description":"Get deployment information","operationId":"deployment_info_info_get","responses":{"200":{"description":"Successful Response","content":{"application/json":{"schema":{}}}}}}},"/ready":{"get":{"tags":["System"],"summary":"Readiness Check","description":"Kubernetes-style readiness check","operationId":"readiness_check_ready_get","responses":{"200":{"description":"Successful Response","content":{"application/json":{"schema":{}}}}}}},"/config":{"get":{"tags":["System"],"summary":"Configuration Info","description":"Get current configuration information","operationId":"configuration_info_config_get","responses":{"200":{"description":"Successful Response","content":{"application/json":{"schema":{}}}}}}}},"components":{"schemas":{"AuthConfig":{"properties":{"primary":{"items":{"$ref":"#/components/schemas/AuthMethod"},"type":"array","title":"Primary","description":"Primary authentication methods"}},"type":"object","required":["primary"],"title":"AuthConfig","description":"Authentication configuration"},"AuthMethod":{"properties":{"type":{"type":"string","title":"Type","description":"Authentication type (api_key, bearer)"},"header":{"anyOf":[{"type":"string"},{"type":"null"}],"title":"Header","description":"Header name for API key auth"},"scheme":{"anyOf":[{"type":"string"},{"type":"null"}],"title":"Scheme","description":"Scheme for bearer auth"}},"type":"object","required":["type"],"title":"AuthMethod","description":"Authentication method definition"},"Capability":{"properties":{"id":{"type":"string","title":"Id","description":"Capability ID in dot notation with version (e.g., auth.login:v1)"},"method":{"type":"string","title":"Method","description":"HTTP method (GET, POST, PUT, DELETE)"},"path":{"type":"string","title":"Path","description":"API endpoint path"},"name":{"type":"string","title":"Name","description":"Short descriptive name"},"description":{"type":"string","title":"Description","description":"Detailed description of the capability"},"auth_required":{"type":"boolean","title":"Auth Required","description":"Whether authentication is required"},"tags":{"items":{"type":"string"},"type":"array","title":"Tags","description":"List of tags for categorization"},"input_example":{"anyOf":[{"additionalProperties":true,"type":"object"},{"type":"null"}],"title":"Input Example","description":"Example input data"},"output_example":{"additionalProperties":true,"type":"object","title":"Output Example","description":"Example output data"},"rate_limit_tier":{"type":"string","title":"Rate Limit Tier","description":"Rate limiting tier","default":"standard"},"deprecated":{"type":"boolean","title":"Deprecated","description":"Whether the capability is deprecated","default":false}},"type":"object","required":["id","method","path","name","description","auth_required","tags","output_example"],"title":"Capability","description":"Individual MCP capability definition"},"ContactInfo":{"properties":{"email":{"type":"string","title":"Email","description":"Support email"},"docs":{"type":"string","title":"Docs","description":"Documentation URL"},"status":{"type":"string","title":"Status","description":"Status page URL"}},"type":"object","required":["email","docs","status"],"title":"ContactInfo","description":"Contact information"},"HTTPValidationError":{"properties":{"detail":{"items":{"$ref":"#/components/schemas/ValidationError"},"type":"array","title":"Detail"}},"type":"object","title":"HTTPValidationError"},"LoginRequest":{"properties":{"email":{"type":"string","maxLength":320,"minLength":5,"title":"Email","description":"Email address"},"password":{"type":"string","maxLength":128,"minLength":1,"title":"Password","description":"User password"},"remember_me":{"type":"boolean","title":"Remember Me","description":"Remember login session","default":false}},"type":"object","required":["email","password"],"title":"LoginRequest","description":"User login request with validation"},"MCPConfiguration":{"properties":{"service":{"$ref":"#/components/schemas/ServiceInfo","description":"Service information"},"auth":{"$ref":"#/components/schemas/AuthConfig"},"capabilities":{"items":{"$ref":"#/components/schemas/Capability"},"type":"array","title":"Capabilities","description":"Available capabilities"},"rate_limits":{"$ref":"#/components/schemas/RateLimitConfig"},"contact":{"$ref":"#/components/schemas/ContactInfo"},"updated_at":{"type":"string","title":"Updated At","description":"Last update timestamp in ISO8601 format"}},"type":"object","required":["service","auth","capabilities","rate_limits","contact","updated_at"],"title":"MCPConfiguration","description":"Complete MCP configuration"},"MCPManifest":{"properties":{"version":{"type":"string","title":"Version","description":"Service version"},"capabilities_sha256":{"type":"string","title":"Capabilities Sha256","description":"SHA256 hash of capabilities"},"generated_at":{"type":"string","title":"Generated At","description":"Generation timestamp in ISO8601 format"},"configuration_url":{"type":"string","title":"Configuration Url","description":"Configuration endpoint URL"}},"type":"object","required":["version","capabilities_sha256","generated_at","configuration_url"],"title":"MCPManifest","description":"MCP manifest for capability integrity"},"RateLimitConfig":{"properties":{"default_window_seconds":{"type":"integer","title":"Default Window Seconds","description":"Default window in seconds","default":60},"default_limit":{"type":"integer","title":"Default Limit","description":"Default request limit","default":120},"tiers":{"additionalProperties":{"type":"integer"},"type":"object","title":"Tiers","description":"Tier-specific limits"}},"type":"object","required":["tiers"],"title":"RateLimitConfig","description":"Rate limiting configuration"},"ServiceInfo":{"properties":{"name":{"type":"string","title":"Name","description":"Service name"},"description":{"type":"string","title":"Description","description":"Service description"},"version":{"type":"string","title":"Version","description":"Service version"},"homepage":{"type":"string","title":"Homepage","description":"Service homepage URL"},"terms_url":{"type":"string","title":"Terms Url","description":"Terms of service URL"},"privacy_url":{"type":"string","title":"Privacy Url","description":"Privacy policy URL"}},"type":"object","required":["name","description","version","homepage","terms_url","privacy_url"],"title":"ServiceInfo","description":"Service information for MCP configuration"},"ValidationError":{"properties":{"loc":{"items":{"anyOf":[{"type":"string"},{"type":"integer"}]},"type":"array","title":"Location"},"msg":{"type":"string","title":"Message"},"type":{"type":"string","title":"Error Type"}},"type":"object","required":["loc","msg","type"],"title":"ValidationError"}},"securitySchemes":{"HTTPBearer":{"type":"http","scheme":"bearer"}}}}
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "BondMCP Healthcare Platform",
+    "description": "Comprehensive healthcare AI and MCP platform with security-focused architecture",
+    "version": "2.1.0"
+  },
+  "paths": {
+    "/.well-known/mcp-configuration": {
+      "get": {
+        "tags": ["MCP", "MCP"],
+        "summary": "MCP Configuration",
+        "description": "Get MCP configuration with all available capabilities",
+        "operationId": "get_mcp_configuration__well_known_mcp_configuration_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/MCPConfiguration" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/.well-known/mcp-manifest.json": {
+      "get": {
+        "tags": ["MCP", "MCP"],
+        "summary": "MCP Manifest",
+        "description": "Get MCP manifest with capability integrity hash",
+        "operationId": "get_mcp_manifest__well_known_mcp_manifest_json_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/MCPManifest" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/health/live": {
+      "get": {
+        "tags": ["System", "System"],
+        "summary": "Liveness Probe",
+        "description": "Check if the application is alive and responsive",
+        "operationId": "health_liveness_health_live_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "type": "object",
+                  "title": "Response Health Liveness Health Live Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/health/ready": {
+      "get": {
+        "tags": ["System", "System"],
+        "summary": "Readiness Probe",
+        "description": "Check if the application is ready to handle requests",
+        "operationId": "health_readiness_health_ready_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": { "application/json": { "schema": {} } }
+          }
+        }
+      }
+    },
+    "/health": {
+      "get": {
+        "tags": ["System", "System"],
+        "summary": "Comprehensive Health Check",
+        "description": "Get comprehensive health status including probes and service info",
+        "operationId": "health_comprehensive_health_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "type": "object",
+                  "title": "Response Health Comprehensive Health Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/register": {
+      "post": {
+        "tags": ["Authentication"],
+        "summary": "Register User",
+        "description": "Register a new user with enhanced validation",
+        "operationId": "register_user_auth_register_post",
+        "parameters": [
+          {
+            "name": "email",
+            "in": "query",
+            "required": true,
+            "schema": { "type": "string", "title": "Email" }
+          },
+          {
+            "name": "password",
+            "in": "query",
+            "required": true,
+            "schema": { "type": "string", "title": "Password" }
+          },
+          {
+            "name": "name",
+            "in": "query",
+            "required": true,
+            "schema": { "type": "string", "title": "Name" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": { "application/json": { "schema": {} } }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/HTTPValidationError" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/login": {
+      "post": {
+        "tags": ["Authentication"],
+        "summary": "Login User",
+        "description": "Authenticate user and return JWT token with security tracking",
+        "operationId": "login_user_auth_login_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/LoginRequest" }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": { "application/json": { "schema": {} } }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/HTTPValidationError" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/api-keys": {
+      "post": {
+        "tags": ["API Keys"],
+        "summary": "Create Api Key",
+        "description": "Create a new API key with specified permissions",
+        "operationId": "create_api_key_auth_api_keys_post",
+        "security": [{ "HTTPBearer": [] }],
+        "parameters": [
+          {
+            "name": "name",
+            "in": "query",
+            "required": true,
+            "schema": { "type": "string", "title": "Name" }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": { "type": "string" },
+                "title": "Permissions"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": { "application/json": { "schema": {} } }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/HTTPValidationError" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/healthcare/prescriptions/digital": {
+      "post": {
+        "tags": ["Healthcare"],
+        "summary": "Create Prescription Endpoint",
+        "description": "Create a new digital prescription",
+        "operationId": "create_prescription_endpoint_healthcare_prescriptions_digital_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "additionalProperties": true,
+                "type": "object",
+                "title": "Prescription Data"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": { "application/json": { "schema": {} } }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/HTTPValidationError" }
+              }
+            }
+          }
+        },
+        "security": [{ "HTTPBearer": [] }]
+      }
+    },
+    "/healthcare/patients/{patient_id}/prescriptions": {
+      "get": {
+        "tags": ["Healthcare"],
+        "summary": "Get Prescriptions Endpoint",
+        "description": "Get all prescriptions for a patient",
+        "operationId": "get_prescriptions_endpoint_healthcare_patients__patient_id__prescriptions_get",
+        "security": [{ "HTTPBearer": [] }],
+        "parameters": [
+          {
+            "name": "patient_id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string", "title": "Patient Id" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": { "application/json": { "schema": {} } }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/HTTPValidationError" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/healthcare/programs/{program_id}/enroll": {
+      "post": {
+        "tags": ["Healthcare"],
+        "summary": "Enroll Patient Endpoint",
+        "description": "Enroll patient in digital health program",
+        "operationId": "enroll_patient_endpoint_healthcare_programs__program_id__enroll_post",
+        "security": [{ "HTTPBearer": [] }],
+        "parameters": [
+          {
+            "name": "program_id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string", "title": "Program Id" }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": true,
+                "title": "Enrollment Data"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": { "application/json": { "schema": {} } }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/HTTPValidationError" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/healthcare/programs": {
+      "get": {
+        "tags": ["Healthcare"],
+        "summary": "List Programs Endpoint",
+        "description": "List all available digital health programs",
+        "operationId": "list_programs_endpoint_healthcare_programs_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": { "application/json": { "schema": {} } }
+          }
+        },
+        "security": [{ "HTTPBearer": [] }]
+      }
+    },
+    "/vendors/register": {
+      "post": {
+        "tags": ["Vendors"],
+        "summary": "Register Vendor Endpoint",
+        "description": "Register a new digital health vendor",
+        "operationId": "register_vendor_endpoint_vendors_register_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "additionalProperties": true,
+                "type": "object",
+                "title": "Vendor Data"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": { "application/json": { "schema": {} } }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/HTTPValidationError" }
+              }
+            }
+          }
+        },
+        "security": [{ "HTTPBearer": [] }]
+      }
+    },
+    "/vendors/{vendor_id}/webhooks": {
+      "post": {
+        "tags": ["Vendors"],
+        "summary": "Vendor Webhook Endpoint",
+        "description": "Handle vendor webhooks for engagement/metrics data",
+        "operationId": "vendor_webhook_endpoint_vendors__vendor_id__webhooks_post",
+        "parameters": [
+          {
+            "name": "vendor_id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string", "title": "Vendor Id" }
+          },
+          {
+            "name": "signature",
+            "in": "query",
+            "required": true,
+            "schema": { "type": "string", "title": "Signature" }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": true,
+                "title": "Webhook Data"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": { "application/json": { "schema": {} } }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/HTTPValidationError" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/vendors/{vendor_id}/patients/{patient_id}/data": {
+      "get": {
+        "tags": ["Vendors"],
+        "summary": "Get Vendor Data Endpoint",
+        "description": "Get patient data from specific vendor",
+        "operationId": "get_vendor_data_endpoint_vendors__vendor_id__patients__patient_id__data_get",
+        "security": [{ "HTTPBearer": [] }],
+        "parameters": [
+          {
+            "name": "vendor_id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string", "title": "Vendor Id" }
+          },
+          {
+            "name": "patient_id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string", "title": "Patient Id" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": { "application/json": { "schema": {} } }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/HTTPValidationError" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/healthcare/patients/{patient_id}/digital-summary": {
+      "get": {
+        "tags": ["Healthcare"],
+        "summary": "Get Patient Summary Endpoint",
+        "description": "Get comprehensive digital program summary for patient",
+        "operationId": "get_patient_summary_endpoint_healthcare_patients__patient_id__digital_summary_get",
+        "security": [{ "HTTPBearer": [] }],
+        "parameters": [
+          {
+            "name": "patient_id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string", "title": "Patient Id" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": { "application/json": { "schema": {} } }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/HTTPValidationError" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/info": {
+      "get": {
+        "tags": ["System"],
+        "summary": "Deployment Info",
+        "description": "Get deployment information",
+        "operationId": "deployment_info_info_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": { "application/json": { "schema": {} } }
+          }
+        }
+      }
+    },
+    "/ready": {
+      "get": {
+        "tags": ["System"],
+        "summary": "Readiness Check",
+        "description": "Kubernetes-style readiness check",
+        "operationId": "readiness_check_ready_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": { "application/json": { "schema": {} } }
+          }
+        }
+      }
+    },
+    "/config": {
+      "get": {
+        "tags": ["System"],
+        "summary": "Configuration Info",
+        "description": "Get current configuration information",
+        "operationId": "configuration_info_config_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": { "application/json": { "schema": {} } }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "AuthConfig": {
+        "properties": {
+          "primary": {
+            "items": { "$ref": "#/components/schemas/AuthMethod" },
+            "type": "array",
+            "title": "Primary",
+            "description": "Primary authentication methods"
+          }
+        },
+        "type": "object",
+        "required": ["primary"],
+        "title": "AuthConfig",
+        "description": "Authentication configuration"
+      },
+      "AuthMethod": {
+        "properties": {
+          "type": {
+            "type": "string",
+            "title": "Type",
+            "description": "Authentication type (api_key, bearer)"
+          },
+          "header": {
+            "anyOf": [{ "type": "string" }, { "type": "null" }],
+            "title": "Header",
+            "description": "Header name for API key auth"
+          },
+          "scheme": {
+            "anyOf": [{ "type": "string" }, { "type": "null" }],
+            "title": "Scheme",
+            "description": "Scheme for bearer auth"
+          }
+        },
+        "type": "object",
+        "required": ["type"],
+        "title": "AuthMethod",
+        "description": "Authentication method definition"
+      },
+      "Capability": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id",
+            "description": "Capability ID in dot notation with version (e.g., auth.login:v1)"
+          },
+          "method": {
+            "type": "string",
+            "title": "Method",
+            "description": "HTTP method (GET, POST, PUT, DELETE)"
+          },
+          "path": {
+            "type": "string",
+            "title": "Path",
+            "description": "API endpoint path"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name",
+            "description": "Short descriptive name"
+          },
+          "description": {
+            "type": "string",
+            "title": "Description",
+            "description": "Detailed description of the capability"
+          },
+          "auth_required": {
+            "type": "boolean",
+            "title": "Auth Required",
+            "description": "Whether authentication is required"
+          },
+          "tags": {
+            "items": { "type": "string" },
+            "type": "array",
+            "title": "Tags",
+            "description": "List of tags for categorization"
+          },
+          "input_example": {
+            "anyOf": [
+              { "additionalProperties": true, "type": "object" },
+              { "type": "null" }
+            ],
+            "title": "Input Example",
+            "description": "Example input data"
+          },
+          "output_example": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Output Example",
+            "description": "Example output data"
+          },
+          "rate_limit_tier": {
+            "type": "string",
+            "title": "Rate Limit Tier",
+            "description": "Rate limiting tier",
+            "default": "standard"
+          },
+          "deprecated": {
+            "type": "boolean",
+            "title": "Deprecated",
+            "description": "Whether the capability is deprecated",
+            "default": false
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "method",
+          "path",
+          "name",
+          "description",
+          "auth_required",
+          "tags",
+          "output_example"
+        ],
+        "title": "Capability",
+        "description": "Individual MCP capability definition"
+      },
+      "ContactInfo": {
+        "properties": {
+          "email": {
+            "type": "string",
+            "title": "Email",
+            "description": "Support email"
+          },
+          "docs": {
+            "type": "string",
+            "title": "Docs",
+            "description": "Documentation URL"
+          },
+          "status": {
+            "type": "string",
+            "title": "Status",
+            "description": "Status page URL"
+          }
+        },
+        "type": "object",
+        "required": ["email", "docs", "status"],
+        "title": "ContactInfo",
+        "description": "Contact information"
+      },
+      "HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": { "$ref": "#/components/schemas/ValidationError" },
+            "type": "array",
+            "title": "Detail"
+          }
+        },
+        "type": "object",
+        "title": "HTTPValidationError"
+      },
+      "LoginRequest": {
+        "properties": {
+          "email": {
+            "type": "string",
+            "maxLength": 320,
+            "minLength": 5,
+            "title": "Email",
+            "description": "Email address"
+          },
+          "password": {
+            "type": "string",
+            "maxLength": 128,
+            "minLength": 1,
+            "title": "Password",
+            "description": "User password"
+          },
+          "remember_me": {
+            "type": "boolean",
+            "title": "Remember Me",
+            "description": "Remember login session",
+            "default": false
+          }
+        },
+        "type": "object",
+        "required": ["email", "password"],
+        "title": "LoginRequest",
+        "description": "User login request with validation"
+      },
+      "MCPConfiguration": {
+        "properties": {
+          "service": {
+            "$ref": "#/components/schemas/ServiceInfo",
+            "description": "Service information"
+          },
+          "auth": { "$ref": "#/components/schemas/AuthConfig" },
+          "capabilities": {
+            "items": { "$ref": "#/components/schemas/Capability" },
+            "type": "array",
+            "title": "Capabilities",
+            "description": "Available capabilities"
+          },
+          "rate_limits": { "$ref": "#/components/schemas/RateLimitConfig" },
+          "contact": { "$ref": "#/components/schemas/ContactInfo" },
+          "updated_at": {
+            "type": "string",
+            "title": "Updated At",
+            "description": "Last update timestamp in ISO8601 format"
+          }
+        },
+        "type": "object",
+        "required": [
+          "service",
+          "auth",
+          "capabilities",
+          "rate_limits",
+          "contact",
+          "updated_at"
+        ],
+        "title": "MCPConfiguration",
+        "description": "Complete MCP configuration"
+      },
+      "MCPManifest": {
+        "properties": {
+          "version": {
+            "type": "string",
+            "title": "Version",
+            "description": "Service version"
+          },
+          "capabilities_sha256": {
+            "type": "string",
+            "title": "Capabilities Sha256",
+            "description": "SHA256 hash of capabilities"
+          },
+          "generated_at": {
+            "type": "string",
+            "title": "Generated At",
+            "description": "Generation timestamp in ISO8601 format"
+          },
+          "configuration_url": {
+            "type": "string",
+            "title": "Configuration Url",
+            "description": "Configuration endpoint URL"
+          }
+        },
+        "type": "object",
+        "required": [
+          "version",
+          "capabilities_sha256",
+          "generated_at",
+          "configuration_url"
+        ],
+        "title": "MCPManifest",
+        "description": "MCP manifest for capability integrity"
+      },
+      "RateLimitConfig": {
+        "properties": {
+          "default_window_seconds": {
+            "type": "integer",
+            "title": "Default Window Seconds",
+            "description": "Default window in seconds",
+            "default": 60
+          },
+          "default_limit": {
+            "type": "integer",
+            "title": "Default Limit",
+            "description": "Default request limit",
+            "default": 120
+          },
+          "tiers": {
+            "additionalProperties": { "type": "integer" },
+            "type": "object",
+            "title": "Tiers",
+            "description": "Tier-specific limits"
+          }
+        },
+        "type": "object",
+        "required": ["tiers"],
+        "title": "RateLimitConfig",
+        "description": "Rate limiting configuration"
+      },
+      "ServiceInfo": {
+        "properties": {
+          "name": {
+            "type": "string",
+            "title": "Name",
+            "description": "Service name"
+          },
+          "description": {
+            "type": "string",
+            "title": "Description",
+            "description": "Service description"
+          },
+          "version": {
+            "type": "string",
+            "title": "Version",
+            "description": "Service version"
+          },
+          "homepage": {
+            "type": "string",
+            "title": "Homepage",
+            "description": "Service homepage URL"
+          },
+          "terms_url": {
+            "type": "string",
+            "title": "Terms Url",
+            "description": "Terms of service URL"
+          },
+          "privacy_url": {
+            "type": "string",
+            "title": "Privacy Url",
+            "description": "Privacy policy URL"
+          }
+        },
+        "type": "object",
+        "required": [
+          "name",
+          "description",
+          "version",
+          "homepage",
+          "terms_url",
+          "privacy_url"
+        ],
+        "title": "ServiceInfo",
+        "description": "Service information for MCP configuration"
+      },
+      "ValidationError": {
+        "properties": {
+          "loc": {
+            "items": { "anyOf": [{ "type": "string" }, { "type": "integer" }] },
+            "type": "array",
+            "title": "Location"
+          },
+          "msg": { "type": "string", "title": "Message" },
+          "type": { "type": "string", "title": "Error Type" }
+        },
+        "type": "object",
+        "required": ["loc", "msg", "type"],
+        "title": "ValidationError"
+      }
+    },
+    "securitySchemes": { "HTTPBearer": { "type": "http", "scheme": "bearer" } }
+  }
+}

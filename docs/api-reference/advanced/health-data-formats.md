@@ -5,6 +5,7 @@
 BondMCP accepts health data in various formats for analysis and processing.
 
 ### Lab Results Format
+
 ```json
 {
   "test_name": "Complete Blood Count",
@@ -21,6 +22,7 @@ BondMCP accepts health data in various formats for analysis and processing.
 ```
 
 ### Fitness Data Format
+
 ```json
 {
   "date": "2024-01-15",

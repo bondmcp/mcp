@@ -7,6 +7,7 @@ This document outlines the changes made to update all references to the BondMCP 
 ## Changes Made
 
 The OpenAPI specification URL has been updated from:
+
 - Old URL: `https://api.bondmcp.com/openapi.json`
 - New URL: `https://openapi.bondmcp.com/openapi.bondmcp`
 

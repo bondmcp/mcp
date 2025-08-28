@@ -12,342 +12,493 @@
  * Do not edit the class manually.
  */
 
-
-import type { Configuration } from './configuration';
-import type { AxiosPromise, AxiosInstance, RawAxiosRequestConfig } from 'axios';
-import globalAxios from 'axios';
+import type { Configuration } from "./configuration";
+import type { AxiosPromise, AxiosInstance, RawAxiosRequestConfig } from "axios";
+import globalAxios from "axios";
 // Some imports not used depending on template conditions
 // @ts-ignore
-import { DUMMY_BASE_URL, assertParamExists, setApiKeyToObject, setBasicAuthToObject, setBearerAuthToObject, setOAuthToObject, setSearchParams, serializeDataIfNeeded, toPathString, createRequestFunction } from './common';
-import type { RequestArgs } from './base';
+import {
+  DUMMY_BASE_URL,
+  assertParamExists,
+  setApiKeyToObject,
+  setBasicAuthToObject,
+  setBearerAuthToObject,
+  setOAuthToObject,
+  setSearchParams,
+  serializeDataIfNeeded,
+  toPathString,
+  createRequestFunction,
+} from "./common";
+import type { RequestArgs } from "./base";
 // @ts-ignore
-import { BASE_PATH, COLLECTION_FORMATS, BaseAPI, RequiredError, operationServerMap } from './base';
+import {
+  BASE_PATH,
+  COLLECTION_FORMATS,
+  BaseAPI,
+  RequiredError,
+  operationServerMap,
+} from "./base";
 
 /**
- * 
+ *
  * @export
  * @interface ApiV1AskPost200Response
  */
 export interface ApiV1AskPost200Response {
-    /**
-     * 
-     * @type {string}
-     * @memberof ApiV1AskPost200Response
-     */
-    'id'?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof ApiV1AskPost200Response
-     */
-    'answer'?: string;
-    /**
-     * 
-     * @type {number}
-     * @memberof ApiV1AskPost200Response
-     */
-    'trustScore'?: number;
-    /**
-     * 
-     * @type {Array<string>}
-     * @memberof ApiV1AskPost200Response
-     */
-    'sources'?: Array<string>;
+  /**
+   *
+   * @type {string}
+   * @memberof ApiV1AskPost200Response
+   */
+  id?: string;
+  /**
+   *
+   * @type {string}
+   * @memberof ApiV1AskPost200Response
+   */
+  answer?: string;
+  /**
+   *
+   * @type {number}
+   * @memberof ApiV1AskPost200Response
+   */
+  trustScore?: number;
+  /**
+   *
+   * @type {Array<string>}
+   * @memberof ApiV1AskPost200Response
+   */
+  sources?: Array<string>;
 }
 /**
- * 
+ *
  * @export
  * @interface ApiV1AskPostRequest
  */
 export interface ApiV1AskPostRequest {
-    /**
-     * 
-     * @type {string}
-     * @memberof ApiV1AskPostRequest
-     */
-    'question': string;
-    /**
-     * 
-     * @type {boolean}
-     * @memberof ApiV1AskPostRequest
-     */
-    'detailed'?: boolean;
+  /**
+   *
+   * @type {string}
+   * @memberof ApiV1AskPostRequest
+   */
+  question: string;
+  /**
+   *
+   * @type {boolean}
+   * @memberof ApiV1AskPostRequest
+   */
+  detailed?: boolean;
 }
 /**
- * 
+ *
  * @export
  * @interface ApiV1HealthGet200Response
  */
 export interface ApiV1HealthGet200Response {
-    /**
-     * 
-     * @type {string}
-     * @memberof ApiV1HealthGet200Response
-     */
-    'status'?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof ApiV1HealthGet200Response
-     */
-    'timestamp'?: string;
+  /**
+   *
+   * @type {string}
+   * @memberof ApiV1HealthGet200Response
+   */
+  status?: string;
+  /**
+   *
+   * @type {string}
+   * @memberof ApiV1HealthGet200Response
+   */
+  timestamp?: string;
 }
 /**
- * 
+ *
  * @export
  * @interface ApiV1SymptomsPost200Response
  */
 export interface ApiV1SymptomsPost200Response {
-    /**
-     * 
-     * @type {string}
-     * @memberof ApiV1SymptomsPost200Response
-     */
-    'analysis'?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof ApiV1SymptomsPost200Response
-     */
-    'severity'?: string;
-    /**
-     * 
-     * @type {Array<string>}
-     * @memberof ApiV1SymptomsPost200Response
-     */
-    'recommendations'?: Array<string>;
+  /**
+   *
+   * @type {string}
+   * @memberof ApiV1SymptomsPost200Response
+   */
+  analysis?: string;
+  /**
+   *
+   * @type {string}
+   * @memberof ApiV1SymptomsPost200Response
+   */
+  severity?: string;
+  /**
+   *
+   * @type {Array<string>}
+   * @memberof ApiV1SymptomsPost200Response
+   */
+  recommendations?: Array<string>;
 }
 /**
- * 
+ *
  * @export
  * @interface ApiV1SymptomsPostRequest
  */
 export interface ApiV1SymptomsPostRequest {
-    /**
-     * 
-     * @type {Array<string>}
-     * @memberof ApiV1SymptomsPostRequest
-     */
-    'symptoms': Array<string>;
-    /**
-     * 
-     * @type {number}
-     * @memberof ApiV1SymptomsPostRequest
-     */
-    'age'?: number;
-    /**
-     * 
-     * @type {string}
-     * @memberof ApiV1SymptomsPostRequest
-     */
-    'gender'?: string;
+  /**
+   *
+   * @type {Array<string>}
+   * @memberof ApiV1SymptomsPostRequest
+   */
+  symptoms: Array<string>;
+  /**
+   *
+   * @type {number}
+   * @memberof ApiV1SymptomsPostRequest
+   */
+  age?: number;
+  /**
+   *
+   * @type {string}
+   * @memberof ApiV1SymptomsPostRequest
+   */
+  gender?: string;
 }
 
 /**
  * DefaultApi - axios parameter creator
  * @export
  */
-export const DefaultApiAxiosParamCreator = function (configuration?: Configuration) {
-    return {
-        /**
-         * 
-         * @summary Ask a health question
-         * @param {ApiV1AskPostRequest} apiV1AskPostRequest 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        apiV1AskPost: async (apiV1AskPostRequest: ApiV1AskPostRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'apiV1AskPostRequest' is not null or undefined
-            assertParamExists('apiV1AskPost', 'apiV1AskPostRequest', apiV1AskPostRequest)
-            const localVarPath = `/api/v1/ask`;
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
+export const DefaultApiAxiosParamCreator = function (
+  configuration?: Configuration,
+) {
+  return {
+    /**
+     *
+     * @summary Ask a health question
+     * @param {ApiV1AskPostRequest} apiV1AskPostRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    apiV1AskPost: async (
+      apiV1AskPostRequest: ApiV1AskPostRequest,
+      options: RawAxiosRequestConfig = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'apiV1AskPostRequest' is not null or undefined
+      assertParamExists(
+        "apiV1AskPost",
+        "apiV1AskPostRequest",
+        apiV1AskPostRequest,
+      );
+      const localVarPath = `/api/v1/ask`;
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+      let baseOptions;
+      if (configuration) {
+        baseOptions = configuration.baseOptions;
+      }
 
-            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
+      const localVarRequestOptions = {
+        method: "POST",
+        ...baseOptions,
+        ...options,
+      };
+      const localVarHeaderParameter = {} as any;
+      const localVarQueryParameter = {} as any;
 
-            // authentication ApiKeyAuth required
-            await setApiKeyToObject(localVarHeaderParameter, "X-API-Key", configuration)
+      // authentication ApiKeyAuth required
+      await setApiKeyToObject(
+        localVarHeaderParameter,
+        "X-API-Key",
+        configuration,
+      );
 
+      localVarHeaderParameter["Content-Type"] = "application/json";
 
-    
-            localVarHeaderParameter['Content-Type'] = 'application/json';
+      setSearchParams(localVarUrlObj, localVarQueryParameter);
+      let headersFromBaseOptions =
+        baseOptions && baseOptions.headers ? baseOptions.headers : {};
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      };
+      localVarRequestOptions.data = serializeDataIfNeeded(
+        apiV1AskPostRequest,
+        localVarRequestOptions,
+        configuration,
+      );
 
-            setSearchParams(localVarUrlObj, localVarQueryParameter);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(apiV1AskPostRequest, localVarRequestOptions, configuration)
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      };
+    },
+    /**
+     *
+     * @summary Health check endpoint
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    apiV1HealthGet: async (
+      options: RawAxiosRequestConfig = {},
+    ): Promise<RequestArgs> => {
+      const localVarPath = `/api/v1/health`;
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+      let baseOptions;
+      if (configuration) {
+        baseOptions = configuration.baseOptions;
+      }
 
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-        /**
-         * 
-         * @summary Health check endpoint
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        apiV1HealthGet: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            const localVarPath = `/api/v1/health`;
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
+      const localVarRequestOptions = {
+        method: "GET",
+        ...baseOptions,
+        ...options,
+      };
+      const localVarHeaderParameter = {} as any;
+      const localVarQueryParameter = {} as any;
 
-            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
+      // authentication ApiKeyAuth required
+      await setApiKeyToObject(
+        localVarHeaderParameter,
+        "X-API-Key",
+        configuration,
+      );
 
-            // authentication ApiKeyAuth required
-            await setApiKeyToObject(localVarHeaderParameter, "X-API-Key", configuration)
+      setSearchParams(localVarUrlObj, localVarQueryParameter);
+      let headersFromBaseOptions =
+        baseOptions && baseOptions.headers ? baseOptions.headers : {};
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      };
 
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      };
+    },
+    /**
+     *
+     * @summary Analyze symptoms (NEW in v1.0.1)
+     * @param {ApiV1SymptomsPostRequest} apiV1SymptomsPostRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    apiV1SymptomsPost: async (
+      apiV1SymptomsPostRequest: ApiV1SymptomsPostRequest,
+      options: RawAxiosRequestConfig = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'apiV1SymptomsPostRequest' is not null or undefined
+      assertParamExists(
+        "apiV1SymptomsPost",
+        "apiV1SymptomsPostRequest",
+        apiV1SymptomsPostRequest,
+      );
+      const localVarPath = `/api/v1/symptoms`;
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+      let baseOptions;
+      if (configuration) {
+        baseOptions = configuration.baseOptions;
+      }
 
-    
-            setSearchParams(localVarUrlObj, localVarQueryParameter);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+      const localVarRequestOptions = {
+        method: "POST",
+        ...baseOptions,
+        ...options,
+      };
+      const localVarHeaderParameter = {} as any;
+      const localVarQueryParameter = {} as any;
 
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-        /**
-         * 
-         * @summary Analyze symptoms (NEW in v1.0.1)
-         * @param {ApiV1SymptomsPostRequest} apiV1SymptomsPostRequest 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        apiV1SymptomsPost: async (apiV1SymptomsPostRequest: ApiV1SymptomsPostRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'apiV1SymptomsPostRequest' is not null or undefined
-            assertParamExists('apiV1SymptomsPost', 'apiV1SymptomsPostRequest', apiV1SymptomsPostRequest)
-            const localVarPath = `/api/v1/symptoms`;
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
+      // authentication ApiKeyAuth required
+      await setApiKeyToObject(
+        localVarHeaderParameter,
+        "X-API-Key",
+        configuration,
+      );
 
-            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
+      localVarHeaderParameter["Content-Type"] = "application/json";
 
-            // authentication ApiKeyAuth required
-            await setApiKeyToObject(localVarHeaderParameter, "X-API-Key", configuration)
+      setSearchParams(localVarUrlObj, localVarQueryParameter);
+      let headersFromBaseOptions =
+        baseOptions && baseOptions.headers ? baseOptions.headers : {};
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      };
+      localVarRequestOptions.data = serializeDataIfNeeded(
+        apiV1SymptomsPostRequest,
+        localVarRequestOptions,
+        configuration,
+      );
 
-
-    
-            localVarHeaderParameter['Content-Type'] = 'application/json';
-
-            setSearchParams(localVarUrlObj, localVarQueryParameter);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(apiV1SymptomsPostRequest, localVarRequestOptions, configuration)
-
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-    }
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      };
+    },
+  };
 };
 
 /**
  * DefaultApi - functional programming interface
  * @export
  */
-export const DefaultApiFp = function(configuration?: Configuration) {
-    const localVarAxiosParamCreator = DefaultApiAxiosParamCreator(configuration)
-    return {
-        /**
-         * 
-         * @summary Ask a health question
-         * @param {ApiV1AskPostRequest} apiV1AskPostRequest 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async apiV1AskPost(apiV1AskPostRequest: ApiV1AskPostRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ApiV1AskPost200Response>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.apiV1AskPost(apiV1AskPostRequest, options);
-            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['DefaultApi.apiV1AskPost']?.[localVarOperationServerIndex]?.url;
-            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
-        },
-        /**
-         * 
-         * @summary Health check endpoint
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async apiV1HealthGet(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ApiV1HealthGet200Response>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.apiV1HealthGet(options);
-            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['DefaultApi.apiV1HealthGet']?.[localVarOperationServerIndex]?.url;
-            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
-        },
-        /**
-         * 
-         * @summary Analyze symptoms (NEW in v1.0.1)
-         * @param {ApiV1SymptomsPostRequest} apiV1SymptomsPostRequest 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async apiV1SymptomsPost(apiV1SymptomsPostRequest: ApiV1SymptomsPostRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ApiV1SymptomsPost200Response>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.apiV1SymptomsPost(apiV1SymptomsPostRequest, options);
-            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['DefaultApi.apiV1SymptomsPost']?.[localVarOperationServerIndex]?.url;
-            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
-        },
-    }
+export const DefaultApiFp = function (configuration?: Configuration) {
+  const localVarAxiosParamCreator = DefaultApiAxiosParamCreator(configuration);
+  return {
+    /**
+     *
+     * @summary Ask a health question
+     * @param {ApiV1AskPostRequest} apiV1AskPostRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async apiV1AskPost(
+      apiV1AskPostRequest: ApiV1AskPostRequest,
+      options?: RawAxiosRequestConfig,
+    ): Promise<
+      (
+        axios?: AxiosInstance,
+        basePath?: string,
+      ) => AxiosPromise<ApiV1AskPost200Response>
+    > {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.apiV1AskPost(
+        apiV1AskPostRequest,
+        options,
+      );
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap["DefaultApi.apiV1AskPost"]?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
+    },
+    /**
+     *
+     * @summary Health check endpoint
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async apiV1HealthGet(
+      options?: RawAxiosRequestConfig,
+    ): Promise<
+      (
+        axios?: AxiosInstance,
+        basePath?: string,
+      ) => AxiosPromise<ApiV1HealthGet200Response>
+    > {
+      const localVarAxiosArgs =
+        await localVarAxiosParamCreator.apiV1HealthGet(options);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap["DefaultApi.apiV1HealthGet"]?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
+    },
+    /**
+     *
+     * @summary Analyze symptoms (NEW in v1.0.1)
+     * @param {ApiV1SymptomsPostRequest} apiV1SymptomsPostRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async apiV1SymptomsPost(
+      apiV1SymptomsPostRequest: ApiV1SymptomsPostRequest,
+      options?: RawAxiosRequestConfig,
+    ): Promise<
+      (
+        axios?: AxiosInstance,
+        basePath?: string,
+      ) => AxiosPromise<ApiV1SymptomsPost200Response>
+    > {
+      const localVarAxiosArgs =
+        await localVarAxiosParamCreator.apiV1SymptomsPost(
+          apiV1SymptomsPostRequest,
+          options,
+        );
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap["DefaultApi.apiV1SymptomsPost"]?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
+    },
+  };
 };
 
 /**
  * DefaultApi - factory interface
  * @export
  */
-export const DefaultApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
-    const localVarFp = DefaultApiFp(configuration)
-    return {
-        /**
-         * 
-         * @summary Ask a health question
-         * @param {ApiV1AskPostRequest} apiV1AskPostRequest 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        apiV1AskPost(apiV1AskPostRequest: ApiV1AskPostRequest, options?: RawAxiosRequestConfig): AxiosPromise<ApiV1AskPost200Response> {
-            return localVarFp.apiV1AskPost(apiV1AskPostRequest, options).then((request) => request(axios, basePath));
-        },
-        /**
-         * 
-         * @summary Health check endpoint
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        apiV1HealthGet(options?: RawAxiosRequestConfig): AxiosPromise<ApiV1HealthGet200Response> {
-            return localVarFp.apiV1HealthGet(options).then((request) => request(axios, basePath));
-        },
-        /**
-         * 
-         * @summary Analyze symptoms (NEW in v1.0.1)
-         * @param {ApiV1SymptomsPostRequest} apiV1SymptomsPostRequest 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        apiV1SymptomsPost(apiV1SymptomsPostRequest: ApiV1SymptomsPostRequest, options?: RawAxiosRequestConfig): AxiosPromise<ApiV1SymptomsPost200Response> {
-            return localVarFp.apiV1SymptomsPost(apiV1SymptomsPostRequest, options).then((request) => request(axios, basePath));
-        },
-    };
+export const DefaultApiFactory = function (
+  configuration?: Configuration,
+  basePath?: string,
+  axios?: AxiosInstance,
+) {
+  const localVarFp = DefaultApiFp(configuration);
+  return {
+    /**
+     *
+     * @summary Ask a health question
+     * @param {ApiV1AskPostRequest} apiV1AskPostRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    apiV1AskPost(
+      apiV1AskPostRequest: ApiV1AskPostRequest,
+      options?: RawAxiosRequestConfig,
+    ): AxiosPromise<ApiV1AskPost200Response> {
+      return localVarFp
+        .apiV1AskPost(apiV1AskPostRequest, options)
+        .then((request) => request(axios, basePath));
+    },
+    /**
+     *
+     * @summary Health check endpoint
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    apiV1HealthGet(
+      options?: RawAxiosRequestConfig,
+    ): AxiosPromise<ApiV1HealthGet200Response> {
+      return localVarFp
+        .apiV1HealthGet(options)
+        .then((request) => request(axios, basePath));
+    },
+    /**
+     *
+     * @summary Analyze symptoms (NEW in v1.0.1)
+     * @param {ApiV1SymptomsPostRequest} apiV1SymptomsPostRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    apiV1SymptomsPost(
+      apiV1SymptomsPostRequest: ApiV1SymptomsPostRequest,
+      options?: RawAxiosRequestConfig,
+    ): AxiosPromise<ApiV1SymptomsPost200Response> {
+      return localVarFp
+        .apiV1SymptomsPost(apiV1SymptomsPostRequest, options)
+        .then((request) => request(axios, basePath));
+    },
+  };
 };
 
 /**
@@ -357,41 +508,50 @@ export const DefaultApiFactory = function (configuration?: Configuration, basePa
  * @extends {BaseAPI}
  */
 export class DefaultApi extends BaseAPI {
-    /**
-     * 
-     * @summary Ask a health question
-     * @param {ApiV1AskPostRequest} apiV1AskPostRequest 
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof DefaultApi
-     */
-    public apiV1AskPost(apiV1AskPostRequest: ApiV1AskPostRequest, options?: RawAxiosRequestConfig) {
-        return DefaultApiFp(this.configuration).apiV1AskPost(apiV1AskPostRequest, options).then((request) => request(this.axios, this.basePath));
-    }
+  /**
+   *
+   * @summary Ask a health question
+   * @param {ApiV1AskPostRequest} apiV1AskPostRequest
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof DefaultApi
+   */
+  public apiV1AskPost(
+    apiV1AskPostRequest: ApiV1AskPostRequest,
+    options?: RawAxiosRequestConfig,
+  ) {
+    return DefaultApiFp(this.configuration)
+      .apiV1AskPost(apiV1AskPostRequest, options)
+      .then((request) => request(this.axios, this.basePath));
+  }
 
-    /**
-     * 
-     * @summary Health check endpoint
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof DefaultApi
-     */
-    public apiV1HealthGet(options?: RawAxiosRequestConfig) {
-        return DefaultApiFp(this.configuration).apiV1HealthGet(options).then((request) => request(this.axios, this.basePath));
-    }
+  /**
+   *
+   * @summary Health check endpoint
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof DefaultApi
+   */
+  public apiV1HealthGet(options?: RawAxiosRequestConfig) {
+    return DefaultApiFp(this.configuration)
+      .apiV1HealthGet(options)
+      .then((request) => request(this.axios, this.basePath));
+  }
 
-    /**
-     * 
-     * @summary Analyze symptoms (NEW in v1.0.1)
-     * @param {ApiV1SymptomsPostRequest} apiV1SymptomsPostRequest 
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof DefaultApi
-     */
-    public apiV1SymptomsPost(apiV1SymptomsPostRequest: ApiV1SymptomsPostRequest, options?: RawAxiosRequestConfig) {
-        return DefaultApiFp(this.configuration).apiV1SymptomsPost(apiV1SymptomsPostRequest, options).then((request) => request(this.axios, this.basePath));
-    }
+  /**
+   *
+   * @summary Analyze symptoms (NEW in v1.0.1)
+   * @param {ApiV1SymptomsPostRequest} apiV1SymptomsPostRequest
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof DefaultApi
+   */
+  public apiV1SymptomsPost(
+    apiV1SymptomsPostRequest: ApiV1SymptomsPostRequest,
+    options?: RawAxiosRequestConfig,
+  ) {
+    return DefaultApiFp(this.configuration)
+      .apiV1SymptomsPost(apiV1SymptomsPostRequest, options)
+      .then((request) => request(this.axios, this.basePath));
+  }
 }
-
-
-

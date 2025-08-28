@@ -27,6 +27,7 @@ JWT_TOKEN="your-jwt-token-here"
 Generate comprehensive health assessments with personalized recommendations.
 
 ### **Request**
+
 ```bash
 curl -X POST "https://api.bondmcp.com/health/score" \
   -H "Authorization: Bearer $JWT_TOKEN" \
@@ -35,6 +36,7 @@ curl -X POST "https://api.bondmcp.com/health/score" \
 ```
 
 ### **Response**
+
 ```json
 {
   "score_id": "532a0c3a-d293-49ae-a53b-812f15993441",
@@ -64,6 +66,7 @@ curl -X POST "https://api.bondmcp.com/health/score" \
 Get personalized nutrition recommendations and meal planning.
 
 ### **Request**
+
 ```bash
 curl -X POST "https://api.bondmcp.com/health/nutrition" \
   -H "Authorization: Bearer $JWT_TOKEN" \
@@ -75,6 +78,7 @@ curl -X POST "https://api.bondmcp.com/health/nutrition" \
 ```
 
 ### **Response**
+
 ```json
 {
   "plan_id": "1b36ef17-dd90-4073-a833-dad9c58b1aaa",
@@ -91,17 +95,9 @@ curl -X POST "https://api.bondmcp.com/health/nutrition" \
     "breakfast": "Greek yogurt with berries and nuts",
     "lunch": "Grilled chicken salad with quinoa",
     "dinner": "Salmon with roasted vegetables",
-    "snacks": [
-      "Apple with almond butter",
-      "Protein smoothie"
-    ]
+    "snacks": ["Apple with almond butter", "Protein smoothie"]
   },
-  "micronutrient_focus": [
-    "Vitamin B12",
-    "Iron",
-    "Vitamin C",
-    "Calcium"
-  ],
+  "micronutrient_focus": ["Vitamin B12", "Iron", "Vitamin C", "Calcium"],
   "hydration_target": "3.5 liters per day"
 }
 ```
@@ -113,6 +109,7 @@ curl -X POST "https://api.bondmcp.com/health/nutrition" \
 Comprehensive risk analysis with prevention strategies.
 
 ### **Request**
+
 ```bash
 curl -X POST "https://api.bondmcp.com/health/risk" \
   -H "Authorization: Bearer $JWT_TOKEN" \
@@ -124,6 +121,7 @@ curl -X POST "https://api.bondmcp.com/health/risk" \
 ```
 
 ### **Response**
+
 ```json
 {
   "assessment_id": "406329b1-3857-46d0-afa2-81c875355629",
@@ -166,12 +164,14 @@ curl -X POST "https://api.bondmcp.com/health/risk" \
 Monitor your API usage and billing information.
 
 ### **Request**
+
 ```bash
 curl -H "Authorization: Bearer $JWT_TOKEN" \
   "https://api.bondmcp.com/billing/usage"
 ```
 
 ### **Response**
+
 ```json
 {
   "user_id": "c5b2f48f-9c32-4b72-a95c-5c6d8dc2a964",
@@ -205,6 +205,7 @@ curl -H "Authorization: Bearer $JWT_TOKEN" \
 All of these endpoints are **FULLY OPERATIONAL** and require POST method with JWT authentication:
 
 ### **Available Endpoints**
+
 - `/health/bloodwork` - Blood test analysis and recommendations
 - `/health/dna` - Genetic analysis and personalized insights
 - `/health/emergency` - Emergency health assessment and triage
@@ -217,6 +218,7 @@ All of these endpoints are **FULLY OPERATIONAL** and require POST method with JW
 - `/healthcare/notes` - Clinical notes processing
 
 ### **Usage Pattern**
+
 ```bash
 # All health AI endpoints follow this pattern:
 curl -X POST "https://api.bondmcp.com/health/{endpoint}" \
@@ -230,6 +232,7 @@ curl -X POST "https://api.bondmcp.com/health/{endpoint}" \
 ## 🎯 **Key Insights**
 
 ### **✅ What's Working Perfectly**
+
 - **All 15+ health AI endpoints** are fully operational
 - **JWT authentication** working correctly for all health features
 - **Real-time processing** with sub-200ms response times
@@ -237,11 +240,13 @@ curl -X POST "https://api.bondmcp.com/health/{endpoint}" \
 - **Professional medical-grade** recommendations and assessments
 
 ### **🔧 Authentication Guide**
+
 - **Health AI Endpoints**: Use JWT tokens (from login)
 - **API Keys**: Use for external integrations and third-party access
 - **Billing/Usage**: Requires JWT tokens, not API keys
 
 ### **📊 Performance Metrics**
+
 - **Response Time**: 90-125ms average
 - **Success Rate**: 100% for properly authenticated requests
 - **Data Quality**: Medical-grade accuracy and recommendations
@@ -261,7 +266,6 @@ curl -X POST "https://api.bondmcp.com/health/{endpoint}" \
 
 ---
 
-*Last Updated: August 7, 2025*  
-*Status: All Health AI Endpoints Confirmed Operational*  
-*Authentication: JWT Tokens Required*
-
+_Last Updated: August 7, 2025_  
+_Status: All Health AI Endpoints Confirmed Operational_  
+_Authentication: JWT Tokens Required_

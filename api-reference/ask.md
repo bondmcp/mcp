@@ -14,13 +14,13 @@ API Key required in header: `X-API-Key: your-api-key`
 
 ## Request Parameters
 
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| `message` | string | Yes | The health question to ask |
-| `context` | string | No | Context for the question (e.g., "general-health", "nutrition", "fitness") |
-| `user_id` | string | No | Optional user identifier for personalization |
-| `include_sources` | boolean | No | Whether to include reference sources in the response (default: true) |
-| `max_tokens` | integer | No | Maximum response length (default: 500) |
+| Parameter         | Type    | Required | Description                                                               |
+| ----------------- | ------- | -------- | ------------------------------------------------------------------------- |
+| `message`         | string  | Yes      | The health question to ask                                                |
+| `context`         | string  | No       | Context for the question (e.g., "general-health", "nutrition", "fitness") |
+| `user_id`         | string  | No       | Optional user identifier for personalization                              |
+| `include_sources` | boolean | No       | Whether to include reference sources in the response (default: true)      |
+| `max_tokens`      | integer | No       | Maximum response length (default: 500)                                    |
 
 ## Example Request
 
@@ -34,12 +34,12 @@ API Key required in header: `X-API-Key: your-api-key`
 
 ## Response
 
-| Field | Type | Description |
-|-------|------|-------------|
-| `answer` | string | The AI-generated answer to the health question |
-| `confidence` | float | Confidence score (0-1) |
-| `sources` | array | List of medical sources referenced |
-| `timestamp` | string | ISO 8601 timestamp of the response |
+| Field        | Type   | Description                                    |
+| ------------ | ------ | ---------------------------------------------- |
+| `answer`     | string | The AI-generated answer to the health question |
+| `confidence` | float  | Confidence score (0-1)                         |
+| `sources`    | array  | List of medical sources referenced             |
+| `timestamp`  | string | ISO 8601 timestamp of the response             |
 
 ## Example Response
 
@@ -54,23 +54,25 @@ API Key required in header: `X-API-Key: your-api-key`
 
 ## Error Codes
 
-| Status Code | Error Code | Description |
-|-------------|------------|-------------|
-| 400 | `INVALID_REQUEST` | Missing required parameters or invalid format |
-| 401 | `INVALID_AUTH` | Invalid API key |
-| 429 | `RATE_LIMIT_EXCEEDED` | Rate limit exceeded |
-| 500 | `SERVER_ERROR` | Internal server error |
+| Status Code | Error Code            | Description                                   |
+| ----------- | --------------------- | --------------------------------------------- |
+| 400         | `INVALID_REQUEST`     | Missing required parameters or invalid format |
+| 401         | `INVALID_AUTH`        | Invalid API key                               |
+| 429         | `RATE_LIMIT_EXCEEDED` | Rate limit exceeded                           |
+| 500         | `SERVER_ERROR`        | Internal server error                         |
 
 ## SDK Examples
 
 ### JavaScript/TypeScript
 
 ```javascript
-import { BondMCPClient } from 'bondmcp';
+import { BondMCPClient } from "bondmcp";
 
-const client = new BondMCPClient({ apiKey: 'your-api-key' });
+const client = new BondMCPClient({ apiKey: "your-api-key" });
 
-const response = await client.ask('What are the symptoms of high blood pressure?');
+const response = await client.ask(
+  "What are the symptoms of high blood pressure?",
+);
 console.log(response.answer);
 ```
 
@@ -97,12 +99,12 @@ import (
 
 func main() {
     client := bondmcp.NewClient("your-api-key")
-    
+
     response, err := client.Ask("What are the symptoms of high blood pressure?")
     if err != nil {
         panic(err)
     }
-    
+
     fmt.Println(response.Answer)
 }
 ```

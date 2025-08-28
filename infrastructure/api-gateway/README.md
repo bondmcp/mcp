@@ -39,9 +39,10 @@ All endpoints are integrated with the consolidated Lambda function `BondMCP-API-
 ## CORS Configuration
 
 All endpoints have CORS enabled with the following settings:
+
 - Allowed Headers: Content-Type, X-Amz-Date, Authorization, X-Api-Key, X-Amz-Security-Token, X-Requested-With
 - Allowed Methods: GET, POST, PUT, DELETE, OPTIONS
-- Allowed Origin: * (all origins)
+- Allowed Origin: \* (all origins)
 
 ## Deployment
 

@@ -3,27 +3,27 @@ name: SDK Auto-Regeneration
 on:
   pull_request:
     paths:
-      - 'openapi/**'
-      - 'spec/**'
-      - '*.yaml'
-      - '*.json'
+      - "openapi/**"
+      - "spec/**"
+      - "*.yaml"
+      - "*.json"
     types: [opened, synchronize, reopened]
   workflow_dispatch:
     inputs:
       force_regenerate:
-        description: 'Force regenerate all SDKs even if no spec changes'
+        description: "Force regenerate all SDKs even if no spec changes"
         required: false
-        default: 'false'
+        default: "false"
         type: boolean
       enable_python:
-        description: 'Enable Python SDK generation (beta)'
+        description: "Enable Python SDK generation (beta)"
         required: false
-        default: 'false'
+        default: "false"
         type: boolean
       enable_go:
-        description: 'Enable Go SDK generation (beta)'
+        description: "Enable Go SDK generation (beta)"
         required: false
-        default: 'false'
+        default: "false"
         type: boolean
 
 env:
@@ -52,7 +52,7 @@ jobs:
             echo "🔄 Force regeneration requested"
             exit 0
           fi
-          
+
           # Check if any spec files have changed
           if git diff --name-only HEAD~1 HEAD | grep -E '\.(yaml|yml|json)$' | grep -E '^(openapi|spec)/' >/dev/null; then
             echo "spec_changed=true" >> $GITHUB_OUTPUT
@@ -61,7 +61,7 @@ jobs:
             echo "spec_changed=false" >> $GITHUB_OUTPUT
             echo "ℹ️ No OpenAPI spec changes detected"
           fi
-          
+
           # Determine primary spec file
           if [ -f "spec/openapi.json" ]; then
             echo "spec_file=spec/openapi.json" >> $GITHUB_OUTPUT
@@ -80,7 +80,7 @@ jobs:
     if: needs.detect-changes.outputs.spec_changed == 'true'
     permissions:
       contents: write
-    
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -88,8 +88,8 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
-          cache: 'npm'
+          node-version: "20"
+          cache: "npm"
 
       - name: Install dependencies
         run: |
@@ -100,16 +100,16 @@ jobs:
         run: |
           SPEC_FILE="${{ needs.detect-changes.outputs.spec_file }}"
           echo "Using spec file: $SPEC_FILE"
-          
+
           mkdir -p .sdk-temp
-          
+
           # Convert YAML to JSON if needed
           if [[ "$SPEC_FILE" == *.yaml ]] || [[ "$SPEC_FILE" == *.yml ]]; then
             redocly bundle "$SPEC_FILE" --output .sdk-temp/openapi.json
           else
             cp "$SPEC_FILE" .sdk-temp/openapi.json
           fi
-          
+
           # Validate the spec before generation
           redocly lint .sdk-temp/openapi.json
 
@@ -127,10 +127,10 @@ jobs:
       - name: Generate TypeScript SDK
         run: |
           echo "🔄 Generating TypeScript SDK..."
-          
+
           # Create output directories
           mkdir -p ${{ env.TYPESCRIPT_SDK_PATH }}/src/generated
-          
+
           # Generate TypeScript client with axios
           openapi-generator-cli generate \
             -i .sdk-temp/openapi.json \
@@ -143,7 +143,7 @@ jobs:
           enumPropertyNaming=original,\
           modelPropertyNaming=original \
             --skip-validate-spec
-          
+
           echo "✅ TypeScript SDK generated"
 
       - name: Create TypeScript SDK package structure
@@ -180,7 +180,7 @@ jobs:
           }
           EOF
           fi
-          
+
           # Create tsconfig.json
           cat > ${{ env.TYPESCRIPT_SDK_PATH }}/tsconfig.json << 'EOF'
           {
@@ -202,50 +202,50 @@ jobs:
             "exclude": ["node_modules", "dist", "**/*.test.ts"]
           }
           EOF
-          
+
           # Create main index file
           mkdir -p ${{ env.TYPESCRIPT_SDK_PATH }}/src
           cat > ${{ env.TYPESCRIPT_SDK_PATH }}/src/index.ts << 'EOF'
           // Auto-generated BondMCP TypeScript SDK
           export * from './generated';
           EOF
-          
+
           # Create README
           cat > ${{ env.TYPESCRIPT_SDK_PATH }}/README.md << 'EOF'
           # BondMCP TypeScript SDK
-          
+
           **⚠️ Auto-generated SDK - Do not edit manually**
-          
+
           This SDK is automatically generated from the BondMCP OpenAPI specification.
-          
+
           ## Installation
-          
+
           ```bash
           npm install @bondmcp/sdk
           ```
-          
+
           ## Usage
-          
+
           ```typescript
           import { DefaultApi, Configuration } from '@bondmcp/sdk';
-          
+
           const config = new Configuration({
             basePath: 'https://api.bondmcp.com',
             apiKey: 'your-api-key'
           });
-          
+
           const api = new DefaultApi(config);
           ```
-          
+
           ## Contributing
-          
+
           This SDK is auto-generated. To make changes:
           1. Update the OpenAPI specification in the main repository
           2. Run `npm run sdk:gen` to regenerate the SDK
           3. Do not edit generated files directly
-          
+
           ## License
-          
+
           MIT License - see the main repository for details.
           EOF
 
@@ -253,10 +253,10 @@ jobs:
         if: github.event.inputs.enable_python == 'true' || github.event_name == 'pull_request'
         run: |
           echo "🔄 Generating Python SDK..."
-          
+
           # Create output directories
           mkdir -p ${{ env.PYTHON_SDK_PATH }}/bondmcp_sdk/generated
-          
+
           # Generate Python client
           openapi-generator-cli generate \
             -i .sdk-temp/openapi.json \
@@ -270,12 +270,12 @@ jobs:
           packageAuthor="BondMCP Team",\
           packageAuthorEmail=support@bondmcp.com \
             --skip-validate-spec
-          
+
           # Copy generated files to proper structure
           if [ -d "${{ env.PYTHON_SDK_PATH }}/generated/bondmcp_sdk" ]; then
             cp -r ${{ env.PYTHON_SDK_PATH }}/generated/bondmcp_sdk/* ${{ env.PYTHON_SDK_PATH }}/bondmcp_sdk/generated/
           fi
-          
+
           echo "✅ Python SDK generated"
 
       - name: Create Python SDK package structure (if enabled)
@@ -287,7 +287,7 @@ jobs:
           [build-system]
           requires = ["hatchling"]
           build-backend = "hatchling.build"
-          
+
           [project]
           name = "bondmcp-sdk"
           version = "${{ steps.version.outputs.version }}"
@@ -300,86 +300,86 @@ jobs:
               "urllib3>=1.26.5",
               "pydantic>=2.0.0"
           ]
-          
+
           [project.urls]
           "Homepage" = "https://github.com/bondmcp/mcp"
           "Repository" = "https://github.com/bondmcp/mcp.git"
           "Bug Tracker" = "https://github.com/bondmcp/mcp/issues"
           EOF
           fi
-          
+
           # Create __init__.py
           cat > ${{ env.PYTHON_SDK_PATH }}/bondmcp_sdk/__init__.py << 'EOF'
           """BondMCP Python SDK - Auto-generated"""
-          
+
           # Re-export from generated module
           from .generated import *
-          
+
           __version__ = "${{ steps.version.outputs.version }}"
           EOF
-          
+
           # Create README
           cat > ${{ env.PYTHON_SDK_PATH }}/README.md << 'EOF'
           # BondMCP Python SDK
-          
+
           **⚠️ Auto-generated SDK - Do not edit manually**
-          
+
           This SDK is automatically generated from the BondMCP OpenAPI specification.
-          
+
           ## Installation
-          
+
           ```bash
           pip install bondmcp-sdk
           ```
-          
+
           ## Usage
-          
+
           ```python
           from bondmcp_sdk import DefaultApi, Configuration
-          
+
           config = Configuration(
               host='https://api.bondmcp.com',
               api_key={'ApiKeyAuth': 'your-api-key'}
           )
-          
+
           api = DefaultApi(config)
           ```
-          
+
           ## Contributing
-          
+
           This SDK is auto-generated. To make changes:
           1. Update the OpenAPI specification in the main repository
           2. Run `npm run sdk:gen` to regenerate the SDK
           3. Do not edit generated files directly
-          
+
           ## License
-          
+
           MIT License - see the main repository for details.
           EOF
 
       - name: Build TypeScript SDK
         run: |
           echo "🔨 Building TypeScript SDK..."
-          
+
           cd ${{ env.TYPESCRIPT_SDK_PATH }}
-          
+
           # Install dependencies
           npm install
-          
+
           # Build the SDK
           npm run build
-          
+
           echo "✅ TypeScript SDK built successfully"
 
       - name: Format generated code
         run: |
           echo "🎨 Formatting generated code..."
-          
+
           # Format TypeScript files
           if command -v prettier >/dev/null 2>&1; then
             find ${{ env.TYPESCRIPT_SDK_PATH }}/src -name "*.ts" -exec prettier --write {} \;
           fi
-          
+
           # Format Python files if they exist
           if [ -d "${{ env.PYTHON_SDK_PATH }}" ] && command -v black >/dev/null 2>&1; then
             black ${{ env.PYTHON_SDK_PATH }}/ --quiet || true
@@ -388,30 +388,30 @@ jobs:
       - name: Run minimal tests
         run: |
           echo "🧪 Running minimal SDK tests..."
-          
+
           # Test TypeScript SDK imports
           cd ${{ env.TYPESCRIPT_SDK_PATH }}
-          
+
           # Create a simple test
           cat > test-import.js << 'EOF'
           const fs = require('fs');
           const path = require('path');
-          
+
           // Check if main files exist
           const distPath = path.join(__dirname, 'dist');
           const indexPath = path.join(distPath, 'index.js');
           const typesPath = path.join(distPath, 'index.d.ts');
-          
+
           if (!fs.existsSync(indexPath)) {
             console.error('❌ dist/index.js not found');
             process.exit(1);
           }
-          
+
           if (!fs.existsSync(typesPath)) {
             console.error('❌ dist/index.d.ts not found');
             process.exit(1);
           }
-          
+
           try {
             require('./dist/index.js');
             console.log('✅ TypeScript SDK import test passed');
@@ -420,14 +420,14 @@ jobs:
             process.exit(1);
           }
           EOF
-          
+
           node test-import.js
 
       - name: Check for uncommitted changes
         id: changes
         run: |
           echo "🔍 Checking for uncommitted SDK changes..."
-          
+
           # Check if there are any changes in SDK directories
           if git diff --exit-code sdks/ >/dev/null 2>&1; then
             echo "has_changes=false" >> $GITHUB_OUTPUT
@@ -443,18 +443,18 @@ jobs:
         if: github.event_name == 'pull_request' && steps.changes.outputs.has_changes == 'true'
         run: |
           echo "💾 Committing auto-generated SDK changes..."
-          
+
           git config --global user.name "BondMCP SDK Bot"
           git config --global user.email "sdk-bot@bondmcp.com"
-          
+
           git add sdks/
           git commit -m "chore: auto-regenerate SDKs from OpenAPI spec changes
-          
+
           - Updated TypeScript SDK in ${{ env.TYPESCRIPT_SDK_PATH }}
           ${{ github.event.inputs.enable_python == 'true' && '- Updated Python SDK in ${{ env.PYTHON_SDK_PATH }}' || '' }}
-          
+
           [automated]"
-          
+
           echo "✅ SDK changes committed"
 
       - name: Fail if uncommitted changes (for main branch)

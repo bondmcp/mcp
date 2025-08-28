@@ -16,18 +16,21 @@ BondMCP is a comprehensive health AI platform that provides:
 ## 🌟 Key Features
 
 ### Multi-Platform Access
+
 - **Web Application**: Full-featured dashboard at app.bondmcp.com
 - **Mobile Apps**: Native iOS and Android applications
 - **API Integration**: RESTful API for developers
 - **CLI Tools**: Command-line interface for power users
 
 ### Advanced AI Capabilities
+
 - **Natural Language Processing**: Ask questions in plain English
 - **Medical Knowledge Base**: Trained on peer-reviewed medical literature
 - **Personalized Recommendations**: Tailored advice based on your health profile
 - **Real-time Analysis**: Instant processing of health data
 
 ### Enterprise-Grade Security
+
 - **HIPAA Compliant**: Full healthcare data protection
 - **End-to-End Encryption**: Your data is always secure
 - **SOC 2 Certified**: Industry-standard security controls
@@ -36,16 +39,19 @@ BondMCP is a comprehensive health AI platform that provides:
 ## 🎯 Who is BondMCP For?
 
 ### Healthcare Professionals
+
 - Doctors and nurses seeking quick medical references
 - Researchers analyzing health data
 - Healthcare administrators managing patient information
 
 ### Health-Conscious Individuals
+
 - People wanting to understand their lab results
 - Fitness enthusiasts tracking nutrition and supplements
 - Patients managing chronic conditions
 
 ### Developers and Organizations
+
 - Healthcare startups building health applications
 - Wellness companies integrating AI health features
 - Research institutions conducting health studies

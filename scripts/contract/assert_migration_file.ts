@@ -2,13 +2,13 @@
 
 /**
  * Migration File Assertion Script
- * 
+ *
  * Ensures that a MIGRATIONS file exists when API changes are classified as major or minor.
  * Reads classification from a JSON artifact and validates migration documentation.
  */
 
-import * as fs from 'fs';
-import * as path from 'path';
+import * as fs from "fs";
+import * as path from "path";
 
 interface MigrationAssertOptions {
   classificationFile?: string;
@@ -17,7 +17,7 @@ interface MigrationAssertOptions {
 }
 
 interface ClassificationResult {
-  classification: 'major' | 'minor' | 'patch' | 'none';
+  classification: "major" | "minor" | "patch" | "none";
   breakingChanges?: string[];
   addedEndpoints?: string[];
   modifiedEndpoints?: string[];
@@ -27,7 +27,10 @@ interface ClassificationResult {
 /**
  * Checks if MIGRATIONS directory and files exist
  */
-function checkMigrationsExist(migrationsDir: string, verbose: boolean): boolean {
+function checkMigrationsExist(
+  migrationsDir: string,
+  verbose: boolean,
+): boolean {
   if (verbose) {
     console.log(`Checking for migrations directory: ${migrationsDir}`);
   }
@@ -38,15 +41,18 @@ function checkMigrationsExist(migrationsDir: string, verbose: boolean): boolean 
 
   // Check if directory has any migration files
   const files = fs.readdirSync(migrationsDir);
-  const migrationFiles = files.filter(file => 
-    file.endsWith('.md') || 
-    file.endsWith('.txt') || 
-    file.endsWith('.json') ||
-    file.toLowerCase().includes('migration')
+  const migrationFiles = files.filter(
+    (file) =>
+      file.endsWith(".md") ||
+      file.endsWith(".txt") ||
+      file.endsWith(".json") ||
+      file.toLowerCase().includes("migration"),
   );
 
   if (verbose) {
-    console.log(`Found ${migrationFiles.length} migration files: ${migrationFiles.join(', ')}`);
+    console.log(
+      `Found ${migrationFiles.length} migration files: ${migrationFiles.join(", ")}`,
+    );
   }
 
   return migrationFiles.length > 0;
@@ -55,7 +61,11 @@ function checkMigrationsExist(migrationsDir: string, verbose: boolean): boolean 
 /**
  * Creates a basic migration file template
  */
-function createMigrationTemplate(migrationsDir: string, classification: ClassificationResult, verbose: boolean): void {
+function createMigrationTemplate(
+  migrationsDir: string,
+  classification: ClassificationResult,
+  verbose: boolean,
+): void {
   if (!fs.existsSync(migrationsDir)) {
     fs.mkdirSync(migrationsDir, { recursive: true });
     if (verbose) {
@@ -63,31 +73,44 @@ function createMigrationTemplate(migrationsDir: string, classification: Classifi
     }
   }
 
-  const timestamp = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
+  const timestamp = new Date().toISOString().split("T")[0]; // YYYY-MM-DD
   const filename = `${timestamp}-${classification.classification}-changes.md`;
   const filepath = path.join(migrationsDir, filename);
 
   const template = `# ${classification.classification.toUpperCase()} API Changes - ${timestamp}
 
 ## Summary
-${classification.summary || 'API changes detected that require migration documentation.'}
+${classification.summary || "API changes detected that require migration documentation."}
 
 ## Classification: ${classification.classification}
 
-${classification.breakingChanges && classification.breakingChanges.length > 0 ? `
+${
+  classification.breakingChanges && classification.breakingChanges.length > 0
+    ? `
 ## Breaking Changes
-${classification.breakingChanges.map(change => `- ${change}`).join('\n')}
-` : ''}
+${classification.breakingChanges.map((change) => `- ${change}`).join("\n")}
+`
+    : ""
+}
 
-${classification.addedEndpoints && classification.addedEndpoints.length > 0 ? `
+${
+  classification.addedEndpoints && classification.addedEndpoints.length > 0
+    ? `
 ## Added Endpoints
-${classification.addedEndpoints.map(endpoint => `- ${endpoint}`).join('\n')}
-` : ''}
+${classification.addedEndpoints.map((endpoint) => `- ${endpoint}`).join("\n")}
+`
+    : ""
+}
 
-${classification.modifiedEndpoints && classification.modifiedEndpoints.length > 0 ? `
+${
+  classification.modifiedEndpoints &&
+  classification.modifiedEndpoints.length > 0
+    ? `
 ## Modified Endpoints
-${classification.modifiedEndpoints.map(endpoint => `- ${endpoint}`).join('\n')}
-` : ''}
+${classification.modifiedEndpoints.map((endpoint) => `- ${endpoint}`).join("\n")}
+`
+    : ""
+}
 
 ## Migration Steps
 
@@ -110,7 +133,7 @@ For questions about this migration, please contact:
 `;
 
   fs.writeFileSync(filepath, template);
-  
+
   if (verbose) {
     console.log(`Created migration file: ${filepath}`);
   }
@@ -119,7 +142,10 @@ For questions about this migration, please contact:
 /**
  * Reads and parses the classification file
  */
-function readClassification(classificationFile: string, verbose: boolean): ClassificationResult | null {
+function readClassification(
+  classificationFile: string,
+  verbose: boolean,
+): ClassificationResult | null {
   if (!fs.existsSync(classificationFile)) {
     if (verbose) {
       console.log(`Classification file not found: ${classificationFile}`);
@@ -128,16 +154,16 @@ function readClassification(classificationFile: string, verbose: boolean): Class
   }
 
   try {
-    const content = fs.readFileSync(classificationFile, 'utf-8');
+    const content = fs.readFileSync(classificationFile, "utf-8");
     const classification = JSON.parse(content) as ClassificationResult;
-    
+
     if (verbose) {
       console.log(`Classification: ${classification.classification}`);
       if (classification.summary) {
         console.log(`Summary: ${classification.summary}`);
       }
     }
-    
+
     return classification;
   } catch (error) {
     if (verbose) {
@@ -150,47 +176,60 @@ function readClassification(classificationFile: string, verbose: boolean): Class
 /**
  * Main migration assertion function
  */
-async function assertMigrationFile(options: MigrationAssertOptions): Promise<void> {
-  const { 
-    classificationFile = 'openapi/diff/classification.json',
-    migrationsDir = 'MIGRATIONS',
-    verbose = false 
+async function assertMigrationFile(
+  options: MigrationAssertOptions,
+): Promise<void> {
+  const {
+    classificationFile = "openapi/diff/classification.json",
+    migrationsDir = "MIGRATIONS",
+    verbose = false,
   } = options;
 
   if (verbose) {
-    console.log('Checking migration file requirements...');
+    console.log("Checking migration file requirements...");
   }
 
   // Read classification result
   const classification = readClassification(classificationFile, verbose);
-  
+
   if (!classification) {
     if (verbose) {
-      console.log('No classification found, skipping migration check');
+      console.log("No classification found, skipping migration check");
     }
     return;
   }
 
   // Only require migrations for major and minor changes
-  if (classification.classification === 'major' || classification.classification === 'minor') {
+  if (
+    classification.classification === "major" ||
+    classification.classification === "minor"
+  ) {
     const migrationsExist = checkMigrationsExist(migrationsDir, verbose);
-    
+
     if (!migrationsExist) {
-      console.log(`⚠️  ${classification.classification.toUpperCase()} API changes detected but no migration documentation found.`);
-      console.log('Creating migration documentation template...');
-      
+      console.log(
+        `⚠️  ${classification.classification.toUpperCase()} API changes detected but no migration documentation found.`,
+      );
+      console.log("Creating migration documentation template...");
+
       createMigrationTemplate(migrationsDir, classification, verbose);
-      
+
       console.log(`✅ Migration documentation created in ${migrationsDir}/`);
-      console.log('Please review and update the migration documentation before merging.');
+      console.log(
+        "Please review and update the migration documentation before merging.",
+      );
     } else {
       if (verbose) {
-        console.log(`✅ Migration documentation exists for ${classification.classification} changes`);
+        console.log(
+          `✅ Migration documentation exists for ${classification.classification} changes`,
+        );
       }
     }
   } else {
     if (verbose) {
-      console.log(`✅ No migration documentation required for ${classification.classification} changes`);
+      console.log(
+        `✅ No migration documentation required for ${classification.classification} changes`,
+      );
     }
   }
 }
@@ -198,8 +237,8 @@ async function assertMigrationFile(options: MigrationAssertOptions): Promise<voi
 // CLI interface
 if (require.main === module) {
   const args = process.argv.slice(2);
-  
-  if (args.includes('--help') || args.includes('-h')) {
+
+  if (args.includes("--help") || args.includes("-h")) {
     console.log(`Usage: assert_migration_file.ts [options]
 
 Options:
@@ -225,25 +264,25 @@ Examples:
   }
 
   const options: MigrationAssertOptions = {
-    verbose: false
+    verbose: false,
   };
 
   // Parse arguments
   for (let i = 0; i < args.length; i++) {
     switch (args[i]) {
-      case '--classification':
+      case "--classification":
         options.classificationFile = args[++i];
         break;
-      case '--migrations':
+      case "--migrations":
         options.migrationsDir = args[++i];
         break;
-      case '--verbose':
-      case '-v':
+      case "--verbose":
+      case "-v":
         options.verbose = true;
         break;
       default:
         console.error(`Unknown option: ${args[i]}`);
-        console.error('Use --help for usage information');
+        console.error("Use --help for usage information");
         process.exit(1);
     }
   }

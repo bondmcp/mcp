@@ -37,12 +37,14 @@ If you prefer to use the API directly, you can make HTTP requests to our endpoin
 
 ```javascript
 // JavaScript/TypeScript
-import { BondMCPClient } from 'bondmcp';
+import { BondMCPClient } from "bondmcp";
 
-const client = new BondMCPClient({ apiKey: 'your-api-key' });
+const client = new BondMCPClient({ apiKey: "your-api-key" });
 
 // Ask a health question
-const response = await client.ask('What are the symptoms of high blood pressure?');
+const response = await client.ask(
+  "What are the symptoms of high blood pressure?",
+);
 console.log(response.answer);
 ```
 
@@ -68,7 +70,7 @@ curl -X POST https://api.bondmcp.com/api/v1/ask \
 
 ## Next Steps
 
-- Explore the **API Reference**  for detailed endpoint documentation
+- Explore the **API Reference** for detailed endpoint documentation
 - Check out our [SDK Documentation](https://docs.bondmcp.com/sdks) for language-specific guides
 - See [Examples](https://github.com/bondmcp/mcp/tree/main/examples) for integration patterns
 - Join our [Discord Community](https://discord.gg/bondmcp) for support and updates

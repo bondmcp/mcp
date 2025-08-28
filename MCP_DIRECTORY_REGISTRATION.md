@@ -29,6 +29,7 @@ This document outlines the strategy and implementation steps for registering Bon
 ## Registration Requirements
 
 ### Common Requirements
+
 - Server base URL
 - Server name and description
 - Available capabilities and parameters
@@ -38,6 +39,7 @@ This document outlines the strategy and implementation steps for registering Bon
 - Contact information
 
 ### MCP Market Specific
+
 - Logo (512x512px)
 - Category selection (Healthcare)
 - Pricing information
@@ -45,18 +47,21 @@ This document outlines the strategy and implementation steps for registering Bon
 - Privacy policy URL
 
 ### mcp.so Specific
+
 - GitHub repository URL
 - Documentation URL
 - Example code snippets
 - Test credentials
 
 ### Anthropic Directory Specific
+
 - Verification of healthcare credentials
 - Data handling documentation
 - Safety protocols
 - Sample prompts
 
 ### OpenAI Directory Specific
+
 - Manifest file
 - Legal attestation
 - Data privacy documentation
@@ -168,10 +173,10 @@ def health_check():
             servers_status[server_id] = "healthy"
         except Exception:
             servers_status[server_id] = "unhealthy"
-    
+
     # Overall health is healthy only if all servers are healthy
     overall_status = "healthy" if all(status == "healthy" for status in servers_status.values()) else "degraded"
-    
+
     return jsonify({
         "status": overall_status,
         "version": "1.0.0",
@@ -189,6 +194,7 @@ def health_check():
 **Short Description:** One Language for Your Body, Doctors, and AI - BondMCP provides secure, HIPAA-compliant healthcare data access and analysis for AI models.
 
 **Long Description:**
+
 ```
 BondMCP is a trusted healthcare AI protocol providing standardized access to medical data and analysis capabilities. Our MCP implementation allows AI models to securely access and interpret lab results, vital signs, and other health data while maintaining strict compliance with healthcare regulations.
 
@@ -213,7 +219,8 @@ Our healthcare-specific MCP extensions (HMCP) provide specialized capabilities f
 **Title:** BondMCP - Healthcare MCP
 
 **Description:**
-```
+
+````
 BondMCP provides healthcare-specific MCP servers for AI models to access and analyze medical data. Our implementation follows MCP best practices while adding healthcare-specific extensions for clinical workflows.
 
 ## Available Servers
@@ -252,9 +259,10 @@ response = requests.post(
 
 interpretation = response.json()
 print(interpretation["result"]["interpretation"])
-```
+````
 
 See our [documentation](https://docs.bondmcp.com/mcp) for more examples and integration guides.
+
 ```
 
 ## Next Steps After Registration
@@ -264,3 +272,4 @@ See our [documentation](https://docs.bondmcp.com/mcp) for more examples and inte
 3. **Track Traffic**: Implement analytics to track traffic from each directory
 4. **Gather Feedback**: Collect user feedback on discovery experience
 5. **Optimize Listings**: Regularly update listings based on performance and user feedback
+```

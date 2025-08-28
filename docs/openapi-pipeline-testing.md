@@ -5,6 +5,7 @@ This document provides comprehensive instructions for testing the automated Open
 ## Quick Test Commands
 
 ### 1. Local Pipeline Testing
+
 ```bash
 # Run comprehensive pipeline tests
 node scripts/test-pipeline.js test
@@ -16,6 +17,7 @@ node scripts/test-pipeline.js simulate
 ### 2. Repository Dispatch Simulation
 
 #### Using curl (with GitHub token)
+
 ```bash
 curl -X POST \
   -H "Accept: application/vnd.github.v3+json" \
@@ -32,6 +34,7 @@ curl -X POST \
 ```
 
 #### Using GitHub CLI
+
 ```bash
 gh api repos/bondmcp/mcp/dispatches \
   --method POST \
@@ -54,6 +57,7 @@ gh api repos/bondmcp/mcp/dispatches \
 ### After Pipeline Execution
 
 1. **Check Contract Artifacts**
+
 ```bash
 # Verify immutable snapshot
 ls -la openapi/history/openapi-*.json
@@ -69,17 +73,19 @@ ls -la MIGRATIONS/*.md
 ```
 
 2. **Verify SDK Generation**
+
 ```bash
 # TypeScript SDK
 ls -la javascript/src/generated/
 cat javascript/package.json | grep version
 
-# Python SDK  
+# Python SDK
 ls -la python/generated/
 cat pyproject.toml | grep version
 ```
 
 3. **Test SDK Builds**
+
 ```bash
 # TypeScript
 cd javascript && npm run build
@@ -89,6 +95,7 @@ python -m hatch build
 ```
 
 4. **Check Documentation Updates**
+
 ```bash
 # Verify changelogs updated
 head -20 CHANGELOG.md
@@ -98,31 +105,37 @@ head -20 docs/api/changelog.md
 ## Test Scenarios
 
 ### Scenario 1: New Minor Version
+
 - Add new endpoint to spec
 - Version bump: 1.0.0 → 1.0.1
 - Expected: Minor classification, migration guide created
 
 ### Scenario 2: Breaking Change
+
 - Remove endpoint or change required parameters
-- Version bump: 1.0.0 → 2.0.0  
+- Version bump: 1.0.0 → 2.0.0
 - Expected: Major classification, detailed migration guide
 
 ### Scenario 3: Patch Version
+
 - Fix typos, improve descriptions
 - Version bump: 1.0.0 → 1.0.1
 - Expected: Patch classification, minimal changes
 
 ### Scenario 4: Duplicate Version
+
 - Resend same version and checksum
 - Expected: "Version already exists, skipping ingestion"
 
 ### Scenario 5: Checksum Mismatch
+
 - Send different checksum for same spec
 - Expected: Workflow fails with checksum error
 
 ## Expected Outcomes
 
 ### ✅ Success Indicators
+
 - Workflow completes without errors
 - All artifacts created in correct locations
 - SDK versions match spec version
@@ -130,12 +143,14 @@ head -20 docs/api/changelog.md
 - Documentation updated correctly
 - No duplicate publishes attempted
 
-### ⚠️ Warning Indicators  
+### ⚠️ Warning Indicators
+
 - Network timeouts (common in CI)
 - Missing publish tokens (expected if not configured)
 - Minor build warnings (usually acceptable)
 
 ### ❌ Failure Indicators
+
 - Checksum verification fails
 - OpenAPI spec validation errors
 - TypeScript compilation errors
@@ -147,6 +162,7 @@ head -20 docs/api/changelog.md
 ### Common Issues
 
 1. **Checksum Mismatch**
+
    ```bash
    # Calculate correct checksum
    curl -s https://api.bondmcp.com/openapi.json | sha256sum

@@ -25,12 +25,14 @@ description: Interactive OpenAPI specification for BondMCP Healthcare Platform
 ## Using the Specification
 
 ### Import into Postman
+
 1. Open Postman
 2. Click "Import"
 3. Enter URL: `https://api.bondmcp.com/openapi.json`
 4. Configure authentication with your API key
 
 ### Generate SDK
+
 ```bash
 # Install OpenAPI Generator
 npm install @openapitools/openapi-generator-cli -g
@@ -41,7 +43,7 @@ openapi-generator-cli generate \
   -g python \
   -o ./bondmcp-python-client
 
-# Generate JavaScript client  
+# Generate JavaScript client
 openapi-generator-cli generate \
   -i https://api.bondmcp.com/openapi.json \
   -g javascript \
@@ -49,6 +51,7 @@ openapi-generator-cli generate \
 ```
 
 ### Validate API Calls
+
 ```bash
 # Install swagger-codegen
 pip install swagger-spec-validator
@@ -70,6 +73,7 @@ The API includes comprehensive schema definitions for:
 ## Interactive Features
 
 This documentation includes:
+
 - ✅ **Try it out** functionality for all endpoints
 - ✅ **Real-time validation** of request parameters
 - ✅ **Example responses** with actual data structures
@@ -77,4 +81,5 @@ This documentation includes:
 - ✅ **Error simulation** for testing error handling
 
 ---
-*Interactive documentation powered by GitBook OpenAPI integration*
+
+_Interactive documentation powered by GitBook OpenAPI integration_

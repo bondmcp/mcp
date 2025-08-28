@@ -5,6 +5,7 @@ This guide covers the SDK publishing process for BondMCP, including environment 
 ## Overview
 
 BondMCP uses automated workflows to build and publish SDKs to multiple package registries:
+
 - **TypeScript**: Published to npm as `@bondmcp/sdk`
 - **Python**: Published to PyPI as `bondmcp-sdk`
 - **Go**: Published as Git tags for Go modules
@@ -20,7 +21,7 @@ To enable automated publishing, ensure these secrets are configured in the GitHu
 NPM_TOKEN=<npm-access-token>
 NPM_PUBLISH_ENABLED=1
 
-# Required for PyPI publishing  
+# Required for PyPI publishing
 PYPI_TOKEN=<pypi-api-token>
 PYPI_PUBLISH_ENABLED=1
 ```
@@ -28,14 +29,15 @@ PYPI_PUBLISH_ENABLED=1
 ### Triggering a Release
 
 1. **Update Version Numbers**:
+
    ```bash
    # Update package.json
    npm version 1.2.3 --no-git-tag-version
-   
+
    # Update TypeScript SDK
    cd sdks/typescript
    npm version 1.2.3 --no-git-tag-version
-   
+
    # Update Python SDK (if exists)
    cd sdks/python
    # Edit pyproject.toml version = "1.2.3"
@@ -43,20 +45,25 @@ PYPI_PUBLISH_ENABLED=1
 
 2. **Update CHANGELOG.md**:
    Add your changes following [Keep a Changelog](https://keepachangelog.com/) format:
+
    ```markdown
    ## [1.2.3] - 2025-01-23
-   
+
    ### Added
+
    - New API endpoints for user management
-   
+
    ### Changed
+
    - Improved error handling in authentication
-   
+
    ### Fixed
+
    - Fixed pagination issue in list endpoints
    ```
 
 3. **Create and Push Tag**:
+
    ```bash
    git add .
    git commit -m "chore: bump version to 1.2.3"
@@ -87,6 +94,7 @@ Use workflow dispatch to test without publishing:
 ### Enabling Real Publishing
 
 Set these repository secrets to enable actual publishing:
+
 - `NPM_PUBLISH_ENABLED=1`
 - `PYPI_PUBLISH_ENABLED=1`
 
@@ -138,6 +146,7 @@ git push origin sdks/go/v1.2.3
 ```
 
 Users import with:
+
 ```go
 import "github.com/bondmcp/mcp/sdks/go/v1.2.3"
 ```
@@ -220,6 +229,7 @@ Add publishing steps for the language's package registry (e.g., crates.io for Ru
 ### npm Configuration
 
 Package details in `sdks/typescript/package.json`:
+
 ```json
 {
   "name": "@bondmcp/sdk",
@@ -237,6 +247,7 @@ Package details in `sdks/typescript/package.json`:
 ### PyPI Configuration
 
 Package details in `sdks/python/pyproject.toml`:
+
 ```toml
 [project]
 name = "bondmcp-sdk"
@@ -253,12 +264,14 @@ authors = [{name = "BondMCP Team", email = "support@bondmcp.com"}]
 ### Common Issues
 
 1. **Version Mismatch**:
+
    ```bash
    # Fix: Update all package versions to match
    npm run release:prepare  # Validates versions
    ```
 
 2. **Build Failures**:
+
    ```bash
    # Debug locally
    npm run sdk:gen

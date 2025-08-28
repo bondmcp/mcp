@@ -45,7 +45,7 @@ graph TB
     C --> D{Checklist Exists?}
     D -->|No| E[Add Default Checklist]
     D -->|Yes| F[Skip]
-    
+
     G[Contract Ingest Pipeline] --> H[Pipeline Success]
     H --> I[auto_ready_on_green.yml]
     I --> J[Find Draft PRs]
@@ -68,11 +68,13 @@ All components have been tested:
 ## 📚 Usage Examples
 
 ### Normalize OpenAPI Spec
+
 ```bash
 ./scripts/contract/normalize_spec.sh openapi/latest.json openapi/normalized.json
 ```
 
 ### Check Package Publishing
+
 ```bash
 # Auto-detect from project files
 ./scripts/contract/publish_preflight.sh --auto
@@ -82,6 +84,7 @@ All components have been tested:
 ```
 
 ### Test Deprecated Script
+
 ```bash
 # Will show deprecation notice and exit
 node scripts/generate_openapi.js

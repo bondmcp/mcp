@@ -44,10 +44,22 @@
   margin-right: 0.5rem;
 }
 
-.api-method.get { background: #d4edda; color: #155724; }
-.api-method.post { background: #cce5ff; color: #004085; }
-.api-method.put { background: #fff3cd; color: #856404; }
-.api-method.delete { background: #f8d7da; color: #721c24; }
+.api-method.get {
+  background: #d4edda;
+  color: #155724;
+}
+.api-method.post {
+  background: #cce5ff;
+  color: #004085;
+}
+.api-method.put {
+  background: #fff3cd;
+  color: #856404;
+}
+.api-method.delete {
+  background: #f8d7da;
+  color: #721c24;
+}
 
 /* CLI command styling */
 .cli-command {
@@ -56,7 +68,7 @@
   padding: 1rem;
   border-radius: 8px;
   border-left: 4px solid #38b2ac;
-  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+  font-family: "Monaco", "Menlo", "Ubuntu Mono", monospace;
 }
 
 /* Status badges */
@@ -150,7 +162,7 @@
   .book .book-body .page-wrapper .page-inner section.normal {
     padding: 1rem;
   }
-  
+
   .api-method {
     display: block;
     margin-bottom: 0.5rem;
@@ -165,7 +177,7 @@
   .navigation {
     display: none !important;
   }
-  
+
   .book .book-body {
     left: 0 !important;
   }
@@ -188,4 +200,3 @@
 ::-webkit-scrollbar-thumb:hover {
   background: #a8a8a8;
 }
-

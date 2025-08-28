@@ -1,21 +1,20 @@
 # ApiV1AskPostRequest
 
-
 ## Properties
 
-Name | Type | Description | Notes
------------- | ------------- | ------------- | -------------
-**question** | **string** |  | [default to undefined]
-**detailed** | **boolean** |  | [optional] [default to false]
+| Name         | Type        | Description | Notes                         |
+| ------------ | ----------- | ----------- | ----------------------------- |
+| **question** | **string**  |             | [default to undefined]        |
+| **detailed** | **boolean** |             | [optional] [default to false] |
 
 ## Example
 
 ```typescript
-import { ApiV1AskPostRequest } from '@bondmcp/sdk';
+import { ApiV1AskPostRequest } from "@bondmcp/sdk";
 
 const instance: ApiV1AskPostRequest = {
-    question,
-    detailed,
+  question,
+  detailed,
 };
 ```
 

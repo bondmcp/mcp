@@ -49,12 +49,12 @@ Requires API key authentication via the `X-API-Key` header.
 
 ### Request Parameters
 
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| `data_type` | string | Yes | Type of health data (e.g., "sleep", "activity", "heart_rate", "glucose") |
-| `data` | array | Yes | Array of data points with relevant metrics |
-| `user_context` | object | No | Optional user context to improve analysis relevance |
-| `analysis_type` | string | No | Type of analysis: "basic", "comprehensive", or "trends" (default: "comprehensive") |
+| Parameter       | Type   | Required | Description                                                                        |
+| --------------- | ------ | -------- | ---------------------------------------------------------------------------------- |
+| `data_type`     | string | Yes      | Type of health data (e.g., "sleep", "activity", "heart_rate", "glucose")           |
+| `data`          | array  | Yes      | Array of data points with relevant metrics                                         |
+| `user_context`  | object | No       | Optional user context to improve analysis relevance                                |
+| `analysis_type` | string | No       | Type of analysis: "basic", "comprehensive", or "trends" (default: "comprehensive") |
 
 ## Response Format
 
@@ -115,16 +115,16 @@ Requires API key authentication via the `X-API-Key` header.
 
 ### Response Fields
 
-| Field | Type | Description |
-|-------|------|-------------|
-| `request_id` | string | Unique identifier for the request |
-| `timestamp` | string | ISO 8601 timestamp of when the response was generated |
-| `analysis` | object | The AI-generated analysis of health data |
-| `analysis.summary` | string | Overall summary of the health data analysis |
-| `analysis.insights` | array | Detailed insights extracted from the data |
-| `analysis.recommendations` | array | Actionable recommendations based on the insights |
-| `analysis.trends` | object | Trend analysis if multiple data points are provided |
-| `confidence_score` | number | Confidence score between 0 and 1 |
+| Field                      | Type   | Description                                           |
+| -------------------------- | ------ | ----------------------------------------------------- |
+| `request_id`               | string | Unique identifier for the request                     |
+| `timestamp`                | string | ISO 8601 timestamp of when the response was generated |
+| `analysis`                 | object | The AI-generated analysis of health data              |
+| `analysis.summary`         | string | Overall summary of the health data analysis           |
+| `analysis.insights`        | array  | Detailed insights extracted from the data             |
+| `analysis.recommendations` | array  | Actionable recommendations based on the insights      |
+| `analysis.trends`          | object | Trend analysis if multiple data points are provided   |
+| `confidence_score`         | number | Confidence score between 0 and 1                      |
 
 ## Example Usage
 
@@ -168,10 +168,10 @@ curl -X POST "https://api.bondmcp.com/api/v1/health-data/analyze" \
 ### JavaScript
 
 ```javascript
-import { BondMCPClient } from '@bondmcp/sdk';
+import { BondMCPClient } from "@bondmcp/sdk";
 
 const client = new BondMCPClient({
-  apiKey: 'YOUR_API_KEY'
+  apiKey: "YOUR_API_KEY",
 });
 
 async function analyzeHealthData() {
@@ -186,7 +186,7 @@ async function analyzeHealthData() {
           rem_sleep_minutes: 120,
           light_sleep_minutes: 227,
           awake_minutes: 15,
-          sleep_score: 88
+          sleep_score: 88,
         },
         {
           date: "2025-06-02",
@@ -195,17 +195,17 @@ async function analyzeHealthData() {
           rem_sleep_minutes: 105,
           light_sleep_minutes: 210,
           awake_minutes: 25,
-          sleep_score: 76
-        }
+          sleep_score: 76,
+        },
       ],
       user_context: {
         age: 35,
         sex: "male",
         activity_level: "moderate",
-        goals: ["improve_sleep_quality", "increase_deep_sleep"]
-      }
+        goals: ["improve_sleep_quality", "increase_deep_sleep"],
+      },
     });
-    
+
     console.log(response.analysis.summary);
     console.log("Recommendations:", response.analysis.recommendations);
   } catch (error) {
@@ -253,7 +253,7 @@ try:
             "goals": ["improve_sleep_quality", "increase_deep_sleep"]
         }
     )
-    
+
     print(response.analysis.summary)
     print("Recommendations:", response.analysis.recommendations)
 except Exception as e:
@@ -277,13 +277,13 @@ For details on the expected format for each data type, refer to our **Health Dat
 
 ## Error Responses
 
-| Status Code | Error Code | Description |
-|-------------|------------|-------------|
-| 400 | `invalid_request` | Invalid request parameters |
-| 401 | `authentication_error` | Missing API key |
-| 403 | `permission_denied` | Invalid API key or insufficient permissions |
-| 422 | `validation_error` | Request validation failed (e.g., invalid data format) |
-| 429 | `rate_limit_exceeded` | Rate limit exceeded |
+| Status Code | Error Code             | Description                                           |
+| ----------- | ---------------------- | ----------------------------------------------------- |
+| 400         | `invalid_request`      | Invalid request parameters                            |
+| 401         | `authentication_error` | Missing API key                                       |
+| 403         | `permission_denied`    | Invalid API key or insufficient permissions           |
+| 422         | `validation_error`     | Request validation failed (e.g., invalid data format) |
+| 429         | `rate_limit_exceeded`  | Rate limit exceeded                                   |
 
 For more details on error handling, see the **Error Handling Guide** .
 
@@ -304,6 +304,6 @@ For more details on error handling, see the **Error Handling Guide** .
 
 ## Related Endpoints
 
-- **Health Question Answering** 
-- **Lab Result Interpretation** 
-- **Import Health Data** 
+- **Health Question Answering**
+- **Lab Result Interpretation**
+- **Import Health Data**

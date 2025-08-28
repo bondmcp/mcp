@@ -51,4 +51,3 @@ For full documentation, visit [docs.bondmcp.com](https://docs.bondmcp.com).
 ## License
 
 MIT License - see LICENSE file for details.
-

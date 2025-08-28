@@ -13,11 +13,6 @@
     "declaration": true,
     "sourceMap": true
   },
-  "include": [
-    "scripts/**/*"
-  ],
-  "exclude": [
-    "node_modules",
-    "dist"
-  ]
+  "include": ["scripts/**/*"],
+  "exclude": ["node_modules", "dist"]
 }

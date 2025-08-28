@@ -10,6 +10,7 @@ This page provides the complete OpenAPI specification for the BondMCP API.
 ## Live OpenAPI Specification
 
 The complete OpenAPI specification is always available at:
+
 - JSON format: [https://openapi.bondmcp.com/openapi.bondmcp](https://openapi.bondmcp.com/openapi.bondmcp)
 - Repository: [GitHub - BondMCP/mcp](https://github.com/bondmcp/mcp/blob/main/spec/openapi.json)
 
@@ -23,12 +24,12 @@ For detailed information about authentication, please refer to the [Authenticati
 
 ## API Versioning
 
-API versioning information can be found in the **Versioning**  documentation.
+API versioning information can be found in the **Versioning** documentation.
 
 ## Error Handling
 
-For details on error codes and handling, see the **Error Handling**  guide.
+For details on error codes and handling, see the **Error Handling** guide.
 
 ## Rate Limiting
 
-Information about rate limits can be found in the **Rate Limiting**  documentation.
+Information about rate limits can be found in the **Rate Limiting** documentation.

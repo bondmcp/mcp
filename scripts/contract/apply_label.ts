@@ -2,12 +2,12 @@
 
 /**
  * GitHub Label Application Script
- * 
+ *
  * Applies labels to GitHub pull requests using the GitHub REST API
  * Requires GITHUB_TOKEN environment variable with appropriate permissions
  */
 
-import { Octokit } from '@octokit/rest';
+import { Octokit } from "@octokit/rest";
 
 interface LabelOptions {
   owner: string;
@@ -25,7 +25,7 @@ async function applyLabel(options: LabelOptions): Promise<void> {
 
   const token = process.env.GITHUB_TOKEN;
   if (!token) {
-    throw new Error('GITHUB_TOKEN environment variable is required');
+    throw new Error("GITHUB_TOKEN environment variable is required");
   }
 
   const octokit = new Octokit({
@@ -33,7 +33,9 @@ async function applyLabel(options: LabelOptions): Promise<void> {
   });
 
   if (verbose) {
-    console.log(`Applying label "${label}" to PR #${prNumber} in ${owner}/${repo}`);
+    console.log(
+      `Applying label "${label}" to PR #${prNumber} in ${owner}/${repo}`,
+    );
   }
 
   try {
@@ -59,8 +61,8 @@ async function applyLabel(options: LabelOptions): Promise<void> {
           owner,
           repo,
           name: label,
-          color: 'f29513', // Orange color for contract labels
-          description: 'Indicates this PR involves contract/API changes',
+          color: "f29513", // Orange color for contract labels
+          description: "Indicates this PR involves contract/API changes",
         });
         labelExists = true;
         if (verbose) {
@@ -76,14 +78,16 @@ async function applyLabel(options: LabelOptions): Promise<void> {
     }
 
     // Check if PR already has the label
-    const { data: currentLabels } = await octokit.rest.issues.listLabelsOnIssue({
-      owner,
-      repo,
-      issue_number: prNumber!,
-    });
+    const { data: currentLabels } = await octokit.rest.issues.listLabelsOnIssue(
+      {
+        owner,
+        repo,
+        issue_number: prNumber!,
+      },
+    );
 
-    const hasLabel = currentLabels.some(l => l.name === label);
-    
+    const hasLabel = currentLabels.some((l) => l.name === label);
+
     if (hasLabel) {
       if (verbose) {
         console.log(`✅ PR #${prNumber} already has label "${label}"`);
@@ -100,7 +104,6 @@ async function applyLabel(options: LabelOptions): Promise<void> {
     });
 
     console.log(`✅ Applied label "${label}" to PR #${prNumber}`);
-    
   } catch (error: any) {
     console.error(`Error applying label: ${error.message}`);
     if (error.response) {
@@ -115,17 +118,18 @@ async function applyLabel(options: LabelOptions): Promise<void> {
  */
 function getPRNumberFromContext(): number | undefined {
   // Try to get PR number from various GitHub Actions environment variables
-  const prNumber = process.env.GITHUB_PR_NUMBER || 
-                  process.env.PR_NUMBER ||
-                  process.env.PULL_REQUEST_NUMBER;
-  
+  const prNumber =
+    process.env.GITHUB_PR_NUMBER ||
+    process.env.PR_NUMBER ||
+    process.env.PULL_REQUEST_NUMBER;
+
   if (prNumber) {
     return parseInt(prNumber, 10);
   }
 
   // Try to extract from GITHUB_REF (refs/pull/123/merge)
   const githubRef = process.env.GITHUB_REF;
-  if (githubRef && githubRef.includes('pull/')) {
+  if (githubRef && githubRef.includes("pull/")) {
     const match = githubRef.match(/pull\/(\d+)/);
     if (match) {
       return parseInt(match[1], 10);
@@ -136,8 +140,8 @@ function getPRNumberFromContext(): number | undefined {
   const eventPath = process.env.GITHUB_EVENT_PATH;
   if (eventPath) {
     try {
-      const fs = require('fs');
-      const event = JSON.parse(fs.readFileSync(eventPath, 'utf-8'));
+      const fs = require("fs");
+      const event = JSON.parse(fs.readFileSync(eventPath, "utf-8"));
       if (event.pull_request && event.pull_request.number) {
         return event.pull_request.number;
       }
@@ -157,8 +161,8 @@ function getPRNumberFromContext(): number | undefined {
  */
 function getRepoFromContext(): { owner: string; repo: string } | undefined {
   const repository = process.env.GITHUB_REPOSITORY;
-  if (repository && repository.includes('/')) {
-    const [owner, repo] = repository.split('/');
+  if (repository && repository.includes("/")) {
+    const [owner, repo] = repository.split("/");
     return { owner, repo };
   }
   return undefined;
@@ -167,8 +171,8 @@ function getRepoFromContext(): { owner: string; repo: string } | undefined {
 // CLI interface
 if (require.main === module) {
   const args = process.argv.slice(2);
-  
-  if (args.includes('--help') || args.includes('-h')) {
+
+  if (args.includes("--help") || args.includes("-h")) {
     console.log(`Usage: apply_label.ts [options] <label>
 
 Options:
@@ -190,30 +194,30 @@ Example:
     process.exit(0);
   }
 
-  let owner = '';
-  let repo = '';
+  let owner = "";
+  let repo = "";
   let prNumber: number | undefined;
-  let label = '';
+  let label = "";
   let verbose = false;
 
   // Parse arguments
   for (let i = 0; i < args.length; i++) {
     switch (args[i]) {
-      case '--owner':
+      case "--owner":
         owner = args[++i];
         break;
-      case '--repo':
+      case "--repo":
         repo = args[++i];
         break;
-      case '--pr':
+      case "--pr":
         prNumber = parseInt(args[++i], 10);
         break;
-      case '--verbose':
-      case '-v':
+      case "--verbose":
+      case "-v":
         verbose = true;
         break;
       default:
-        if (!args[i].startsWith('--')) {
+        if (!args[i].startsWith("--")) {
           label = args[i];
         }
         break;
@@ -235,19 +239,23 @@ Example:
   }
 
   if (!label) {
-    console.error('Error: label is required');
+    console.error("Error: label is required");
     process.exit(1);
   }
 
   if (!owner || !repo) {
-    console.error('Error: repository owner and name are required');
-    console.error('Provide via --owner/--repo or set GITHUB_REPOSITORY environment variable');
+    console.error("Error: repository owner and name are required");
+    console.error(
+      "Provide via --owner/--repo or set GITHUB_REPOSITORY environment variable",
+    );
     process.exit(1);
   }
 
   if (!prNumber) {
-    console.error('Error: PR number is required');
-    console.error('Provide via --pr or ensure GitHub Actions context is available');
+    console.error("Error: PR number is required");
+    console.error(
+      "Provide via --pr or ensure GitHub Actions context is available",
+    );
     process.exit(1);
   }
 

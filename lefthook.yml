@@ -11,7 +11,7 @@ pre-commit:
         echo "🔍 Linting OpenAPI specifications..."
         npm run spec:lint
       fail_text: "OpenAPI linting failed. Run 'npm run spec:lint' to see details."
-    
+
     # TypeScript and JavaScript linting
     eslint:
       glob: "*.{js,ts,jsx,tsx}"
@@ -24,7 +24,7 @@ pre-commit:
           echo "ESLint not configured, skipping..."
         fi
       fail_text: "ESLint failed. Fix linting errors before committing."
-    
+
     # Prettier formatting check
     prettier:
       glob: "*.{js,ts,jsx,tsx,json,yaml,yml,md}"
@@ -33,7 +33,7 @@ pre-commit:
         echo "🎨 Checking code formatting..."
         npx prettier --check {staged_files}
       fail_text: "Code formatting issues found. Run 'npx prettier --write .' to fix."
-    
+
     # Python code formatting (if Python files are modified)
     black:
       glob: "*.py"
@@ -45,7 +45,7 @@ pre-commit:
           echo "Black not installed, skipping Python formatting check..."
         fi
       fail_text: "Python formatting issues found. Run 'black .' to fix."
-    
+
     # TypeScript compilation check
     typecheck:
       glob: "*.{ts,tsx}"
@@ -67,7 +67,7 @@ pre-push:
         echo "🧪 Running tests before push..."
         npm test
       fail_text: "Tests failed. Fix failing tests before pushing."
-    
+
     # Validate that SDKs are in sync (if spec files changed)
     sdk-verify:
       glob: "{spec/**/*,openapi/**/*}.{yaml,yml,json}"
@@ -86,10 +86,10 @@ commit-msg:
     commitlint:
       run: |
         echo "📝 Validating commit message format..."
-        
+
         # Read the commit message
         MSG=$(cat {1})
-        
+
         # Check for conventional commit format (basic check)
         if echo "$MSG" | grep -qE "^(feat|fix|docs|style|refactor|test|chore|ci|build|perf|revert)(\(.+\))?: .+"; then
           echo "✅ Commit message follows conventional format"

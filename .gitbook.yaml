@@ -31,10 +31,10 @@ pluginsConfig:
     tryItOutEnabled: true
     theme: "outline"
     pathInMiddlePanel: true
-    
+
   search-pro:
     cutWordLib: nodejieba
-    defineWord: 
+    defineWord:
       - BondMCP
       - API
       - SDK
@@ -47,23 +47,23 @@ pluginsConfig:
       - Go
     searchMaxSuggestions: 10
     searchSortBy: "title"
-    
+
   page-toc:
     selector: ".markdown-section h1, .markdown-section h2, .markdown-section h3, .markdown-section h4"
     position: "before-first"
     showByDefault: true
     addClass: "nav"
     className: "toc"
-    
+
   code:
     copyButtons: true
-    
+
   analytics:
-    google: "G-XXXXXXXXXX"  # Replace with actual Google Analytics ID
-    
+    google: "G-XXXXXXXXXX" # Replace with actual Google Analytics ID
+
   sitemap:
     hostname: "https://www.bondmcp.com"
-    
+
   theme-api:
     languages:
       - lang: "bash"
@@ -75,24 +75,24 @@ pluginsConfig:
       - lang: "go"
         name: "Go"
     split: false
-    
+
   expandable-chapters:
     deep: true
-    
+
   github:
     url: "https://github.com/bondmcp/mcp"
-    
+
   edit-link:
     base: "https://github.com/bondmcp/mcp/edit/main"
     label: "Edit This Page"
-    
+
   back-to-top-button:
     showLevelIcon: false
-    
+
   copy-code-button:
     copyTitle: "Copy to clipboard"
     copySuccessful: "Copied!"
-    
+
   prism:
     css:
       - "prismjs/themes/prism-okaidia.css"

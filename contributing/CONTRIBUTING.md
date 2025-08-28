@@ -46,6 +46,7 @@ npm run spec:diff  # Compare against origin/main
 ```
 
 This will help you understand if your changes are:
+
 - **BREAKING** (removed endpoints/fields, narrowed types)
 - **NON_BREAKING** (additive changes like new endpoints)
 - **PATCH** (documentation/examples only)
@@ -55,20 +56,24 @@ This will help you understand if your changes are:
 Based on your change type, ensure you have:
 
 **For BREAKING changes:**
+
 - [ ] Add `breaking-change` label to your PR
 - [ ] Update CHANGELOG.md with breaking changes section
 - [ ] Include migration documentation in `MIGRATIONS/`
 
 **For NON_BREAKING (additive) changes:**
-- [ ] Add `feat` or `docs-update` label to your PR  
+
+- [ ] Add `feat` or `docs-update` label to your PR
 - [ ] Update CHANGELOG.md with new features section
 
 **For PATCH (documentation) changes:**
+
 - [ ] Add `docs` or `chore` label to your PR
 
 ### 4. Automatic SDK Regeneration
 
 When you submit a PR with spec changes:
+
 - SDKs will be automatically regenerated
 - The PR will be updated with the generated SDK changes
 - Review the generated code before merging
@@ -145,6 +150,7 @@ Our release process is automated. To release:
 For manual publishing (not recommended):
 
 #### TypeScript SDK
+
 ```bash
 cd sdks/typescript
 npm run build
@@ -152,6 +158,7 @@ npm publish --access public
 ```
 
 #### Python SDK
+
 ```bash
 cd sdks/python
 python -m hatch build
@@ -159,6 +166,7 @@ python -m twine upload dist/*
 ```
 
 #### Go SDK
+
 ```bash
 git tag sdks/go/vX.Y.Z
 git push origin sdks/go/vX.Y.Z

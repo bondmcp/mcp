@@ -37,7 +37,7 @@ Here's what you'll get back:
     ],
     "related_topics": [
       "antioxidants",
-      "cardiovascular health", 
+      "cardiovascular health",
       "weight management",
       "brain health"
     ],
@@ -124,7 +124,7 @@ curl -X POST https://api.bondmcp.com/labs/interpret \
         "reference_range": "< 200 mg/dL"
       },
       {
-        "test_name": "HDL Cholesterol", 
+        "test_name": "HDL Cholesterol",
         "value": 45,
         "unit": "mg/dL",
         "reference_range": "> 40 mg/dL (men), > 50 mg/dL (women)"
@@ -255,13 +255,13 @@ def ask_health_question(question, api_key):
         "Content-Type": "application/json"
     }
     data = {"question": question}
-    
+
     response = requests.post(url, headers=headers, json=data)
     return response.json()
 
 # Usage
 result = ask_health_question(
-    "What foods are good for brain health?", 
+    "What foods are good for brain health?",
     "your_api_key_here"
 )
 print(result["data"]["answer"])
@@ -270,30 +270,34 @@ print(result["data"]["answer"])
 ### JavaScript/Node.js
 
 ```javascript
-const axios = require('axios');
+const axios = require("axios");
 
 async function askHealthQuestion(question, apiKey) {
   try {
-    const response = await axios.post('https://api.bondmcp.com/ask', {
-      question: question
-    }, {
-      headers: {
-        'Authorization': `Bearer ${apiKey}`,
-        'Content-Type': 'application/json'
-      }
-    });
-    
+    const response = await axios.post(
+      "https://api.bondmcp.com/ask",
+      {
+        question: question,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${apiKey}`,
+          "Content-Type": "application/json",
+        },
+      },
+    );
+
     return response.data;
   } catch (error) {
-    console.error('Error:', error.response.data);
+    console.error("Error:", error.response.data);
     throw error;
   }
 }
 
 // Usage
 askHealthQuestion("What are the benefits of meditation?", "your_api_key_here")
-  .then(result => console.log(result.data.answer))
-  .catch(error => console.error(error));
+  .then((result) => console.log(result.data.answer))
+  .catch((error) => console.error(error));
 ```
 
 ### CLI Tool

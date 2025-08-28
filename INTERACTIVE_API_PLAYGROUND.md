@@ -16,6 +16,7 @@ Test all BondMCP API endpoints directly from the documentation with our interact
 ## 🔐 Authentication Testing
 
 ### Test User Registration
+
 ```playground
 {
   "method": "POST",
@@ -49,6 +50,7 @@ Test all BondMCP API endpoints directly from the documentation with our interact
 ```
 
 ### Test User Login
+
 ```playground
 {
   "method": "POST",
@@ -76,6 +78,7 @@ Test all BondMCP API endpoints directly from the documentation with our interact
 ## 🏥 Health AI Testing
 
 ### Test Health Query
+
 ```playground
 {
   "method": "POST",
@@ -129,6 +132,7 @@ Test all BondMCP API endpoints directly from the documentation with our interact
 ```
 
 ### Test Health Data Analysis
+
 ```playground
 {
   "method": "POST",
@@ -163,6 +167,7 @@ Test all BondMCP API endpoints directly from the documentation with our interact
 ```
 
 ### Test Symptom Checker
+
 ```playground
 {
   "method": "POST",
@@ -201,6 +206,7 @@ Test all BondMCP API endpoints directly from the documentation with our interact
 ## 🔑 API Management Testing
 
 ### Test API Key Generation
+
 ```playground
 {
   "method": "POST",
@@ -229,6 +235,7 @@ Test all BondMCP API endpoints directly from the documentation with our interact
 ```
 
 ### Test API Key List
+
 ```playground
 {
   "method": "GET",
@@ -247,6 +254,7 @@ Test all BondMCP API endpoints directly from the documentation with our interact
 ## 💳 Billing Testing
 
 ### Test Available Plans
+
 ```playground
 {
   "method": "GET",
@@ -287,6 +295,7 @@ Test all BondMCP API endpoints directly from the documentation with our interact
 ```
 
 ### Test Subscription Creation
+
 ```playground
 {
   "method": "POST",
@@ -319,6 +328,7 @@ Test all BondMCP API endpoints directly from the documentation with our interact
 ## 🔬 Research Integration Testing
 
 ### Test PubMed Search
+
 ```playground
 {
   "method": "POST",
@@ -353,6 +363,7 @@ Test all BondMCP API endpoints directly from the documentation with our interact
 ```
 
 ### Test Clinical Trials Search
+
 ```playground
 {
   "method": "POST",
@@ -391,6 +402,7 @@ Test all BondMCP API endpoints directly from the documentation with our interact
 ## 🔧 System Testing
 
 ### Test Health Check
+
 ```playground
 {
   "method": "GET",
@@ -415,6 +427,7 @@ Test all BondMCP API endpoints directly from the documentation with our interact
 ```
 
 ### Test Root Endpoint
+
 ```playground
 {
   "method": "GET",
@@ -438,6 +451,7 @@ Test all BondMCP API endpoints directly from the documentation with our interact
 ## 🎯 Interactive Features
 
 ### Real-Time Response Viewer
+
 - **Syntax Highlighting**: JSON responses with color coding
 - **Response Time**: Live performance metrics
 - **Status Indicators**: Visual success/error states
@@ -445,7 +459,9 @@ Test all BondMCP API endpoints directly from the documentation with our interact
 - **History**: Previous request/response pairs
 
 ### Code Generation
+
 Generate code snippets in multiple languages:
+
 - **Python** (requests, httpx)
 - **JavaScript** (fetch, axios)
 - **Go** (net/http)
@@ -453,6 +469,7 @@ Generate code snippets in multiple languages:
 - **Postman** collections
 
 ### Authentication Helper
+
 - **API Key Validator**: Test your API key
 - **Token Generator**: Get test tokens
 - **Permission Checker**: Verify endpoint access
@@ -462,7 +479,9 @@ Generate code snippets in multiple languages:
 ## 🔍 Advanced Testing
 
 ### Batch Testing
+
 Test multiple endpoints simultaneously:
+
 ```playground
 {
   "batchTest": {
@@ -479,7 +498,9 @@ Test multiple endpoints simultaneously:
 ```
 
 ### Performance Testing
+
 Load test endpoints with configurable parameters:
+
 ```playground
 {
   "loadTest": {
@@ -497,18 +518,21 @@ Load test endpoints with configurable parameters:
 ## 📊 Testing Analytics
 
 ### Success Rates
+
 - **Overall**: 93.5% (43/46 endpoints)
 - **Health AI**: 100% (8/8 endpoints)
 - **Billing**: 100% (6/6 endpoints)
 - **Authentication**: 50% (3/6 endpoints)
 
 ### Performance Metrics
+
 - **Average Response Time**: 19ms
 - **99th Percentile**: 72ms
 - **Fastest Endpoint**: `/health` (8ms)
 - **Slowest Endpoint**: `/health/imaging` (156ms)
 
 ### Error Analysis
+
 - **Server Errors (500)**: 3 endpoints
 - **Authentication Issues**: AWS Cognito integration
 - **Recommended Fix**: Update environment variables
@@ -525,12 +549,12 @@ Load test endpoints with configurable parameters:
 ## 📞 Support
 
 Need help with the API playground?
+
 - **Documentation**: [docs.bondmcp.com](https://docs.bondmcp.com)
 - **Email**: support@bondmcp.com
 - **Discord**: [BondMCP Community](https://discord.gg/bondmcp)
 
 ---
 
-*Interactive playground powered by GitBook API Testing*  
-*Last updated: August 4, 2025*
-
+_Interactive playground powered by GitBook API Testing_  
+_Last updated: August 4, 2025_

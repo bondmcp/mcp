@@ -60,9 +60,7 @@
                     "default": false
                   }
                 },
-                "required": [
-                  "question"
-                ]
+                "required": ["question"]
               }
             }
           }

@@ -1,21 +1,20 @@
 # ApiV1HealthGet200Response
 
-
 ## Properties
 
-Name | Type | Description | Notes
------------- | ------------- | ------------- | -------------
-**status** | **string** |  | [optional] [default to undefined]
-**timestamp** | **string** |  | [optional] [default to undefined]
+| Name          | Type       | Description | Notes                             |
+| ------------- | ---------- | ----------- | --------------------------------- |
+| **status**    | **string** |             | [optional] [default to undefined] |
+| **timestamp** | **string** |             | [optional] [default to undefined] |
 
 ## Example
 
 ```typescript
-import { ApiV1HealthGet200Response } from '@bondmcp/sdk';
+import { ApiV1HealthGet200Response } from "@bondmcp/sdk";
 
 const instance: ApiV1HealthGet200Response = {
-    status,
-    timestamp,
+  status,
+  timestamp,
 };
 ```
 

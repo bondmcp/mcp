@@ -5,14 +5,14 @@
   "language": "en",
   "direction": "ltr",
   "gitbook": ">=3.2.0",
-  
+
   "structure": {
     "readme": "README.md",
     "summary": "SUMMARY.md",
     "glossary": "GLOSSARY.md",
     "languages": "LANGS.md"
   },
-  
+
   "variables": {
     "api_base_url": "https://api.bondmcp.com/v1",
     "website_url": "https://www.bondmcp.com",
@@ -24,10 +24,10 @@
     "version": "1.0.0",
     "platform_status": "CLI/API Only - No Web Interface"
   },
-  
+
   "plugins": [
     "openapi",
-    "swagger", 
+    "swagger",
     "search-pro",
     "page-toc",
     "code",
@@ -48,7 +48,7 @@
     "canonical-link",
     "structured-data"
   ],
-  
+
   "pluginsConfig": {
     "openapi": {
       "expandResponses": "all",
@@ -58,13 +58,27 @@
       "pathInMiddlePanel": true,
       "defaultModelRendering": "example"
     },
-    
+
     "search-pro": {
       "cutWordLib": "nodejieba",
       "defineWord": [
-        "BondMCP", "API", "SDK", "Health AI", "CLI", "Authentication", 
-        "Endpoints", "Python", "JavaScript", "Go", "cURL", "REST",
-        "Health", "Medical", "Lab Results", "Nutrition", "Supplements"
+        "BondMCP",
+        "API",
+        "SDK",
+        "Health AI",
+        "CLI",
+        "Authentication",
+        "Endpoints",
+        "Python",
+        "JavaScript",
+        "Go",
+        "cURL",
+        "REST",
+        "Health",
+        "Medical",
+        "Lab Results",
+        "Nutrition",
+        "Supplements"
       ],
       "searchMaxSuggestions": 10,
       "searchSortBy": "title",
@@ -73,7 +87,7 @@
         "close": "Escape"
       }
     },
-    
+
     "page-toc": {
       "selector": ".markdown-section h1, .markdown-section h2, .markdown-section h3, .markdown-section h4",
       "position": "before-first",
@@ -81,64 +95,64 @@
       "addClass": "nav",
       "className": "toc"
     },
-    
+
     "code": {
       "copyButtons": true
     },
-    
+
     "analytics": {
       "google": "G-XXXXXXXXXX"
     },
-    
+
     "sitemap": {
       "hostname": "https://www.bondmcp.com",
       "changefreq": "weekly",
       "priority": 0.8
     },
-    
+
     "theme-api": {
       "languages": [
-        {"lang": "bash", "name": "cURL"},
-        {"lang": "python", "name": "Python"},
-        {"lang": "javascript", "name": "JavaScript"},
-        {"lang": "go", "name": "Go"}
+        { "lang": "bash", "name": "cURL" },
+        { "lang": "python", "name": "Python" },
+        { "lang": "javascript", "name": "JavaScript" },
+        { "lang": "go", "name": "Go" }
       ],
       "split": false,
       "theme": "dark"
     },
-    
+
     "expandable-chapters": {
       "deep": true
     },
-    
+
     "github": {
       "url": "https://github.com/bondmcp/mcp"
     },
-    
+
     "edit-link": {
       "base": "https://github.com/bondmcp/mcp/edit/main",
       "label": "Edit This Page"
     },
-    
+
     "back-to-top-button": {
       "showLevelIcon": false
     },
-    
+
     "copy-code-button": {
       "copyTitle": "Copy to clipboard",
       "copySuccessful": "Copied!"
     },
-    
+
     "prism": {
       "css": ["prismjs/themes/prism-okaidia.css"],
       "lang": ["bash", "python", "javascript", "json", "yaml", "go", "curl"]
     },
-    
+
     "favicon": {
       "shortcut": "assets/favicon.ico",
       "bookmark": "assets/favicon.ico"
     },
-    
+
     "meta": {
       "data": [
         {
@@ -146,7 +160,7 @@
           "content": "BondMCP Health AI platform documentation - CLI and API only. Get AI-powered health answers, lab analysis, and nutrition insights."
         },
         {
-          "name": "keywords", 
+          "name": "keywords",
           "content": "health AI, medical API, lab analysis, nutrition, CLI tools, health data, BondMCP"
         },
         {
@@ -175,17 +189,17 @@
         }
       ]
     },
-    
+
     "canonical-link": {
       "base": "https://www.bondmcp.com"
     },
-    
+
     "structured-data": {
       "enable": true,
       "type": "TechArticle"
     }
   },
-  
+
   "pdf": {
     "fontSize": 12,
     "fontFamily": "Arial",
@@ -200,4 +214,3 @@
     }
   }
 }
-

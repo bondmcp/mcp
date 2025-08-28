@@ -42,26 +42,28 @@ yarn add bondmcp
 ```
 
 ```javascript
-import { BondMCPClient } from 'bondmcp';
+import { BondMCPClient } from "bondmcp";
 
 // Initialize client with your API key
-const client = new BondMCPClient({ apiKey: 'your_api_key' });
+const client = new BondMCPClient({ apiKey: "your_api_key" });
 
 // Ask a health question
-const response = await client.ask('What are the best supplements for joint health?');
+const response = await client.ask(
+  "What are the best supplements for joint health?",
+);
 console.log(response.answer);
 
 // Interpret lab results
 const labResults = [
-  { name: 'Vitamin D', value: 25, unit: 'ng/mL', referenceRange: '30-100' },
-  { name: 'Ferritin', value: 15, unit: 'ng/mL', referenceRange: '20-200' }
+  { name: "Vitamin D", value: 25, unit: "ng/mL", referenceRange: "30-100" },
+  { name: "Ferritin", value: 15, unit: "ng/mL", referenceRange: "20-200" },
 ];
 const interpretation = await client.labs.interpret(labResults);
 console.log(interpretation.insights);
 
 // Get supplement recommendations
 const recommendations = await client.supplement.recommend({
-  healthGoals: ['joint health', 'energy']
+  healthGoals: ["joint health", "energy"],
 });
 console.log(recommendations.supplements);
 ```
@@ -152,19 +154,21 @@ Network error: Connection timed out
 ### JavaScript Example
 
 ```javascript
-import { BondMCPClient, BondMCPAPIError, BondMCPNetworkError } from 'bondmcp';
+import { BondMCPClient, BondMCPAPIError, BondMCPNetworkError } from "bondmcp";
 
-const client = new BondMCPClient({ apiKey: 'your_api_key' });
+const client = new BondMCPClient({ apiKey: "your_api_key" });
 
 try {
-  await client.ask('What are the symptoms of high blood pressure?');
+  await client.ask("What are the symptoms of high blood pressure?");
 } catch (error) {
   if (error instanceof BondMCPAPIError) {
-    console.log(`API error ${error.statusCode} (${error.code}): ${error.message}`);
+    console.log(
+      `API error ${error.statusCode} (${error.code}): ${error.message}`,
+    );
   } else if (error instanceof BondMCPNetworkError) {
-    console.log('Network error:', error.message);
+    console.log("Network error:", error.message);
   } else {
-    console.log('Unexpected error:', error);
+    console.log("Unexpected error:", error);
   }
 }
 ```
@@ -190,7 +194,7 @@ for page in client.health_data.list_all():
 // JavaScript example
 const allResults = [];
 for await (const page of client.healthData.listAll()) {
-    allResults.push(...page.results);
+  allResults.push(...page.results);
 }
 ```
 

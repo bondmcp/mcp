@@ -33,11 +33,11 @@ Requires API key authentication via the `X-API-Key` header.
 
 ### Request Parameters
 
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| `lab_results` | object | Yes | Key-value pairs of lab test names and their values |
-| `patient_context` | object | No | Optional patient context to improve interpretation relevance |
-| `include_references` | boolean | No | Whether to include medical references (default: `true`) |
+| Parameter            | Type    | Required | Description                                                  |
+| -------------------- | ------- | -------- | ------------------------------------------------------------ |
+| `lab_results`        | object  | Yes      | Key-value pairs of lab test names and their values           |
+| `patient_context`    | object  | No       | Optional patient context to improve interpretation relevance |
+| `include_references` | boolean | No       | Whether to include medical references (default: `true`)      |
 
 ## Response Format
 
@@ -78,15 +78,15 @@ Requires API key authentication via the `X-API-Key` header.
 
 ### Response Fields
 
-| Field | Type | Description |
-|-------|------|-------------|
-| `request_id` | string | Unique identifier for the request |
-| `timestamp` | string | ISO 8601 timestamp of when the response was generated |
-| `interpretation` | object | The AI-generated interpretation of lab results |
-| `interpretation.summary` | string | Overall summary of the lab results |
-| `interpretation.details` | array | Detailed interpretation of each lab test |
-| `references` | array | List of medical references used (if `include_references` is `true`) |
-| `confidence_score` | number | Confidence score between 0 and 1 |
+| Field                    | Type   | Description                                                         |
+| ------------------------ | ------ | ------------------------------------------------------------------- |
+| `request_id`             | string | Unique identifier for the request                                   |
+| `timestamp`              | string | ISO 8601 timestamp of when the response was generated               |
+| `interpretation`         | object | The AI-generated interpretation of lab results                      |
+| `interpretation.summary` | string | Overall summary of the lab results                                  |
+| `interpretation.details` | array  | Detailed interpretation of each lab test                            |
+| `references`             | array  | List of medical references used (if `include_references` is `true`) |
+| `confidence_score`       | number | Confidence score between 0 and 1                                    |
 
 ## Example Usage
 
@@ -114,10 +114,10 @@ curl -X POST "https://api.bondmcp.com/api/v1/labs/interpret" \
 ### JavaScript
 
 ```javascript
-import { BondMCPClient } from '@bondmcp/sdk';
+import { BondMCPClient } from "@bondmcp/sdk";
 
 const client = new BondMCPClient({
-  apiKey: 'YOUR_API_KEY'
+  apiKey: "YOUR_API_KEY",
 });
 
 async function interpretLabResults() {
@@ -127,15 +127,15 @@ async function interpretLabResults() {
         hdl: 60,
         ldl: 120,
         triglycerides: 150,
-        glucose: 85
+        glucose: 85,
       },
       patient_context: {
         age: 45,
         sex: "female",
-        conditions: ["hypertension"]
-      }
+        conditions: ["hypertension"],
+      },
     });
-    
+
     console.log(response.interpretation.summary);
     console.log("Details:", response.interpretation.details);
   } catch (error) {
@@ -167,7 +167,7 @@ try:
             "conditions": ["hypertension"]
         }
     )
-    
+
     print(response.interpretation.summary)
     print("Details:", response.interpretation.details)
 except Exception as e:
@@ -190,13 +190,13 @@ For a complete list of supported tests, refer to our **Lab Test Reference Guide*
 
 ## Error Responses
 
-| Status Code | Error Code | Description |
-|-------------|------------|-------------|
-| 400 | `invalid_request` | Invalid request parameters |
-| 401 | `authentication_error` | Missing API key |
-| 403 | `permission_denied` | Invalid API key or insufficient permissions |
-| 422 | `validation_error` | Request validation failed (e.g., invalid lab test names) |
-| 429 | `rate_limit_exceeded` | Rate limit exceeded |
+| Status Code | Error Code             | Description                                              |
+| ----------- | ---------------------- | -------------------------------------------------------- |
+| 400         | `invalid_request`      | Invalid request parameters                               |
+| 401         | `authentication_error` | Missing API key                                          |
+| 403         | `permission_denied`    | Invalid API key or insufficient permissions              |
+| 422         | `validation_error`     | Request validation failed (e.g., invalid lab test names) |
+| 429         | `rate_limit_exceeded`  | Rate limit exceeded                                      |
 
 For more details on error handling, see the **Error Handling Guide** .
 
@@ -217,5 +217,5 @@ For more details on error handling, see the **Error Handling Guide** .
 
 ## Related Endpoints
 
-- **Health Question Answering** 
-- **Health Data Analysis** 
+- **Health Question Answering**
+- **Health Data Analysis**

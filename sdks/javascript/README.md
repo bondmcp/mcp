@@ -21,18 +21,18 @@ pnpm add @bondmcp/sdk
 ### Basic Usage
 
 ```typescript
-import { BondMCP } from '@bondmcp/sdk';
+import { BondMCP } from "@bondmcp/sdk";
 
 const client = new BondMCP({
-  apiKey: 'your_api_key_here',
-  environment: 'production' // or 'staging'
+  apiKey: "your_api_key_here",
+  environment: "production", // or 'staging'
 });
 
 // Ask a health question
 const response = await client.ask({
   query: "What are the potential causes of elevated liver enzymes?",
   includeCitations: true,
-  modelPreference: 'consensus'
+  modelPreference: "consensus",
 });
 
 console.log(response.answer);
@@ -42,17 +42,20 @@ console.log(`Confidence: ${response.confidenceScore}`);
 ## 📚 Features
 
 ### ✅ **Full TypeScript Support**
+
 - Complete type definitions
 - IntelliSense support
 - Compile-time error checking
 
 ### 🌐 **Universal Compatibility**
+
 - Node.js 16+ support
 - Modern browsers (ES2020+)
 - React/Vue/Angular compatible
 - Next.js/Nuxt.js ready
 
 ### ⚡ **Advanced Features**
+
 - Automatic retry logic
 - Request/response interceptors
 - Built-in rate limiting
@@ -64,17 +67,17 @@ console.log(`Confidence: ${response.confidenceScore}`);
 ### Environment Setup
 
 ```typescript
-import { BondMCP } from '@bondmcp/sdk';
+import { BondMCP } from "@bondmcp/sdk";
 
 const client = new BondMCP({
   apiKey: process.env.BONDMCP_API_KEY,
-  environment: 'production',
+  environment: "production",
   timeout: 30000,
   retries: 3,
   rateLimit: {
     requests: 100,
-    window: 60000 // 1 minute
-  }
+    window: 60000, // 1 minute
+  },
 });
 ```
 
@@ -82,11 +85,11 @@ const client = new BondMCP({
 
 ```html
 <script type="module">
-  import { BondMCP } from 'https://cdn.skypack.dev/@bondmcp/sdk';
-  
+  import { BondMCP } from "https://cdn.skypack.dev/@bondmcp/sdk";
+
   const client = new BondMCP({
-    apiKey: 'your_public_api_key',
-    environment: 'production'
+    apiKey: "your_public_api_key",
+    environment: "production",
   });
 </script>
 ```
@@ -96,6 +99,7 @@ const client = new BondMCP({
 ### Core Methods
 
 #### `client.ask(options)`
+
 Multi-model consensus health AI query.
 
 ```typescript
@@ -108,6 +112,7 @@ const response = await client.ask({
 ```
 
 #### `client.labs.interpret(options)`
+
 Interpret laboratory results.
 
 ```typescript
@@ -129,15 +134,16 @@ const interpretation = await client.labs.interpret({
 ```
 
 #### `client.supplements.recommend(options)`
+
 Get personalized supplement recommendations.
 
 ```typescript
 const recommendations = await client.supplements.recommend({
-  healthGoals: ['cardiovascular_health', 'energy'],
+  healthGoals: ["cardiovascular_health", "energy"],
   currentLabs: {
-    vitaminD: { value: 25, unit: 'ng/mL' }
+    vitaminD: { value: 25, unit: "ng/mL" },
   },
-  dietaryRestrictions: ['vegetarian']
+  dietaryRestrictions: ["vegetarian"],
 });
 ```
 
@@ -145,7 +151,7 @@ const recommendations = await client.supplements.recommend({
 
 ```typescript
 const stream = client.askStream({
-  query: "Explain the cardiovascular system"
+  query: "Explain the cardiovascular system",
 });
 
 for await (const chunk of stream) {
@@ -158,13 +164,13 @@ for await (const chunk of stream) {
 ```typescript
 const ws = client.createWebSocket();
 
-ws.on('message', (data) => {
-  console.log('Real-time update:', data);
+ws.on("message", (data) => {
+  console.log("Real-time update:", data);
 });
 
 ws.send({
-  type: 'subscribe',
-  channel: 'health_alerts'
+  type: "subscribe",
+  channel: "health_alerts",
 });
 ```
 
@@ -207,15 +213,15 @@ function HealthQuery() {
 ### Node.js Express Server
 
 ```typescript
-import express from 'express';
-import { BondMCP } from '@bondmcp/sdk';
+import express from "express";
+import { BondMCP } from "@bondmcp/sdk";
 
 const app = express();
 const client = new BondMCP({
-  apiKey: process.env.BONDMCP_API_KEY
+  apiKey: process.env.BONDMCP_API_KEY,
 });
 
-app.post('/health-query', async (req, res) => {
+app.post("/health-query", async (req, res) => {
   try {
     const { query } = req.body;
     const response = await client.ask({ query });
@@ -231,12 +237,12 @@ app.listen(3000);
 ### Vue.js Composition API
 
 ```typescript
-import { ref } from 'vue';
-import { BondMCP } from '@bondmcp/sdk';
+import { ref } from "vue";
+import { BondMCP } from "@bondmcp/sdk";
 
 export function useHealthAI() {
   const client = new BondMCP({
-    apiKey: import.meta.env.VITE_BONDMCP_API_KEY
+    apiKey: import.meta.env.VITE_BONDMCP_API_KEY,
   });
 
   const loading = ref(false);
@@ -254,7 +260,7 @@ export function useHealthAI() {
   return {
     loading,
     response,
-    askQuestion
+    askQuestion,
   };
 }
 ```
@@ -266,12 +272,12 @@ export function useHealthAI() {
 ```typescript
 // ✅ Good - Environment variables
 const client = new BondMCP({
-  apiKey: process.env.BONDMCP_API_KEY
+  apiKey: process.env.BONDMCP_API_KEY,
 });
 
 // ❌ Bad - Hardcoded keys
 const client = new BondMCP({
-  apiKey: 'bmcp_live_...' // Never do this!
+  apiKey: "bmcp_live_...", // Never do this!
 });
 ```
 
@@ -281,9 +287,9 @@ const client = new BondMCP({
 const client = new BondMCP({
   apiKey: process.env.BONDMCP_API_KEY,
   rateLimit: {
-    requests: 50,    // 50 requests
-    window: 60000    // per minute
-  }
+    requests: 50, // 50 requests
+    window: 60000, // per minute
+  },
 });
 ```
 
@@ -293,37 +299,37 @@ const client = new BondMCP({
 
 ```typescript
 // __tests__/setup.ts
-import { BondMCP } from '@bondmcp/sdk';
+import { BondMCP } from "@bondmcp/sdk";
 
 // Mock the SDK for testing
-jest.mock('@bondmcp/sdk', () => ({
+jest.mock("@bondmcp/sdk", () => ({
   BondMCP: jest.fn().mockImplementation(() => ({
     ask: jest.fn().mockResolvedValue({
-      answer: 'Mocked response',
-      confidenceScore: 0.95
-    })
-  }))
+      answer: "Mocked response",
+      confidenceScore: 0.95,
+    }),
+  })),
 }));
 ```
 
 ### Unit Test Example
 
 ```typescript
-import { BondMCP } from '@bondmcp/sdk';
+import { BondMCP } from "@bondmcp/sdk";
 
-describe('BondMCP Client', () => {
+describe("BondMCP Client", () => {
   let client: BondMCP;
 
   beforeEach(() => {
     client = new BondMCP({
-      apiKey: 'test_key',
-      environment: 'staging'
+      apiKey: "test_key",
+      environment: "staging",
     });
   });
 
-  it('should ask health questions', async () => {
+  it("should ask health questions", async () => {
     const response = await client.ask({
-      query: 'What is hypertension?'
+      query: "What is hypertension?",
     });
 
     expect(response.answer).toBeDefined();
@@ -386,7 +392,7 @@ npm publish --access public
 ```html
 <!-- ES Modules -->
 <script type="module">
-  import { BondMCP } from 'https://cdn.skypack.dev/@bondmcp/sdk';
+  import { BondMCP } from "https://cdn.skypack.dev/@bondmcp/sdk";
 </script>
 
 <!-- UMD -->
@@ -403,7 +409,7 @@ npm publish --access public
 
 ## 📄 License
 
-This project is licensed under the MIT License - see the **LICENSE**  file for details.
+This project is licensed under the MIT License - see the **LICENSE** file for details.
 
 ## 🔗 Links
 
@@ -417,4 +423,3 @@ This project is licensed under the MIT License - see the **LICENSE**  file for d
 <div align="center">
   <strong>Built with ❤️ for JavaScript developers</strong>
 </div>
-

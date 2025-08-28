@@ -89,7 +89,7 @@ node scripts/build-sdks.js all
 # Build only TypeScript SDK
 node scripts/build-sdks.js typescript
 
-# Build only Python SDK  
+# Build only Python SDK
 node scripts/build-sdks.js python
 
 # Test SDK imports
@@ -117,16 +117,16 @@ node scripts/sdk-generator.js python openapi/latest.json 1.0.0
 ### TypeScript SDK
 
 ```typescript
-import { BondMCPClient } from '@bondmcp/sdk';
+import { BondMCPClient } from "@bondmcp/sdk";
 
 const client = new BondMCPClient({
-  apiKey: 'your-api-key'
+  apiKey: "your-api-key",
 });
 
 // Ask a health question
 const response = await client.health.ask({
-  question: 'What are the symptoms of diabetes?',
-  detailed: true
+  question: "What are the symptoms of diabetes?",
+  detailed: true,
 });
 
 console.log(response.answer);
@@ -193,27 +193,28 @@ Example platform code:
 
 ```javascript
 // In bondmcp-platform
-const crypto = require('crypto');
-const { Octokit } = require('@octokit/rest');
+const crypto = require("crypto");
+const { Octokit } = require("@octokit/rest");
 
 async function dispatchOpenAPIUpdate(version, specContent, specUrl) {
-  const checksum = crypto.createHash('sha256')
+  const checksum = crypto
+    .createHash("sha256")
     .update(specContent)
-    .digest('hex');
-  
+    .digest("hex");
+
   const octokit = new Octokit({
-    auth: process.env.GITHUB_TOKEN
+    auth: process.env.GITHUB_TOKEN,
   });
-  
+
   await octokit.rest.repos.createDispatchEvent({
-    owner: 'bondmcp',
-    repo: 'mcp',
-    event_type: 'openapi_spec_updated',
+    owner: "bondmcp",
+    repo: "mcp",
+    event_type: "openapi_spec_updated",
     client_payload: {
       version,
       checksum,
-      spec_url: specUrl
-    }
+      spec_url: specUrl,
+    },
   });
 }
 ```
@@ -271,6 +272,6 @@ gh workflow run openapi-generation.yml --field force_run=true
 
 For issues with the ingestion pipeline:
 
-- **Documentation**: **docs/openapi-pipeline.md** 
+- **Documentation**: **docs/openapi-pipeline.md**
 - **Testing**: `node scripts/test-pipeline.js test`
 - **Support**: support@bondmcp.com

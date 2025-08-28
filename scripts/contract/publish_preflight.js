@@ -2,13 +2,13 @@
 
 /**
  * Publish Preflight Script
- * 
+ *
  * Checks if packages already exist in npm or PyPI registries.
  * Exits with specific codes: 20 (npm exists), 21 (PyPI exists), 0 (clear), >1 (error)
  */
 
-const https = require('https');
-const http = require('http');
+const https = require("https");
+const http = require("http");
 
 /**
  * Make HTTP/HTTPS request with timeout
@@ -16,30 +16,30 @@ const http = require('http');
 function makeRequest(url, timeout = 10000) {
   return new Promise((resolve, reject) => {
     const urlObj = new URL(url);
-    const client = urlObj.protocol === 'https:' ? https : http;
-    
-    const req = client.request(url, { method: 'GET', timeout }, (res) => {
-      let body = '';
-      
-      res.on('data', (chunk) => {
+    const client = urlObj.protocol === "https:" ? https : http;
+
+    const req = client.request(url, { method: "GET", timeout }, (res) => {
+      let body = "";
+
+      res.on("data", (chunk) => {
         body += chunk;
       });
-      
-      res.on('end', () => {
+
+      res.on("end", () => {
         resolve({
           statusCode: res.statusCode || 0,
-          body
+          body,
         });
       });
     });
 
-    req.on('error', (error) => {
+    req.on("error", (error) => {
       reject(error);
     });
 
-    req.on('timeout', () => {
+    req.on("timeout", () => {
       req.destroy();
-      reject(new Error('Request timeout'));
+      reject(new Error("Request timeout"));
     });
 
     req.end();
@@ -51,16 +51,16 @@ function makeRequest(url, timeout = 10000) {
  */
 async function checkNpmRegistry(packageName, version) {
   const url = `https://registry.npmjs.org/${packageName}/${version}`;
-  
+
   try {
     const response = await makeRequest(url);
-    
+
     const result = {
-      registry: 'npm',
+      registry: "npm",
       package: packageName,
       version,
       exists: response.statusCode === 200,
-      url
+      url,
     };
 
     if (response.statusCode === 404) {
@@ -74,12 +74,12 @@ async function checkNpmRegistry(packageName, version) {
     return result;
   } catch (error) {
     return {
-      registry: 'npm',
+      registry: "npm",
       package: packageName,
       version,
       exists: false,
       error: error.message,
-      url
+      url,
     };
   }
 }
@@ -89,16 +89,16 @@ async function checkNpmRegistry(packageName, version) {
  */
 async function checkPyPIRegistry(packageName, version) {
   const url = `https://pypi.org/pypi/${packageName}/${version}/json`;
-  
+
   try {
     const response = await makeRequest(url);
-    
+
     const result = {
-      registry: 'pypi',
+      registry: "pypi",
       package: packageName,
       version,
       exists: response.statusCode === 200,
-      url
+      url,
     };
 
     if (response.statusCode === 404) {
@@ -112,12 +112,12 @@ async function checkPyPIRegistry(packageName, version) {
     return result;
   } catch (error) {
     return {
-      registry: 'pypi',
+      registry: "pypi",
       package: packageName,
       version,
       exists: false,
       error: error.message,
-      url
+      url,
     };
   }
 }
@@ -128,11 +128,15 @@ async function checkPyPIRegistry(packageName, version) {
 async function main() {
   try {
     const args = process.argv.slice(2);
-    
+
     if (args.length < 2) {
-      console.error('Usage: node publish_preflight.js <registry> <version> [package-name]');
-      console.error('Registry: npm | pypi');
-      console.error('Example: node publish_preflight.js npm 1.0.0 @bondmcp/sdk');
+      console.error(
+        "Usage: node publish_preflight.js <registry> <version> [package-name]",
+      );
+      console.error("Registry: npm | pypi");
+      console.error(
+        "Example: node publish_preflight.js npm 1.0.0 @bondmcp/sdk",
+      );
       process.exit(1);
     }
 
@@ -141,21 +145,25 @@ async function main() {
     let packageName = args[2];
 
     // Validate registry
-    if (!['npm', 'pypi'].includes(registry)) {
-      console.error(`Error: Invalid registry '${registry}'. Must be 'npm' or 'pypi'`);
+    if (!["npm", "pypi"].includes(registry)) {
+      console.error(
+        `Error: Invalid registry '${registry}'. Must be 'npm' or 'pypi'`,
+      );
       process.exit(1);
     }
 
     // Default package names if not provided
     if (!packageName) {
-      packageName = registry === 'npm' ? '@bondmcp/sdk' : 'bondmcp-sdk';
+      packageName = registry === "npm" ? "@bondmcp/sdk" : "bondmcp-sdk";
     }
 
-    console.error(`Checking ${registry.toUpperCase()} registry for ${packageName} version ${version}...`);
+    console.error(
+      `Checking ${registry.toUpperCase()} registry for ${packageName} version ${version}...`,
+    );
 
     let result;
-    
-    if (registry === 'npm') {
+
+    if (registry === "npm") {
       result = await checkNpmRegistry(packageName, version);
     } else {
       result = await checkPyPIRegistry(packageName, version);
@@ -172,21 +180,24 @@ async function main() {
 
     // Exit with appropriate code
     if (result.exists) {
-      console.error(`✋ Package ${packageName} version ${version} already exists in ${registry.toUpperCase()}`);
-      console.error('Skipping publish to avoid conflicts.');
-      
-      if (registry === 'npm') {
+      console.error(
+        `✋ Package ${packageName} version ${version} already exists in ${registry.toUpperCase()}`,
+      );
+      console.error("Skipping publish to avoid conflicts.");
+
+      if (registry === "npm") {
         process.exit(20);
       } else {
         process.exit(21);
       }
     } else {
-      console.error(`✅ Package ${packageName} version ${version} is available for publish to ${registry.toUpperCase()}`);
+      console.error(
+        `✅ Package ${packageName} version ${version} is available for publish to ${registry.toUpperCase()}`,
+      );
       process.exit(0);
     }
-
   } catch (error) {
-    console.error('Unexpected error during preflight check:', error);
+    console.error("Unexpected error during preflight check:", error);
     process.exit(3);
   }
 }

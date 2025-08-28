@@ -1,7 +1,7 @@
 # BondMCP API Endpoints
 
 > **⚠️ DEVELOPMENT STATUS: 0/42 endpoints deployed (API domain not available)**
-> 
+>
 > **Important**: The API domain `api.bondmcp.com` is not yet deployed. This document serves as a specification for planned endpoints. See [ACTUAL_API_STATUS.md](ACTUAL_API_STATUS.md) for detailed testing results.
 
 ## Endpoint Status Legend
@@ -17,12 +17,12 @@
 
 ## Core System Endpoints
 
-| Endpoint | Method | Status | Description |
-|----------|--------|--------|-------------|
-| `/` | GET | 📅 PLANNED | API root and status |
-| `/health` | GET | 📅 PLANNED | System health check |
-| `/docs` | GET | 📅 PLANNED | Interactive documentation |
-| `/openapi.json` | GET | 📅 PLANNED | OpenAPI specification |
+| Endpoint        | Method | Status     | Description               |
+| --------------- | ------ | ---------- | ------------------------- |
+| `/`             | GET    | 📅 PLANNED | API root and status       |
+| `/health`       | GET    | 📅 PLANNED | System health check       |
+| `/docs`         | GET    | 📅 PLANNED | Interactive documentation |
+| `/openapi.json` | GET    | 📅 PLANNED | OpenAPI specification     |
 
 **Category Status: 0/4 endpoints deployed (awaiting infrastructure)**
 
@@ -30,14 +30,14 @@
 
 ## Authentication Endpoints
 
-| Endpoint | Method | Status | Description |
-|----------|--------|--------|-------------|
-| `/auth/register` | POST | 📅 PLANNED | User registration |
-| `/auth/login` | POST | 📅 PLANNED | User login |
-| `/auth/logout` | POST | 📅 PLANNED | User logout |
-| `/auth/refresh` | POST | 📅 PLANNED | Token refresh |
-| `/auth/verify` | POST | 📅 PLANNED | Email verification |
-| `/auth/reset` | POST | 📅 PLANNED | Password reset |
+| Endpoint         | Method | Status     | Description        |
+| ---------------- | ------ | ---------- | ------------------ |
+| `/auth/register` | POST   | 📅 PLANNED | User registration  |
+| `/auth/login`    | POST   | 📅 PLANNED | User login         |
+| `/auth/logout`   | POST   | 📅 PLANNED | User logout        |
+| `/auth/refresh`  | POST   | 📅 PLANNED | Token refresh      |
+| `/auth/verify`   | POST   | 📅 PLANNED | Email verification |
+| `/auth/reset`    | POST   | 📅 PLANNED | Password reset     |
 
 **Category Status: 0/6 endpoints deployed (awaiting infrastructure)**
 
@@ -45,13 +45,13 @@
 
 ## API Key Management
 
-| Endpoint | Method | Status | Description |
-|----------|--------|--------|-------------|
-| `/api-keys/generate` | POST | ⚠️ METHOD ERROR | Generate new API key |
-| `/api-keys/list` | GET | ⚠️ METHOD ERROR | List user's API keys |
-| `/api-keys/revoke` | DELETE | ⚠️ METHOD ERROR | Revoke API key |
-| `/api-keys/usage` | GET | ⚠️ METHOD ERROR | API key usage stats |
-| `/api-keys/validate` | POST | ⚠️ METHOD ERROR | Validate API key |
+| Endpoint             | Method | Status          | Description          |
+| -------------------- | ------ | --------------- | -------------------- |
+| `/api-keys/generate` | POST   | ⚠️ METHOD ERROR | Generate new API key |
+| `/api-keys/list`     | GET    | ⚠️ METHOD ERROR | List user's API keys |
+| `/api-keys/revoke`   | DELETE | ⚠️ METHOD ERROR | Revoke API key       |
+| `/api-keys/usage`    | GET    | ⚠️ METHOD ERROR | API key usage stats  |
+| `/api-keys/validate` | POST   | ⚠️ METHOD ERROR | Validate API key     |
 
 **Category Status: 0/5 endpoints working (0%)**
 
@@ -59,16 +59,16 @@
 
 ## Health AI Endpoints
 
-| Endpoint | Method | Status | Description |
-|----------|--------|--------|-------------|
-| `/health/ask` | POST | ❌ NOT DEPLOYED | Health question answering |
-| `/health/analyze` | POST | ❌ NOT DEPLOYED | Medical data analysis |
-| `/health/trust-score` | GET | ❌ NOT DEPLOYED | Trust score verification |
-| `/health/data/upload` | POST | ❌ NOT DEPLOYED | Health data upload |
-| `/health/data/analyze` | POST | ❌ NOT DEPLOYED | Health data analysis |
-| `/health/recommendations` | GET | ❌ NOT DEPLOYED | Health recommendations |
-| `/health/insights` | GET | ❌ NOT DEPLOYED | Health insights |
-| `/health/monitoring` | GET | ❌ NOT DEPLOYED | Health monitoring |
+| Endpoint                  | Method | Status          | Description               |
+| ------------------------- | ------ | --------------- | ------------------------- |
+| `/health/ask`             | POST   | ❌ NOT DEPLOYED | Health question answering |
+| `/health/analyze`         | POST   | ❌ NOT DEPLOYED | Medical data analysis     |
+| `/health/trust-score`     | GET    | ❌ NOT DEPLOYED | Trust score verification  |
+| `/health/data/upload`     | POST   | ❌ NOT DEPLOYED | Health data upload        |
+| `/health/data/analyze`    | POST   | ❌ NOT DEPLOYED | Health data analysis      |
+| `/health/recommendations` | GET    | ❌ NOT DEPLOYED | Health recommendations    |
+| `/health/insights`        | GET    | ❌ NOT DEPLOYED | Health insights           |
+| `/health/monitoring`      | GET    | ❌ NOT DEPLOYED | Health monitoring         |
 
 **Category Status: 0/8 endpoints working (0%)**
 
@@ -76,14 +76,14 @@
 
 ## Billing Endpoints
 
-| Endpoint | Method | Status | Description |
-|----------|--------|--------|-------------|
-| `/billing/usage` | GET | 🔐 AUTH REQUIRED | Usage statistics |
-| `/billing/plans` | GET | ❌ NOT DEPLOYED | Available plans |
-| `/billing/subscribe` | POST | ❌ NOT DEPLOYED | Subscribe to plan |
-| `/billing/cancel` | POST | ❌ NOT DEPLOYED | Cancel subscription |
-| `/billing/invoice` | GET | ❌ NOT DEPLOYED | Get invoices |
-| `/billing/payment-methods` | POST | ⚠️ METHOD ERROR | Manage payments |
+| Endpoint                   | Method | Status           | Description         |
+| -------------------------- | ------ | ---------------- | ------------------- |
+| `/billing/usage`           | GET    | 🔐 AUTH REQUIRED | Usage statistics    |
+| `/billing/plans`           | GET    | ❌ NOT DEPLOYED  | Available plans     |
+| `/billing/subscribe`       | POST   | ❌ NOT DEPLOYED  | Subscribe to plan   |
+| `/billing/cancel`          | POST   | ❌ NOT DEPLOYED  | Cancel subscription |
+| `/billing/invoice`         | GET    | ❌ NOT DEPLOYED  | Get invoices        |
+| `/billing/payment-methods` | POST   | ⚠️ METHOD ERROR  | Manage payments     |
 
 **Category Status: 1/6 endpoints working (16.7%)**
 
@@ -91,12 +91,12 @@
 
 ## Research Integration
 
-| Endpoint | Method | Status | Description |
-|----------|--------|--------|-------------|
-| `/research/pubmed` | GET | ❌ NOT DEPLOYED | PubMed literature search |
-| `/research/clinical-trials` | GET | ❌ NOT DEPLOYED | Clinical trial search |
-| `/research/literature` | POST | ❌ NOT DEPLOYED | Literature analysis |
-| `/research/analyze` | POST | ❌ NOT DEPLOYED | Research analysis |
+| Endpoint                    | Method | Status          | Description              |
+| --------------------------- | ------ | --------------- | ------------------------ |
+| `/research/pubmed`          | GET    | ❌ NOT DEPLOYED | PubMed literature search |
+| `/research/clinical-trials` | GET    | ❌ NOT DEPLOYED | Clinical trial search    |
+| `/research/literature`      | POST   | ❌ NOT DEPLOYED | Literature analysis      |
+| `/research/analyze`         | POST   | ❌ NOT DEPLOYED | Research analysis        |
 
 **Category Status: 0/4 endpoints working (0%)**
 
@@ -104,13 +104,13 @@
 
 ## Healthcare Services
 
-| Endpoint | Method | Status | Description |
-|----------|--------|--------|-------------|
-| `/healthcare/providers` | GET | ❌ NOT DEPLOYED | Provider directory |
-| `/healthcare/facilities` | GET | ❌ NOT DEPLOYED | Medical facilities |
-| `/healthcare/specialties` | GET | ❌ NOT DEPLOYED | Medical specialties |
-| `/healthcare/insurance` | GET | ❌ NOT DEPLOYED | Insurance verification |
-| `/healthcare/appointments` | POST | ❌ NOT DEPLOYED | Appointment scheduling |
+| Endpoint                   | Method | Status          | Description            |
+| -------------------------- | ------ | --------------- | ---------------------- |
+| `/healthcare/providers`    | GET    | ❌ NOT DEPLOYED | Provider directory     |
+| `/healthcare/facilities`   | GET    | ❌ NOT DEPLOYED | Medical facilities     |
+| `/healthcare/specialties`  | GET    | ❌ NOT DEPLOYED | Medical specialties    |
+| `/healthcare/insurance`    | GET    | ❌ NOT DEPLOYED | Insurance verification |
+| `/healthcare/appointments` | POST   | ❌ NOT DEPLOYED | Appointment scheduling |
 
 **Category Status: 0/5 endpoints working (0%)**
 
@@ -118,12 +118,12 @@
 
 ## Administration
 
-| Endpoint | Method | Status | Description |
-|----------|--------|--------|-------------|
-| `/admin/users` | GET | 🔐 AUTH REQUIRED | User administration |
-| `/admin/analytics` | GET | ❌ NOT DEPLOYED | System analytics |
-| `/admin/system` | GET | ❌ NOT DEPLOYED | System information |
-| `/admin/logs` | GET | ❌ NOT DEPLOYED | System logs |
+| Endpoint           | Method | Status           | Description         |
+| ------------------ | ------ | ---------------- | ------------------- |
+| `/admin/users`     | GET    | 🔐 AUTH REQUIRED | User administration |
+| `/admin/analytics` | GET    | ❌ NOT DEPLOYED  | System analytics    |
+| `/admin/system`    | GET    | ❌ NOT DEPLOYED  | System information  |
+| `/admin/logs`      | GET    | ❌ NOT DEPLOYED  | System logs         |
 
 **Category Status: 1/4 endpoints working (25%)**
 
@@ -133,13 +133,13 @@
 
 ### Summary by Status
 
-| Status | Count | Percentage |
-|--------|-------|------------|
-| ✅ WORKING | 4 | 9.5% |
-| 🔐 AUTH REQUIRED | 2 | 4.8% |
-| ⚠️ METHOD ERROR | 12 | 28.6% |
-| ❌ NOT DEPLOYED | 24 | 57.1% |
-| **TOTAL** | **42** | **100%** |
+| Status           | Count  | Percentage |
+| ---------------- | ------ | ---------- |
+| ✅ WORKING       | 4      | 9.5%       |
+| 🔐 AUTH REQUIRED | 2      | 4.8%       |
+| ⚠️ METHOD ERROR  | 12     | 28.6%      |
+| ❌ NOT DEPLOYED  | 24     | 57.1%      |
+| **TOTAL**        | **42** | **100%**   |
 
 ### Functional Analysis
 
@@ -170,21 +170,25 @@ curl -H "Authorization: Bearer YOUR_TOKEN" https://api.bondmcp.com/admin/users
 ## Deployment Roadmap
 
 ### Phase 1: Core Infrastructure ✅ COMPLETE
+
 - [x] Basic API endpoints (4/4)
 - [x] Health monitoring
 - [x] Documentation system
 
 ### Phase 2: Authentication 🔄 IN PROGRESS
+
 - [ ] Fix method errors for auth endpoints (0/6)
 - [ ] Implement user registration
 - [ ] Implement login/logout flow
 
 ### Phase 3: Health AI 📅 PLANNED
+
 - [ ] Deploy health question answering
 - [ ] Deploy medical data analysis
 - [ ] Deploy trust score system
 
 ### Phase 4: Full Platform 📅 PLANNED
+
 - [ ] Research integration (0/4)
 - [ ] Healthcare services (0/5)
 - [ ] Complete billing system (5/6 remaining)
@@ -217,7 +221,6 @@ curl -H "Authorization: Bearer YOUR_TOKEN" https://api.bondmcp.com/admin/users
 
 ---
 
-*Last Updated: August 4, 2025*  
-*Next Review: When deployment issues are resolved*  
-*Test Results: 6/42 endpoints functional*
-
+_Last Updated: August 4, 2025_  
+_Next Review: When deployment issues are resolved_  
+_Test Results: 6/42 endpoints functional_

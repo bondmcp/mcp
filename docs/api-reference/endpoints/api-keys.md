@@ -61,11 +61,11 @@ Requires API key authentication via the `X-API-Key` header.
 
 ##### Request Parameters
 
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| `name` | string | Yes | A descriptive name for the API key |
-| `permissions` | array | No | List of specific permissions to grant (defaults to all available permissions) |
-| `expires_at` | string | No | ISO 8601 timestamp when the key should expire (defaults to no expiration) |
+| Parameter     | Type   | Required | Description                                                                   |
+| ------------- | ------ | -------- | ----------------------------------------------------------------------------- |
+| `name`        | string | Yes      | A descriptive name for the API key                                            |
+| `permissions` | array  | No       | List of specific permissions to grant (defaults to all available permissions) |
+| `expires_at`  | string | No       | ISO 8601 timestamp when the key should expire (defaults to no expiration)     |
 
 #### Response Format
 
@@ -97,9 +97,9 @@ Requires API key authentication via the `X-API-Key` header.
 
 #### Path Parameters
 
-| Parameter | Description |
-|-----------|-------------|
-| `key_id` | The ID of the API key to revoke |
+| Parameter | Description                     |
+| --------- | ------------------------------- |
+| `key_id`  | The ID of the API key to revoke |
 
 #### Response Format
 
@@ -125,10 +125,10 @@ curl -X GET "https://api.bondmcp.com/api/v1/keys" \
 #### JavaScript
 
 ```javascript
-import { BondMCPClient } from '@bondmcp/sdk';
+import { BondMCPClient } from "@bondmcp/sdk";
 
 const client = new BondMCPClient({
-  apiKey: 'YOUR_API_KEY'
+  apiKey: "YOUR_API_KEY",
 });
 
 async function listApiKeys() {
@@ -174,22 +174,22 @@ curl -X POST "https://api.bondmcp.com/api/v1/keys" \
 #### JavaScript
 
 ```javascript
-import { BondMCPClient } from '@bondmcp/sdk';
+import { BondMCPClient } from "@bondmcp/sdk";
 
 const client = new BondMCPClient({
-  apiKey: 'YOUR_API_KEY'
+  apiKey: "YOUR_API_KEY",
 });
 
 async function createApiKey() {
   try {
     const response = await client.keys.create({
       name: "New Development Key",
-      permissions: ["ask", "labs"]
+      permissions: ["ask", "labs"],
     });
-    
+
     console.log("New API Key:", response.api_key.key);
     console.log("Key ID:", response.api_key.id);
-    
+
     // Store this key securely - you won't be able to retrieve it again
   } catch (error) {
     console.error("Error creating API key:", error);
@@ -211,10 +211,10 @@ try:
         name="New Development Key",
         permissions=["ask", "labs"]
     )
-    
+
     print("New API Key:", response.api_key.key)
     print("Key ID:", response.api_key.id)
-    
+
     # Store this key securely - you won't be able to retrieve it again
 except Exception as e:
     print(f"Error creating API key: {e}")
@@ -232,10 +232,10 @@ curl -X DELETE "https://api.bondmcp.com/api/v1/keys/key_789ghi012jkl" \
 #### JavaScript
 
 ```javascript
-import { BondMCPClient } from '@bondmcp/sdk';
+import { BondMCPClient } from "@bondmcp/sdk";
 
 const client = new BondMCPClient({
-  apiKey: 'YOUR_API_KEY'
+  apiKey: "YOUR_API_KEY",
 });
 
 async function revokeApiKey() {
@@ -268,14 +268,14 @@ except Exception as e:
 
 ## Available Permissions
 
-| Permission | Description |
-|------------|-------------|
-| `ask` | Access to the health question answering endpoint |
-| `labs` | Access to lab result interpretation endpoints |
-| `health_data` | Access to health data analysis endpoints |
-| `supplement` | Access to supplement recommendation endpoints |
-| `import` | Access to data import endpoints |
-| `insights` | Access to health insights endpoints |
+| Permission    | Description                                      |
+| ------------- | ------------------------------------------------ |
+| `ask`         | Access to the health question answering endpoint |
+| `labs`        | Access to lab result interpretation endpoints    |
+| `health_data` | Access to health data analysis endpoints         |
+| `supplement`  | Access to supplement recommendation endpoints    |
+| `import`      | Access to data import endpoints                  |
+| `insights`    | Access to health insights endpoints              |
 
 ## Best Practices
 
@@ -289,16 +289,16 @@ except Exception as e:
 
 ## Error Responses
 
-| Status Code | Error Code | Description |
-|-------------|------------|-------------|
-| 400 | `invalid_request` | Invalid request parameters |
-| 401 | `authentication_error` | Missing API key |
-| 403 | `permission_denied` | Invalid API key or insufficient permissions |
-| 404 | `key_not_found` | The specified API key ID was not found |
-| 429 | `rate_limit_exceeded` | Rate limit exceeded |
+| Status Code | Error Code             | Description                                 |
+| ----------- | ---------------------- | ------------------------------------------- |
+| 400         | `invalid_request`      | Invalid request parameters                  |
+| 401         | `authentication_error` | Missing API key                             |
+| 403         | `permission_denied`    | Invalid API key or insufficient permissions |
+| 404         | `key_not_found`        | The specified API key ID was not found      |
+| 429         | `rate_limit_exceeded`  | Rate limit exceeded                         |
 
 For more details on error handling, see the **Error Handling Guide** .
 
 ## Related Endpoints
 
-- **Health Check** 
+- **Health Check**
