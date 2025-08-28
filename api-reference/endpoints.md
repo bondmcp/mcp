@@ -1,8 +1,10 @@
 ---
-description: Complete API endpoints reference with interactive examples
+description: Complete API endpoints documentation for BondMCP Healthcare Platform
 ---
 
-# API Endpoints
+# Endpoints
+
+BondMCP provides a comprehensive REST API for healthcare AI interactions. All endpoints are available at `https://api.bondmcp.com`.
 
 ## Base URL
 ```
@@ -10,566 +12,153 @@ https://api.bondmcp.com
 ```
 
 ## Authentication
-All endpoints (except health checks) require Bearer token authentication:
-```bash
-Authorization: Bearer YOUR_API_KEY
-```
+All API requests require authentication using Bearer tokens. See [Authentication](authentication.md) for details.
 
-## Available Endpoints
+## Core Endpoints
 
-### MCP
+### Health Check
+**GET** `/health`
 
-#### 🔓 `GET /.well-known/mcp-configuration`
+Check the API service status and version information.
 
-**MCP Configuration**
-
-Get MCP configuration with all available capabilities
-
-**Example:**
-```bash
-curl \
-  https://api.bondmcp.com/.well-known/mcp-configuration
-```
-
-**Success Response (200):**
+**Response:**
 ```json
 {
-  "status": "success",
-  "data": {...}
-}
-```
-
----
-
-#### 🔓 `GET /.well-known/mcp-manifest.json`
-
-**MCP Manifest**
-
-Get MCP manifest with capability integrity hash
-
-**Example:**
-```bash
-curl \
-  https://api.bondmcp.com/.well-known/mcp-manifest.json
-```
-
-**Success Response (200):**
-```json
-{
-  "status": "success",
-  "data": {...}
-}
-```
-
----
-
-### System
-
-#### 🔓 `GET /health/live`
-
-**Liveness Probe**
-
-Check if the application is alive and responsive
-
-**Example:**
-```bash
-curl \
-  https://api.bondmcp.com/health/live
-```
-
-**Success Response (200):**
-```json
-{
-  "status": "success",
-  "data": {...}
-}
-```
-
----
-
-#### 🔓 `GET /health/ready`
-
-**Readiness Probe**
-
-Check if the application is ready to handle requests
-
-**Example:**
-```bash
-curl \
-  https://api.bondmcp.com/health/ready
-```
-
-**Success Response (200):**
-```json
-{
-  "status": "success",
-  "data": {...}
-}
-```
-
----
-
-#### 🔓 `GET /health`
-
-**Comprehensive Health Check**
-
-Get comprehensive health status including probes and service info
-
-**Example:**
-```bash
-curl \
-  https://api.bondmcp.com/health
-```
-
-**Success Response (200):**
-```json
-{
-  "status": "success",
-  "data": {...}
-}
-```
-
----
-
-#### 🔓 `GET /info`
-
-**Deployment Info**
-
-Get deployment information
-
-**Example:**
-```bash
-curl \
-  https://api.bondmcp.com/info
-```
-
-**Success Response (200):**
-```json
-{
-  "status": "success",
-  "data": {...}
-}
-```
-
----
-
-#### 🔓 `GET /ready`
-
-**Readiness Check**
-
-Kubernetes-style readiness check
-
-**Example:**
-```bash
-curl \
-  https://api.bondmcp.com/ready
-```
-
-**Success Response (200):**
-```json
-{
-  "status": "success",
-  "data": {...}
-}
-```
-
----
-
-#### 🔓 `GET /config`
-
-**Configuration Info**
-
-Get current configuration information
-
-**Example:**
-```bash
-curl \
-  https://api.bondmcp.com/config
-```
-
-**Success Response (200):**
-```json
-{
-  "status": "success",
-  "data": {...}
-}
-```
-
----
-
-### Authentication
-
-#### 🔓 `POST /auth/register`
-
-**Register User**
-
-Register a new user with enhanced validation
-
-**Parameters:**
-- `email` (query) ✅ - string
-- `password` (query) ✅ - string
-- `name` (query) ✅ - string
-
-**Example:**
-```bash
-curl \
-  -X POST \
-  -H "Content-Type: application/json" \
-  https://api.bondmcp.com/auth/register
-```
-
-**Success Response (200):**
-```json
-{
-  "status": "success",
-  "data": {...}
-}
-```
-
----
-
-#### 🔓 `POST /auth/login`
-
-**Login User**
-
-Authenticate user and return JWT token with security tracking
-
-**Request Body:**
-- Content-Type: `application/json`
-- Schema: object
-
-**Example:**
-```bash
-curl \
-  -X POST \
-  -H "Content-Type: application/json" \
-  -d '{"example": "data"}' \
-  https://api.bondmcp.com/auth/login
-```
-
-**Success Response (200):**
-```json
-{
-  "status": "success",
-  "data": {...}
-}
-```
-
----
-
-### Healthcare
-
-#### 🔒 `POST /healthcare/prescriptions/digital`
-
-**Create Prescription Endpoint**
-
-Create a new digital prescription
-
-**Request Body:**
-- Content-Type: `application/json`
-- Schema: object
-
-**Example:**
-```bash
-curl -H "Authorization: Bearer YOUR_API_KEY" \
-  -X POST \
-  -H "Content-Type: application/json" \
-  -d '{"example": "data"}' \
-  https://api.bondmcp.com/healthcare/prescriptions/digital
-```
-
-**Success Response (200):**
-```json
-{
-  "status": "success",
-  "data": {...}
-}
-```
-
----
-
-#### 🔒 `GET /healthcare/patients/{patient_id}/prescriptions`
-
-**Get Prescriptions Endpoint**
-
-Get all prescriptions for a patient
-
-**Parameters:**
-- `patient_id` (path) ✅ - string
-
-**Example:**
-```bash
-curl -H "Authorization: Bearer YOUR_API_KEY" \
-  https://api.bondmcp.com/healthcare/patients/{patient_id}/prescriptions
-```
-
-**Success Response (200):**
-```json
-{
-  "status": "success",
-  "data": {...}
-}
-```
-
----
-
-#### 🔒 `POST /healthcare/programs/{program_id}/enroll`
-
-**Enroll Patient Endpoint**
-
-Enroll patient in digital health program
-
-**Parameters:**
-- `program_id` (path) ✅ - string
-
-**Request Body:**
-- Content-Type: `application/json`
-- Schema: object
-
-**Example:**
-```bash
-curl -H "Authorization: Bearer YOUR_API_KEY" \
-  -X POST \
-  -H "Content-Type: application/json" \
-  -d '{"example": "data"}' \
-  https://api.bondmcp.com/healthcare/programs/{program_id}/enroll
-```
-
-**Success Response (200):**
-```json
-{
-  "status": "success",
-  "data": {...}
-}
-```
-
----
-
-#### 🔒 `GET /healthcare/programs`
-
-**List Programs Endpoint**
-
-List all available digital health programs
-
-**Example:**
-```bash
-curl -H "Authorization: Bearer YOUR_API_KEY" \
-  https://api.bondmcp.com/healthcare/programs
-```
-
-**Success Response (200):**
-```json
-{
-  "status": "success",
-  "data": {...}
-}
-```
-
----
-
-#### 🔒 `GET /healthcare/patients/{patient_id}/digital-summary`
-
-**Get Patient Summary Endpoint**
-
-Get comprehensive digital program summary for patient
-
-**Parameters:**
-- `patient_id` (path) ✅ - string
-
-**Example:**
-```bash
-curl -H "Authorization: Bearer YOUR_API_KEY" \
-  https://api.bondmcp.com/healthcare/patients/{patient_id}/digital-summary
-```
-
-**Success Response (200):**
-```json
-{
-  "status": "success",
-  "data": {...}
-}
-```
-
----
-
-### Vendors
-
-#### 🔒 `POST /vendors/register`
-
-**Register Vendor Endpoint**
-
-Register a new digital health vendor
-
-**Request Body:**
-- Content-Type: `application/json`
-- Schema: object
-
-**Example:**
-```bash
-curl -H "Authorization: Bearer YOUR_API_KEY" \
-  -X POST \
-  -H "Content-Type: application/json" \
-  -d '{"example": "data"}' \
-  https://api.bondmcp.com/vendors/register
-```
-
-**Success Response (200):**
-```json
-{
-  "status": "success",
-  "data": {...}
-}
-```
-
----
-
-#### 🔓 `POST /vendors/{vendor_id}/webhooks`
-
-**Vendor Webhook Endpoint**
-
-Handle vendor webhooks for engagement/metrics data
-
-**Parameters:**
-- `vendor_id` (path) ✅ - string
-- `signature` (query) ✅ - string
-
-**Request Body:**
-- Content-Type: `application/json`
-- Schema: object
-
-**Example:**
-```bash
-curl \
-  -X POST \
-  -H "Content-Type: application/json" \
-  -d '{"example": "data"}' \
-  https://api.bondmcp.com/vendors/{vendor_id}/webhooks
-```
-
-**Success Response (200):**
-```json
-{
-  "status": "success",
-  "data": {...}
-}
-```
-
----
-
-#### 🔒 `GET /vendors/{vendor_id}/patients/{patient_id}/data`
-
-**Get Vendor Data Endpoint**
-
-Get patient data from specific vendor
-
-**Parameters:**
-- `vendor_id` (path) ✅ - string
-- `patient_id` (path) ✅ - string
-
-**Example:**
-```bash
-curl -H "Authorization: Bearer YOUR_API_KEY" \
-  https://api.bondmcp.com/vendors/{vendor_id}/patients/{patient_id}/data
-```
-
-**Success Response (200):**
-```json
-{
-  "status": "success",
-  "data": {...}
-}
-```
-
----
-
-### API Keys
-
-#### 🔒 `POST /auth/api-keys`
-
-**Create Api Key**
-
-Create a new API key with specified permissions
-
-**Parameters:**
-- `name` (query) ✅ - string
-
-**Request Body:**
-- Content-Type: `application/json`
-- Schema: array
-
-**Example:**
-```bash
-curl -H "Authorization: Bearer YOUR_API_KEY" \
-  -X POST \
-  -H "Content-Type: application/json" \
-  -d '{"example": "data"}' \
-  https://api.bondmcp.com/auth/api-keys
-```
-
-**Success Response (200):**
-```json
-{
-  "status": "success",
-  "data": {...}
-}
-```
-
----
-
-
-## Interactive Testing
-
-### Using the GitBook API Explorer
-1. Navigate to any endpoint above
-2. Click "Try it out" 
-3. Fill in required parameters
-4. Add your API key in the Authorization header
-5. Click "Execute" to test
-
-### Using curl
-```bash
-# Set your API key
-export BONDMCP_API_KEY="your-api-key-here"
-
-# Test health endpoint
-curl https://api.bondmcp.com/health
-
-# Test authenticated endpoint
-curl -H "Authorization: Bearer $BONDMCP_API_KEY" \
-  https://api.bondmcp.com/healthcare/programs
-```
-
-### Using Python SDK
-```python
-from bondmcp import BondMCP
-
-client = BondMCP(api_key="your-api-key")
-response = client.get_programs()
-print(response)
-```
-
-## Rate Limits
-- **Default**: 120 requests per minute
-- **Authenticated**: Higher limits based on plan
-- **Headers**: Rate limit info in response headers
-
-## Error Handling
-All endpoints return consistent error responses:
-```json
-{
-  "error": {
-    "code": "ERROR_CODE",
-    "message": "Human readable message",
-    "details": {...}
+  "status": "healthy",
+  "version": "2.1.0",
+  "timestamp": "2025-08-28T10:30:00Z",
+  "services": {
+    "database": "operational",
+    "ai_engine": "operational",
+    "cache": "operational"
   }
 }
 ```
 
-Common error codes:
-- `401` - Unauthorized (invalid API key)
-- `403` - Forbidden (insufficient permissions)
-- `429` - Rate limit exceeded
-- `500` - Internal server error
+### Ask Questions
+**POST** `/ask`
+
+Submit health-related questions to the AI system.
+
+**Request Body:**
+```json
+{
+  "question": "What are the benefits of vitamin D?",
+  "context": "general health inquiry",
+  "user_id": "optional-user-identifier"
+}
+```
+
+**Response:**
+```json
+{
+  "answer": "Vitamin D provides several important health benefits...",
+  "confidence": 0.95,
+  "sources": ["medical-journal-1", "clinical-study-2"],
+  "timestamp": "2025-08-28T10:30:00Z"
+}
+```
+
+## MCP Discovery Endpoints
+
+### MCP Configuration
+**GET** `/.well-known/mcp-configuration`
+
+Retrieve complete MCP (Model Context Protocol) service configuration.
+
+**Response:**
+```json
+{
+  "name": "BondMCP Healthcare Platform",
+  "version": "2.1.0",
+  "description": "AI-powered healthcare information platform",
+  "capabilities": {
+    "tools": ["health_query", "symptom_analysis"],
+    "resources": ["medical_database", "clinical_studies"],
+    "prompts": ["health_assessment", "treatment_guidance"]
+  },
+  "endpoints": {
+    "ask": "/ask",
+    "health": "/health"
+  }
+}
+```
+
+### MCP Manifest
+**GET** `/.well-known/mcp-manifest.json`
+
+Lightweight manifest with service verification.
+
+**Response:**
+```json
+{
+  "name": "BondMCP",
+  "version": "2.1.0",
+  "mcp_version": "1.0",
+  "capabilities": ["tools", "resources", "prompts"],
+  "verification": {
+    "signature": "sha256:abc123...",
+    "timestamp": "2025-08-28T10:30:00Z"
+  }
+}
+```
+
+## Rate Limiting
+
+All endpoints are subject to rate limiting:
+- **Free tier**: 100 requests per hour
+- **Pro tier**: 1,000 requests per hour
+- **Enterprise**: Custom limits
+
+Rate limit headers are included in all responses:
+```
+X-RateLimit-Limit: 100
+X-RateLimit-Remaining: 95
+X-RateLimit-Reset: 1693228800
+```
+
+## Error Responses
+
+All endpoints return consistent error responses:
+
+```json
+{
+  "error": {
+    "code": "INVALID_REQUEST",
+    "message": "The request is missing required parameters",
+    "details": {
+      "missing_fields": ["question"]
+    }
+  },
+  "timestamp": "2025-08-28T10:30:00Z"
+}
+```
+
+## Status Codes
+
+- `200` - Success
+- `400` - Bad Request
+- `401` - Unauthorized
+- `403` - Forbidden
+- `429` - Rate Limited
+- `500` - Internal Server Error
+
+## Interactive API Testing
+
+For interactive API testing, use the [OpenAPI Specification](openapi-specification-cli-api-only.md) with tools like:
+- Postman
+- curl
+- HTTPie
+- Insomnia
+
+## SDK Support
+
+Use our official SDKs for easier integration:
+- [Python SDK](../sdks/python/README.md)
+- [JavaScript SDK](../sdks/javascript/README.md)
+- [CLI Tools](../sdks/cli/README.md)
+- [Go SDK](../sdks/go/README.md)
 
 ---
-*Documentation auto-generated from OpenAPI specification*
+
+**Next:** [Authentication](authentication.md) | **Previous:** [API Overview](api-overview-cli-api-only.md)
