@@ -1,0 +1,29 @@
+{
+  "generatorName": "python-nextgen",
+  "outputDir": "../python",
+  "inputSpec": "../../openapi/bondmcp.v1.yaml",
+  "templateDir": "",
+  "configOptions": {
+    "packageName": "bondmcp_sdk",
+    "projectName": "bondmcp-sdk",
+    "packageVersion": "1.0.0",
+    "packageUrl": "https://github.com/bondmcp/mcp",
+    "packageCompany": "BondMCP",
+    "packageAuthor": "BondMCP",
+    "packageEmail": "support@bondmcp.com",
+    "packageDescription": "Official Python SDK for BondMCP Healthcare Platform API",
+    "library": "urllib3",
+    "useOneOfDiscriminatorLookup": true,
+    "disallowAdditionalPropertiesIfNotPresent": false,
+    "legacyDiscriminatorBehavior": false,
+    "generateSourceCodeOnly": false
+  },
+  "globalProperties": {
+    "apis": "",
+    "models": "",
+    "supportingFiles": "__init__.py,api_client.py,api_response.py,configuration.py,exceptions.py,model_utils.py,rest.py"
+  },
+  "additionalProperties": {
+    "generateSourceCodeOnly": "false"
+  }
+}

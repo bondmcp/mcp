@@ -1,0 +1,82 @@
+schema:
+  # Path or URL to the OpenAPI specification
+  path: openapi/bondmcp.v1.yaml
+  
+# Base URL for the API (can be overridden with --base-url)
+base_url: ${SCHEMATHESIS_BASE_URL:-https://staging-api.bondmcp.com/v1}
+
+# Request generation settings
+generation:
+  # Maximum number of examples to generate per endpoint
+  max_examples: 10
+  # Include explicit examples from the schema
+  explicit_examples: true
+  # Enable hypothesis database for test data
+  hypothesis_database: .hypothesis/examples
+
+# Rate limiting to avoid overwhelming the API
+request:
+  # Maximum requests per second
+  rate_limit: 5
+  # Timeout for each request in seconds
+  timeout: 30
+
+# Authentication
+auth:
+  # API key authentication (set via environment variable)
+  type: header
+  name: X-API-Key
+  value: ${SCHEMATHESIS_API_KEY}
+
+# Test configuration
+testing:
+  # Exit on first failure
+  exitfirst: false
+  # Validate response schemas
+  validate_schema: true
+  # Check response times
+  response_time_limit: 10000  # milliseconds
+  
+# Hypothesis settings for property-based testing
+hypothesis:
+  # Maximum examples per test
+  max_examples: 20
+  # Deadline for each example
+  deadline: 5000  # milliseconds
+  # Use database for examples
+  database_file: .hypothesis/examples
+
+# Filtering
+filter:
+  # Skip endpoints that require special setup
+  exclude_endpoints:
+    - /auth/verify  # Requires valid verification token
+    - /auth/reset   # Requires valid email
+  
+  # Only test specific tags
+  include_tags:
+    - Authentication
+    - Health AI
+    - System
+    
+  # Skip specific response codes
+  exclude_status_codes:
+    - 500  # Skip internal server errors in contract testing
+
+# Output configuration
+output:
+  # Verbose output
+  verbosity: 1
+  # JUnit XML report
+  junit_xml: reports/contract-test-results.xml
+  # HTML report
+  html: reports/contract-test-report.html
+
+# Hooks (custom code execution)
+hooks:
+  before_request:
+    # Add correlation ID for tracing
+    - add_correlation_id
+  after_response:
+    # Log response for debugging
+    - log_response

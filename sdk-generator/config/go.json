@@ -1,0 +1,28 @@
+{
+  "generatorName": "go",
+  "outputDir": "../go",
+  "inputSpec": "../../openapi/bondmcp.v1.yaml",
+  "templateDir": "",
+  "configOptions": {
+    "packageName": "bondmcp",
+    "packageUrl": "github.com/bondmcp/sdk",
+    "packageVersion": "1.0.0",
+    "clientPackage": "bondmcp",
+    "enumClassPrefix": true,
+    "structPrefix": true,
+    "generateInterfaces": true,
+    "isGoSubmodule": false,
+    "withGoCodegenComment": true,
+    "withXml": false,
+    "prependFormOrBodyParameters": false
+  },
+  "globalProperties": {
+    "apis": "",
+    "models": "",
+    "supportingFiles": "api_client.go,configuration.go,client.go,response.go,utils.go"
+  },
+  "additionalProperties": {
+    "generateInterfaces": "true",
+    "packageVersion": "1.0.0"
+  }
+}

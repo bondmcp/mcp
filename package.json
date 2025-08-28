@@ -2,24 +2,35 @@
   "name": "bondmcp-node-sdk",
   "version": "0.1.0",
   "main": "bondmcp_sdk/bondmcp-node.js",
-  "dependencies": {
-    "axios": "^1.6.0"
-  },
   "scripts": {
     "test": "node --test tests/test_bondmcp_node.js",
+    "openapi:lint": "spectral lint openapi/bondmcp.v1.yaml",
+    "openapi:bundle": "redocly bundle openapi/bondmcp.v1.yaml --output openapi/bundled.yaml",
+    "openapi:mock": "prism mock openapi/bondmcp.v1.yaml",
+    "openapi:validate": "redocly lint openapi/bondmcp.v1.yaml",
     "contract:normalize": "npx ts-node scripts/contract/normalize_spec.ts",
     "contract:preflight": "npx ts-node scripts/contract/publish_preflight.ts",
     "contract:label": "npx ts-node scripts/contract/apply_label.ts",
     "contract:migrate": "npx ts-node scripts/contract/assert_migration_file.ts",
-    "build:ts": "npx tsc"
+    "test:contract": "schemathesis run openapi/bondmcp.v1.yaml --base-url https://staging-api.bondmcp.com/v1",
+    "build:ts": "npx tsc",
+    "sdk:generate": "node scripts/sdk-generator.js",
+    "docs:build": "npx redoc-cli build openapi/bondmcp.v1.yaml --output docs/api/v1/index.html",
+    "changeset": "changeset",
+    "changeset:version": "changeset version",
+    "changeset:publish": "changeset publish"
+  },
+  "dependencies": {
+    "axios": "^1.6.0"
   },
   "devDependencies": {
+    "@changesets/cli": "^2.29.6",
     "@octokit/rest": "^22.0.0",
+    "@redocly/cli": "^1.14.0",
+    "@stoplight/prism-cli": "^5.8.0",
+    "@stoplight/spectral-cli": "^6.11.0",
     "@types/node": "^24.3.0",
-    "test": "node --test tests/test_bondmcp_node.js"
-  },
-  "devDependencies": {
-    "@types/node": "^24.3.0",
+    "redoc-cli": "^0.13.21",
     "ts-node": "^10.9.2",
     "typescript": "^5.9.2"
   }
