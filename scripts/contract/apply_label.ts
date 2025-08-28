@@ -1,278 +1,272 @@
 #!/usr/bin/env node
 
 /**
- * Apply Contract Label Script
+ * GitHub Label Application Script
  * 
- * Adds 'contract' label to the associated PR. Creates label if missing.
+ * Applies labels to GitHub pull requests using the GitHub REST API
+ * Requires GITHUB_TOKEN environment variable with appropriate permissions
  */
 
-import * as https from 'https';
+import { Octokit } from '@octokit/rest';
 
-interface GitHubAPIResponse {
-  [key: string]: any;
-}
-
-interface LabelData {
-  name: string;
-  color: string;
-  description: string;
-}
-
-/**
- * Make GitHub API request
- */
-function makeGitHubRequest(
-  path: string, 
-  method: string = 'GET', 
-  data?: any, 
-  token?: string
-): Promise<{ statusCode: number; body: string }> {
-  return new Promise((resolve, reject) => {
-    const options = {
-      hostname: 'api.github.com',
-      path,
-      method,
-      headers: {
-        'User-Agent': 'BondMCP-Contract-Automation',
-        'Accept': 'application/vnd.github.v3+json',
-        'Content-Type': 'application/json',
-        ...(token && { 'Authorization': `token ${token}` })
-      }
-    };
-
-    const req = https.request(options, (res) => {
-      let body = '';
-      
-      res.on('data', (chunk) => {
-        body += chunk;
-      });
-      
-      res.on('end', () => {
-        resolve({
-          statusCode: res.statusCode || 0,
-          body
-        });
-      });
-    });
-
-    req.on('error', (error) => {
-      reject(error);
-    });
-
-    if (data) {
-      req.write(JSON.stringify(data));
-    }
-
-    req.end();
-  });
+interface LabelOptions {
+  owner: string;
+  repo: string;
+  prNumber?: number;
+  label: string;
+  verbose?: boolean;
 }
 
 /**
- * Get PR number from GitHub context
+ * Applies a label to a GitHub pull request
  */
-function getPRNumber(): number | null {
-  // Try environment variables from GitHub Actions
-  const prNumber = process.env.GITHUB_PR_NUMBER || 
-                   process.env.PR_NUMBER ||
-                   process.env.PULL_REQUEST_NUMBER;
-  
-  if (prNumber) {
-    const num = parseInt(prNumber, 10);
-    return isNaN(num) ? null : num;
+async function applyLabel(options: LabelOptions): Promise<void> {
+  const { owner, repo, prNumber, label, verbose = false } = options;
+
+  const token = process.env.GITHUB_TOKEN;
+  if (!token) {
+    throw new Error('GITHUB_TOKEN environment variable is required');
   }
 
-  // Try to extract from GITHUB_REF
+  const octokit = new Octokit({
+    auth: token,
+  });
+
+  if (verbose) {
+    console.log(`Applying label "${label}" to PR #${prNumber} in ${owner}/${repo}`);
+  }
+
+  try {
+    // Check if label exists in the repository
+    let labelExists = false;
+    try {
+      await octokit.rest.issues.getLabel({
+        owner,
+        repo,
+        name: label,
+      });
+      labelExists = true;
+      if (verbose) {
+        console.log(`✅ Label "${label}" exists in repository`);
+      }
+    } catch (error: any) {
+      if (error.status === 404) {
+        if (verbose) {
+          console.log(`Creating label "${label}" in repository`);
+        }
+        // Create the label if it doesn't exist
+        await octokit.rest.issues.createLabel({
+          owner,
+          repo,
+          name: label,
+          color: 'f29513', // Orange color for contract labels
+          description: 'Indicates this PR involves contract/API changes',
+        });
+        labelExists = true;
+        if (verbose) {
+          console.log(`✅ Created label "${label}" in repository`);
+        }
+      } else {
+        throw error;
+      }
+    }
+
+    if (!labelExists) {
+      throw new Error(`Failed to ensure label "${label}" exists`);
+    }
+
+    // Check if PR already has the label
+    const { data: currentLabels } = await octokit.rest.issues.listLabelsOnIssue({
+      owner,
+      repo,
+      issue_number: prNumber!,
+    });
+
+    const hasLabel = currentLabels.some(l => l.name === label);
+    
+    if (hasLabel) {
+      if (verbose) {
+        console.log(`✅ PR #${prNumber} already has label "${label}"`);
+      }
+      return;
+    }
+
+    // Add the label to the PR
+    await octokit.rest.issues.addLabels({
+      owner,
+      repo,
+      issue_number: prNumber!,
+      labels: [label],
+    });
+
+    console.log(`✅ Applied label "${label}" to PR #${prNumber}`);
+    
+  } catch (error: any) {
+    console.error(`Error applying label: ${error.message}`);
+    if (error.response) {
+      console.error(`HTTP ${error.status}: ${error.response.data.message}`);
+    }
+    throw error;
+  }
+}
+
+/**
+ * Gets the current PR number from GitHub Actions context
+ */
+function getPRNumberFromContext(): number | undefined {
+  // Try to get PR number from various GitHub Actions environment variables
+  const prNumber = process.env.GITHUB_PR_NUMBER || 
+                  process.env.PR_NUMBER ||
+                  process.env.PULL_REQUEST_NUMBER;
+  
+  if (prNumber) {
+    return parseInt(prNumber, 10);
+  }
+
+  // Try to extract from GITHUB_REF (refs/pull/123/merge)
   const githubRef = process.env.GITHUB_REF;
-  if (githubRef && githubRef.includes('/pull/')) {
-    const match = githubRef.match(/\/pull\/(\d+)\//);
+  if (githubRef && githubRef.includes('pull/')) {
+    const match = githubRef.match(/pull\/(\d+)/);
     if (match) {
       return parseInt(match[1], 10);
     }
   }
 
-  return null;
-}
-
-/**
- * Get repository information from GitHub context
- */
-function getRepoInfo(): { owner: string; repo: string } | null {
-  const repository = process.env.GITHUB_REPOSITORY;
-  if (!repository) {
-    return null;
-  }
-
-  const [owner, repo] = repository.split('/');
-  if (!owner || !repo) {
-    return null;
-  }
-
-  return { owner, repo };
-}
-
-/**
- * Check if label exists in repository
- */
-async function labelExists(owner: string, repo: string, labelName: string, token: string): Promise<boolean> {
-  try {
-    const response = await makeGitHubRequest(`/repos/${owner}/${repo}/labels/${labelName}`, 'GET', null, token);
-    return response.statusCode === 200;
-  } catch (error) {
-    return false;
-  }
-}
-
-/**
- * Create label in repository
- */
-async function createLabel(owner: string, repo: string, labelData: LabelData, token: string): Promise<boolean> {
-  try {
-    const response = await makeGitHubRequest(`/repos/${owner}/${repo}/labels`, 'POST', labelData, token);
-    return response.statusCode === 201;
-  } catch (error) {
-    console.error('Error creating label:', error);
-    return false;
-  }
-}
-
-/**
- * Add label to PR
- */
-async function addLabelToPR(owner: string, repo: string, prNumber: number, labelName: string, token: string): Promise<boolean> {
-  try {
-    const response = await makeGitHubRequest(
-      `/repos/${owner}/${repo}/issues/${prNumber}/labels`, 
-      'POST', 
-      { labels: [labelName] }, 
-      token
-    );
-    return response.statusCode === 200;
-  } catch (error) {
-    console.error('Error adding label to PR:', error);
-    return false;
-  }
-}
-
-/**
- * Check if PR already has the label
- */
-async function prHasLabel(owner: string, repo: string, prNumber: number, labelName: string, token: string): Promise<boolean> {
-  try {
-    const response = await makeGitHubRequest(`/repos/${owner}/${repo}/issues/${prNumber}/labels`, 'GET', null, token);
-    
-    if (response.statusCode !== 200) {
-      return false;
-    }
-
-    const labels = JSON.parse(response.body);
-    return labels.some((label: any) => label.name === labelName);
-  } catch (error) {
-    return false;
-  }
-}
-
-/**
- * Main function
- */
-async function main() {
-  try {
-    const args = process.argv.slice(2);
-    const labelName = args[0] || 'contract';
-    
-    // Get GitHub token
-    const token = process.env.GITHUB_TOKEN;
-    if (!token) {
-      console.error('Error: GITHUB_TOKEN environment variable is required');
-      process.exit(1);
-    }
-
-    // Get repository info
-    const repoInfo = getRepoInfo();
-    if (!repoInfo) {
-      console.error('Error: Could not determine repository information from GITHUB_REPOSITORY');
-      process.exit(1);
-    }
-
-    // Get PR number
-    const prNumber = getPRNumber();
-    if (!prNumber) {
-      console.error('Error: Could not determine PR number from environment');
-      console.error('Set GITHUB_PR_NUMBER, PR_NUMBER, or PULL_REQUEST_NUMBER environment variable');
-      process.exit(1);
-    }
-
-    console.log(`Repository: ${repoInfo.owner}/${repoInfo.repo}`);
-    console.log(`PR Number: ${prNumber}`);
-    console.log(`Label: ${labelName}`);
-
-    // Check if PR already has the label
-    const hasLabel = await prHasLabel(repoInfo.owner, repoInfo.repo, prNumber, labelName, token);
-    if (hasLabel) {
-      console.log(`✅ PR #${prNumber} already has '${labelName}' label`);
-      
-      // Output metadata for CI/CD
-      const metadata = {
-        action: 'skip',
-        reason: 'label_already_exists',
-        label: labelName,
-        pr_number: prNumber,
-        repository: `${repoInfo.owner}/${repoInfo.repo}`
-      };
-      console.log(JSON.stringify(metadata));
-      process.exit(0);
-    }
-
-    // Check if label exists in repository
-    const exists = await labelExists(repoInfo.owner, repoInfo.repo, labelName, token);
-    
-    if (!exists) {
-      console.log(`Creating '${labelName}' label in repository...`);
-      
-      const labelData: LabelData = {
-        name: labelName,
-        color: '0366d6', // Neutral blue color
-        description: 'Contract-related changes requiring review'
-      };
-      
-      const created = await createLabel(repoInfo.owner, repoInfo.repo, labelData, token);
-      if (!created) {
-        console.error(`Failed to create '${labelName}' label`);
-        process.exit(1);
+  // Try to get from event payload if available
+  const eventPath = process.env.GITHUB_EVENT_PATH;
+  if (eventPath) {
+    try {
+      const fs = require('fs');
+      const event = JSON.parse(fs.readFileSync(eventPath, 'utf-8'));
+      if (event.pull_request && event.pull_request.number) {
+        return event.pull_request.number;
       }
-      
-      console.log(`✅ Created '${labelName}' label`);
+      if (event.number) {
+        return event.number;
+      }
+    } catch (error) {
+      // Ignore errors reading event file
     }
+  }
 
-    // Add label to PR
-    console.log(`Adding '${labelName}' label to PR #${prNumber}...`);
-    const added = await addLabelToPR(repoInfo.owner, repoInfo.repo, prNumber, labelName, token);
-    
-    if (added) {
-      console.log(`✅ Successfully added '${labelName}' label to PR #${prNumber}`);
-      
-      // Output metadata for CI/CD
-      const metadata = {
-        action: 'added',
-        label: labelName,
-        pr_number: prNumber,
-        repository: `${repoInfo.owner}/${repoInfo.repo}`,
-        label_created: !exists
-      };
-      console.log(JSON.stringify(metadata));
-    } else {
-      console.error(`Failed to add '${labelName}' label to PR #${prNumber}`);
-      process.exit(1);
+  return undefined;
+}
+
+/**
+ * Gets repository information from GitHub Actions context
+ */
+function getRepoFromContext(): { owner: string; repo: string } | undefined {
+  const repository = process.env.GITHUB_REPOSITORY;
+  if (repository && repository.includes('/')) {
+    const [owner, repo] = repository.split('/');
+    return { owner, repo };
+  }
+  return undefined;
+}
+
+// CLI interface
+if (require.main === module) {
+  const args = process.argv.slice(2);
+  
+  if (args.includes('--help') || args.includes('-h')) {
+    console.log(`Usage: apply_label.ts [options] <label>
+
+Options:
+  --owner <owner>    Repository owner (defaults to GITHUB_REPOSITORY)
+  --repo <repo>      Repository name (defaults to GITHUB_REPOSITORY)
+  --pr <number>      PR number (auto-detected from GitHub Actions context)
+  --verbose, -v      Verbose output
+  --help, -h         Show this help
+
+Environment variables:
+  GITHUB_TOKEN       Required: GitHub token with repo permissions
+  GITHUB_REPOSITORY  Auto-detected: owner/repo format
+  GITHUB_REF         Auto-detected: PR reference
+  GITHUB_EVENT_PATH  Auto-detected: Event payload path
+
+Example:
+  apply_label.ts contract
+  apply_label.ts --owner myorg --repo myrepo --pr 123 contract`);
+    process.exit(0);
+  }
+
+  let owner = '';
+  let repo = '';
+  let prNumber: number | undefined;
+  let label = '';
+  let verbose = false;
+
+  // Parse arguments
+  for (let i = 0; i < args.length; i++) {
+    switch (args[i]) {
+      case '--owner':
+        owner = args[++i];
+        break;
+      case '--repo':
+        repo = args[++i];
+        break;
+      case '--pr':
+        prNumber = parseInt(args[++i], 10);
+        break;
+      case '--verbose':
+      case '-v':
+        verbose = true;
+        break;
+      default:
+        if (!args[i].startsWith('--')) {
+          label = args[i];
+        }
+        break;
     }
+  }
 
-  } catch (error) {
-    console.error('Error applying contract label:', error);
+  // Auto-detect repository info if not provided
+  if (!owner || !repo) {
+    const repoInfo = getRepoFromContext();
+    if (repoInfo) {
+      owner = owner || repoInfo.owner;
+      repo = repo || repoInfo.repo;
+    }
+  }
+
+  // Auto-detect PR number if not provided
+  if (!prNumber) {
+    prNumber = getPRNumberFromContext();
+  }
+
+  if (!label) {
+    console.error('Error: label is required');
     process.exit(1);
   }
+
+  if (!owner || !repo) {
+    console.error('Error: repository owner and name are required');
+    console.error('Provide via --owner/--repo or set GITHUB_REPOSITORY environment variable');
+    process.exit(1);
+  }
+
+  if (!prNumber) {
+    console.error('Error: PR number is required');
+    console.error('Provide via --pr or ensure GitHub Actions context is available');
+    process.exit(1);
+  }
+
+  const options: LabelOptions = {
+    owner,
+    repo,
+    prNumber,
+    label,
+    verbose,
+  };
+
+  applyLabel(options)
+    .then(() => {
+      process.exit(0);
+    })
+    .catch((error) => {
+      console.error(`Failed to apply label: ${error.message}`);
+      process.exit(1);
+    });
 }
 
-// Only run main if this script is executed directly
-if (require.main === module) {
-  main();
-}
-
-export { addLabelToPR, createLabel, labelExists };
+export { applyLabel, getPRNumberFromContext, getRepoFromContext };

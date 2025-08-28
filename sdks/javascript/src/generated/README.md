@@ -51,8 +51,8 @@ All URIs are relative to *https://api.bondmcp.com*
 
 Class | Method | HTTP request | Description
 ------------ | ------------- | ------------- | -------------
-*DefaultApi* | ****apiV1AskPost**** (CLI/API only) | **POST** /api/ask | Ask a health question
-*DefaultApi* | ****apiV1HealthGet**** (CLI/API only) | **GET** /api/health | Health check endpoint
+*DefaultApi* | ****apiV1AskPost**** (CLI/API only) | **POST** /api/v1/ask | Ask a health question
+*DefaultApi* | ****apiV1HealthGet**** (CLI/API only) | **GET** /api/v1/health | Health check endpoint
 *DefaultApi* | ****apiV1SymptomsPost**** (CLI/API only) | **POST** /api/v1/symptoms | Analyze symptoms (NEW in v1.0.1)
 
 

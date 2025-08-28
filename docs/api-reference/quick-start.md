@@ -60,7 +60,7 @@ print(response.answer)
 ### Using Direct API
 
 ```bash
-curl -X POST https://api.bondmcp.com/api/ask \
+curl -X POST https://api.bondmcp.com/api/v1/ask \
   -H "X-API-Key: your-api-key" \
   -H "Content-Type: application/json" \
   -d '{"message": "What are the symptoms of high blood pressure?"}'

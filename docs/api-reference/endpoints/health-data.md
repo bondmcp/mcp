@@ -1,11 +1,11 @@
 # Health Data Analysis API
 
-The `/api/health-data/analyze` endpoint provides AI-powered analysis of health data from wearables, medical devices, and other health tracking sources.
+The `/api/v1/health-data/analyze` endpoint provides AI-powered analysis of health data from wearables, medical devices, and other health tracking sources.
 
 ## Endpoint
 
 ```
-POST /api/health-data/analyze
+POST /api/v1/health-data/analyze
 ```
 
 ## Authentication
@@ -131,7 +131,7 @@ Requires API key authentication via the `X-API-Key` header.
 ### cURL
 
 ```bash
-curl -X POST "https://api.bondmcp.com/api/health-data/analyze" \
+curl -X POST "https://api.bondmcp.com/api/v1/health-data/analyze" \
   -H "Content-Type: application/json" \
   -H "X-API-Key: YOUR_API_KEY" \
   -d '{

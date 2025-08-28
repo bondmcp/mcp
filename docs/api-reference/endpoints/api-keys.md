@@ -1,13 +1,13 @@
 # API Key Management
 
-The `/api/keys` endpoints allow you to create, list, and revoke API keys for your BondMCP account.
+The `/api/v1/keys` endpoints allow you to create, list, and revoke API keys for your BondMCP account.
 
 ## Endpoints
 
 ### List API Keys
 
 ```
-GET /api/keys
+GET /api/v1/keys
 ```
 
 #### Authentication
@@ -42,7 +42,7 @@ Requires API key authentication via the `X-API-Key` header.
 ### Create API Key
 
 ```
-POST /api/keys
+POST /api/v1/keys
 ```
 
 #### Authentication
@@ -88,7 +88,7 @@ Requires API key authentication via the `X-API-Key` header.
 ### Revoke API Key
 
 ```
-DELETE /api/keys/{key_id}
+DELETE /api/v1/keys/{key_id}
 ```
 
 #### Authentication
@@ -118,7 +118,7 @@ Requires API key authentication via the `X-API-Key` header.
 #### cURL
 
 ```bash
-curl -X GET "https://api.bondmcp.com/api/keys" \
+curl -X GET "https://api.bondmcp.com/api/v1/keys" \
   -H "X-API-Key: YOUR_API_KEY"
 ```
 
@@ -162,7 +162,7 @@ except Exception as e:
 #### cURL
 
 ```bash
-curl -X POST "https://api.bondmcp.com/api/keys" \
+curl -X POST "https://api.bondmcp.com/api/v1/keys" \
   -H "Content-Type: application/json" \
   -H "X-API-Key: YOUR_API_KEY" \
   -d '{
@@ -225,7 +225,7 @@ except Exception as e:
 #### cURL
 
 ```bash
-curl -X DELETE "https://api.bondmcp.com/api/keys/key_789ghi012jkl" \
+curl -X DELETE "https://api.bondmcp.com/api/v1/keys/key_789ghi012jkl" \
   -H "X-API-Key: YOUR_API_KEY"
 ```
 

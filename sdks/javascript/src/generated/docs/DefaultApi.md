@@ -4,8 +4,8 @@ All URIs are relative to *https://api.bondmcp.com*
 
 |Method | HTTP request | Description|
 |------------- | ------------- | -------------|
-|[**apiV1AskPost**](#apiv1askpost) | **POST** /api/ask | Ask a health question|
-|[**apiV1HealthGet**](#apiv1healthget) | **GET** /api/health | Health check endpoint|
+|[**apiV1AskPost**](#apiv1askpost) | **POST** /api/v1/ask | Ask a health question|
+|[**apiV1HealthGet**](#apiv1healthget) | **GET** /api/v1/health | Health check endpoint|
 |[**apiV1SymptomsPost**](#apiv1symptomspost) | **POST** /api/v1/symptoms | Analyze symptoms (NEW in v1.0.1)|
 
 # **apiV1AskPost**

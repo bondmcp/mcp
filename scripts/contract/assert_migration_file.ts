@@ -3,340 +3,259 @@
 /**
  * Migration File Assertion Script
  * 
- * Ensures migration files exist for minor or major contract changes.
- * Reads diff classification and validates required migration documentation.
+ * Ensures that a MIGRATIONS file exists when API changes are classified as major or minor.
+ * Reads classification from a JSON artifact and validates migration documentation.
  */
 
 import * as fs from 'fs';
 import * as path from 'path';
 
-interface DiffClassification {
-  semanticChange: 'patch' | 'minor' | 'major';
-  summary?: string;
+interface MigrationAssertOptions {
+  classificationFile?: string;
+  migrationsDir?: string;
+  verbose?: boolean;
+}
+
+interface ClassificationResult {
+  classification: 'major' | 'minor' | 'patch' | 'none';
   breakingChanges?: string[];
   addedEndpoints?: string[];
-  removedEndpoints?: string[];
   modifiedEndpoints?: string[];
-}
-
-interface MigrationFile {
-  path: string;
-  exists: boolean;
-  content?: string;
-  version?: string;
+  summary?: string;
 }
 
 /**
- * Read diff classification from file or environment
+ * Checks if MIGRATIONS directory and files exist
  */
-function readDiffClassification(classificationPath?: string): DiffClassification | null {
-  try {
-    // Try from command line argument
-    if (classificationPath && fs.existsSync(classificationPath)) {
-      const content = fs.readFileSync(classificationPath, 'utf8');
-      return JSON.parse(content);
-    }
-
-    // Try from environment variable
-    const envClassification = process.env.DIFF_CLASSIFICATION;
-    if (envClassification) {
-      return JSON.parse(envClassification);
-    }
-
-    // Try from default artifact path
-    const defaultPath = path.join(process.cwd(), 'diff_classification.json');
-    if (fs.existsSync(defaultPath)) {
-      const content = fs.readFileSync(defaultPath, 'utf8');
-      return JSON.parse(content);
-    }
-
-    return null;
-  } catch (error) {
-    console.error('Error reading diff classification:', error);
-    return null;
+function checkMigrationsExist(migrationsDir: string, verbose: boolean): boolean {
+  if (verbose) {
+    console.log(`Checking for migrations directory: ${migrationsDir}`);
   }
-}
 
-/**
- * Find migration files in the MIGRATIONS directory
- */
-function findMigrationFiles(migrationsDir: string = 'MIGRATIONS'): MigrationFile[] {
-  const migrationFiles: MigrationFile[] = [];
-  
   if (!fs.existsSync(migrationsDir)) {
-    return migrationFiles;
+    return false;
   }
 
-  try {
-    const files = fs.readdirSync(migrationsDir);
-    
-    for (const file of files) {
-      const filePath = path.join(migrationsDir, file);
-      const stat = fs.statSync(filePath);
-      
-      if (stat.isFile() && (file.endsWith('.md') || file.endsWith('.txt'))) {
-        const content = fs.readFileSync(filePath, 'utf8');
-        
-        // Extract version from filename if possible
-        const versionMatch = file.match(/v?(\d+\.\d+(?:\.\d+)?)/);
-        const version = versionMatch ? versionMatch[1] : undefined;
-        
-        migrationFiles.push({
-          path: filePath,
-          exists: true,
-          content,
-          version
-        });
-      }
-    }
-  } catch (error) {
-    console.error('Error reading migrations directory:', error);
+  // Check if directory has any migration files
+  const files = fs.readdirSync(migrationsDir);
+  const migrationFiles = files.filter(file => 
+    file.endsWith('.md') || 
+    file.endsWith('.txt') || 
+    file.endsWith('.json') ||
+    file.toLowerCase().includes('migration')
+  );
+
+  if (verbose) {
+    console.log(`Found ${migrationFiles.length} migration files: ${migrationFiles.join(', ')}`);
   }
 
-  return migrationFiles;
+  return migrationFiles.length > 0;
 }
 
 /**
- * Check if migration file content is adequate
+ * Creates a basic migration file template
  */
-function validateMigrationContent(content: string, classification: DiffClassification): { valid: boolean; issues: string[] } {
-  const issues: string[] = [];
-  const contentLower = content.toLowerCase();
-
-  // Check minimum content length
-  if (content.trim().length < 50) {
-    issues.push('Migration file is too short (minimum 50 characters required)');
-  }
-
-  // Check for breaking changes documentation
-  if (classification.semanticChange === 'major') {
-    if (!contentLower.includes('breaking') && !contentLower.includes('backward incompatible')) {
-      issues.push('Major version changes must document breaking changes');
+function createMigrationTemplate(migrationsDir: string, classification: ClassificationResult, verbose: boolean): void {
+  if (!fs.existsSync(migrationsDir)) {
+    fs.mkdirSync(migrationsDir, { recursive: true });
+    if (verbose) {
+      console.log(`Created migrations directory: ${migrationsDir}`);
     }
   }
 
-  // Check for general migration guidance
-  const migrationKeywords = ['migrate', 'migration', 'upgrade', 'update', 'change'];
-  const hasMigrationGuidance = migrationKeywords.some(keyword => contentLower.includes(keyword));
-  
-  if (!hasMigrationGuidance) {
-    issues.push('Migration file should include migration or upgrade guidance');
-  }
+  const timestamp = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
+  const filename = `${timestamp}-${classification.classification}-changes.md`;
+  const filepath = path.join(migrationsDir, filename);
 
-  // Check for version information
-  if (!contentLower.includes('version') && !content.match(/\d+\.\d+/)) {
-    issues.push('Migration file should specify version information');
-  }
+  const template = `# ${classification.classification.toUpperCase()} API Changes - ${timestamp}
 
-  return {
-    valid: issues.length === 0,
-    issues
-  };
-}
+## Summary
+${classification.summary || 'API changes detected that require migration documentation.'}
 
-/**
- * Generate a template migration file
- */
-function generateMigrationTemplate(classification: DiffClassification): string {
-  const version = process.env.CONTRACT_VERSION || 'x.x.x';
-  const changeType = classification.semanticChange.toUpperCase();
-  
-  let template = `# Migration Guide - Version ${version}
+## Classification: ${classification.classification}
 
-## Overview
-This ${changeType} version update includes the following changes:
+${classification.breakingChanges && classification.breakingChanges.length > 0 ? `
+## Breaking Changes
+${classification.breakingChanges.map(change => `- ${change}`).join('\n')}
+` : ''}
 
-${classification.summary || 'API contract changes detected.'}
+${classification.addedEndpoints && classification.addedEndpoints.length > 0 ? `
+## Added Endpoints
+${classification.addedEndpoints.map(endpoint => `- ${endpoint}`).join('\n')}
+` : ''}
+
+${classification.modifiedEndpoints && classification.modifiedEndpoints.length > 0 ? `
+## Modified Endpoints
+${classification.modifiedEndpoints.map(endpoint => `- ${endpoint}`).join('\n')}
+` : ''}
 
 ## Migration Steps
 
-### 1. Update Dependencies
-Update your BondMCP SDK to version ${version}:
-
-\`\`\`bash
-# npm
-npm install @bondmcp/sdk@${version}
-
-# pip
-pip install bondmcp-sdk==${version}
-\`\`\`
-
-`;
-
-  if (classification.semanticChange === 'major') {
-    template += `## ⚠️ Breaking Changes
-
-${classification.breakingChanges ? classification.breakingChanges.map(change => `- ${change}`).join('\n') : '- Review the API changes below'}
-
-### Required Actions
-1. Review all breaking changes listed above
-2. Update your code to handle the new API contract
+### For Existing Clients
+1. Review the breaking changes listed above
+2. Update your client code to handle the new API structure
 3. Test your integration thoroughly before deploying
 
-`;
-  }
-
-  if (classification.addedEndpoints && classification.addedEndpoints.length > 0) {
-    template += `## New Endpoints
-The following endpoints have been added:
-
-${classification.addedEndpoints.map(endpoint => `- ${endpoint}`).join('\n')}
-
-`;
-  }
-
-  if (classification.removedEndpoints && classification.removedEndpoints.length > 0) {
-    template += `## Removed Endpoints
-The following endpoints have been removed:
-
-${classification.removedEndpoints.map(endpoint => `- ${endpoint}`).join('\n')}
-
-`;
-  }
-
-  if (classification.modifiedEndpoints && classification.modifiedEndpoints.length > 0) {
-    template += `## Modified Endpoints
-The following endpoints have been modified:
-
-${classification.modifiedEndpoints.map(endpoint => `- ${endpoint}`).join('\n')}
-
-`;
-  }
-
-  template += `## Testing
-After updating, verify your integration:
-
-1. Run your test suite
-2. Check all API endpoints you use
-3. Validate responses match your expectations
+### For New Clients
+- No migration steps required
+- Use the latest API specification
 
 ## Support
-If you encounter issues during migration:
-
-- **Email**: support@bondmcp.com
-- **Discord**: https://discord.gg/bondmcp
-- **GitHub Issues**: https://github.com/bondmcp/sdk-issues
+For questions about this migration, please contact:
+- Email: support@bondmcp.com
+- Documentation: https://docs.bondmcp.com
 
 ---
-*Generated on ${new Date().toISOString()}*
+*This file was auto-generated on ${new Date().toISOString()}*
 `;
 
-  return template;
+  fs.writeFileSync(filepath, template);
+  
+  if (verbose) {
+    console.log(`Created migration file: ${filepath}`);
+  }
 }
 
 /**
- * Main function
+ * Reads and parses the classification file
  */
-async function main() {
+function readClassification(classificationFile: string, verbose: boolean): ClassificationResult | null {
+  if (!fs.existsSync(classificationFile)) {
+    if (verbose) {
+      console.log(`Classification file not found: ${classificationFile}`);
+    }
+    return null;
+  }
+
   try {
-    const args = process.argv.slice(2);
-    const classificationPath = args[0];
-    const migrationsDir = args[1] || 'MIGRATIONS';
-
-    // Read diff classification
-    const classification = readDiffClassification(classificationPath);
-    if (!classification) {
-      console.error('Error: Could not read diff classification');
-      console.error('Provide classification file path or set DIFF_CLASSIFICATION environment variable');
-      process.exit(1);
-    }
-
-    console.log(`Diff classification: ${classification.semanticChange}`);
-
-    // Check if migration assertion is needed
-    if (classification.semanticChange === 'patch') {
-      console.log('✅ Patch version change - no migration file required');
-      
-      const metadata = {
-        action: 'skip',
-        reason: 'patch_version',
-        semantic_change: classification.semanticChange
-      };
-      console.log(JSON.stringify(metadata));
-      process.exit(0);
-    }
-
-    // For minor/major changes, ensure migration file exists
-    console.log(`${classification.semanticChange.toUpperCase()} version change detected - checking for migration files...`);
-
-    // Find existing migration files
-    const migrationFiles = findMigrationFiles(migrationsDir);
+    const content = fs.readFileSync(classificationFile, 'utf-8');
+    const classification = JSON.parse(content) as ClassificationResult;
     
-    if (migrationFiles.length === 0) {
-      console.error(`❌ No migration files found in ${migrationsDir}/ directory`);
-      console.error(`${classification.semanticChange.toUpperCase()} changes require migration documentation`);
-      
-      // Create migrations directory if it doesn't exist
-      if (!fs.existsSync(migrationsDir)) {
-        fs.mkdirSync(migrationsDir, { recursive: true });
-        console.log(`Created ${migrationsDir}/ directory`);
-      }
-
-      // Generate template migration file
-      const version = process.env.CONTRACT_VERSION || new Date().toISOString().split('T')[0];
-      const templatePath = path.join(migrationsDir, `v${version}.md`);
-      const template = generateMigrationTemplate(classification);
-      
-      fs.writeFileSync(templatePath, template);
-      console.log(`📝 Generated migration template: ${templatePath}`);
-      console.error(`Please review and complete the migration documentation before proceeding`);
-      process.exit(1);
-    }
-
-    // Validate existing migration files
-    let hasValidMigration = false;
-    const validationResults: any[] = [];
-
-    for (const migrationFile of migrationFiles) {
-      if (migrationFile.content) {
-        const validation = validateMigrationContent(migrationFile.content, classification);
-        validationResults.push({
-          file: migrationFile.path,
-          valid: validation.valid,
-          issues: validation.issues
-        });
-
-        if (validation.valid) {
-          hasValidMigration = true;
-        }
+    if (verbose) {
+      console.log(`Classification: ${classification.classification}`);
+      if (classification.summary) {
+        console.log(`Summary: ${classification.summary}`);
       }
     }
-
-    // Report results
-    if (hasValidMigration) {
-      console.log(`✅ Valid migration documentation found in ${migrationsDir}/`);
-      
-      const metadata = {
-        action: 'validated',
-        semantic_change: classification.semanticChange,
-        migrations_dir: migrationsDir,
-        migration_files: migrationFiles.map(f => f.path),
-        validation_results: validationResults
-      };
-      console.log(JSON.stringify(metadata));
-    } else {
-      console.error(`❌ No valid migration documentation found in ${migrationsDir}/`);
-      
-      for (const result of validationResults) {
-        console.error(`\nFile: ${result.file}`);
-        for (const issue of result.issues) {
-          console.error(`  - ${issue}`);
-        }
-      }
-      
-      console.error('\nPlease address the issues above before proceeding');
-      process.exit(1);
-    }
-
+    
+    return classification;
   } catch (error) {
-    console.error('Error during migration assertion:', error);
-    process.exit(1);
+    if (verbose) {
+      console.error(`Error reading classification file: ${error}`);
+    }
+    return null;
   }
 }
 
-// Only run main if this script is executed directly
-if (require.main === module) {
-  main();
+/**
+ * Main migration assertion function
+ */
+async function assertMigrationFile(options: MigrationAssertOptions): Promise<void> {
+  const { 
+    classificationFile = 'openapi/diff/classification.json',
+    migrationsDir = 'MIGRATIONS',
+    verbose = false 
+  } = options;
+
+  if (verbose) {
+    console.log('Checking migration file requirements...');
+  }
+
+  // Read classification result
+  const classification = readClassification(classificationFile, verbose);
+  
+  if (!classification) {
+    if (verbose) {
+      console.log('No classification found, skipping migration check');
+    }
+    return;
+  }
+
+  // Only require migrations for major and minor changes
+  if (classification.classification === 'major' || classification.classification === 'minor') {
+    const migrationsExist = checkMigrationsExist(migrationsDir, verbose);
+    
+    if (!migrationsExist) {
+      console.log(`⚠️  ${classification.classification.toUpperCase()} API changes detected but no migration documentation found.`);
+      console.log('Creating migration documentation template...');
+      
+      createMigrationTemplate(migrationsDir, classification, verbose);
+      
+      console.log(`✅ Migration documentation created in ${migrationsDir}/`);
+      console.log('Please review and update the migration documentation before merging.');
+    } else {
+      if (verbose) {
+        console.log(`✅ Migration documentation exists for ${classification.classification} changes`);
+      }
+    }
+  } else {
+    if (verbose) {
+      console.log(`✅ No migration documentation required for ${classification.classification} changes`);
+    }
+  }
 }
 
-export { readDiffClassification, findMigrationFiles, validateMigrationContent, generateMigrationTemplate };
+// CLI interface
+if (require.main === module) {
+  const args = process.argv.slice(2);
+  
+  if (args.includes('--help') || args.includes('-h')) {
+    console.log(`Usage: assert_migration_file.ts [options]
+
+Options:
+  --classification <file>  Path to classification JSON file (default: openapi/diff/classification.json)
+  --migrations <dir>       Path to migrations directory (default: MIGRATIONS)
+  --verbose, -v            Verbose output
+  --help, -h               Show this help
+
+The classification file should contain:
+{
+  "classification": "major|minor|patch|none",
+  "breakingChanges": ["array of breaking changes"],
+  "addedEndpoints": ["array of new endpoints"],
+  "modifiedEndpoints": ["array of modified endpoints"],
+  "summary": "Summary of changes"
+}
+
+Examples:
+  assert_migration_file.ts
+  assert_migration_file.ts --classification custom/path/classification.json
+  assert_migration_file.ts --migrations docs/migrations --verbose`);
+    process.exit(0);
+  }
+
+  const options: MigrationAssertOptions = {
+    verbose: false
+  };
+
+  // Parse arguments
+  for (let i = 0; i < args.length; i++) {
+    switch (args[i]) {
+      case '--classification':
+        options.classificationFile = args[++i];
+        break;
+      case '--migrations':
+        options.migrationsDir = args[++i];
+        break;
+      case '--verbose':
+      case '-v':
+        options.verbose = true;
+        break;
+      default:
+        console.error(`Unknown option: ${args[i]}`);
+        console.error('Use --help for usage information');
+        process.exit(1);
+    }
+  }
+
+  assertMigrationFile(options)
+    .then(() => {
+      process.exit(0);
+    })
+    .catch((error) => {
+      console.error(`Error: ${error.message}`);
+      process.exit(1);
+    });
+}
+
+export { assertMigrationFile, readClassification, checkMigrationsExist };

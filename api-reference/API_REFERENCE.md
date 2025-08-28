@@ -278,7 +278,7 @@ This documentation will be updated as additional endpoints become available. Che
 ## Support
 
 - **Current Issues**: Only report issues with the 6 available endpoints
-- **Feature Requests**: Full feature set is live and under deployment
+- **Feature Requests**: Full feature set is planned and under deployment
 - **Status Updates**: Monitor this documentation for deployment progress
 
 ---

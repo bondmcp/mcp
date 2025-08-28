@@ -1,11 +1,11 @@
 # Health API Endpoint
 
-The `/api/health` endpoint provides information about the operational status of the BondMCP API and its core dependencies.
+The `/api/v1/health` endpoint provides information about the operational status of the BondMCP API and its core dependencies.
 
 ## Endpoint
 
 ```
-GET /api/health
+GET /api/v1/health
 ```
 
 ## Authentication
@@ -50,7 +50,7 @@ This endpoint does not require any parameters.
 ### cURL
 
 ```bash
-curl -X GET "https://api.bondmcp.com/api/health"
+curl -X GET "https://api.bondmcp.com/api/v1/health"
 ```
 
 ### JavaScript

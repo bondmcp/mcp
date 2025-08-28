@@ -8,7 +8,7 @@ BondMCP provides a REST API for health AI functionality. All endpoints require A
 
 ## Base URL
 ```
-https://api.bondmcp.com
+https://api.bondmcp.com/v1
 ```
 
 ## Authentication

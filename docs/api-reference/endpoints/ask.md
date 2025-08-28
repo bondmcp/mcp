@@ -1,11 +1,11 @@
 # Health Question Answering API
 
-The `/api/ask` endpoint allows you to query the BondMCP AI with health-related questions and receive medically-informed responses.
+The `/api/v1/ask` endpoint allows you to query the BondMCP AI with health-related questions and receive medically-informed responses.
 
 ## Endpoint
 
 ```
-POST /api/ask
+POST /api/v1/ask
 ```
 
 ## Authentication

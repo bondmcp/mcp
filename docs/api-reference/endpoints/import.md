@@ -1,13 +1,13 @@
 # Health Data Import API
 
-The `/api/import` endpoints allow you to import health data from various sources, including wearable devices, health apps, and CSV files.
+The `/api/v1/import` endpoints allow you to import health data from various sources, including wearable devices, health apps, and CSV files.
 
 ## Endpoints
 
 ### Import Oura Ring Data
 
 ```
-POST /api/import/oura
+POST /api/v1/import/oura
 ```
 
 #### Authentication
@@ -90,7 +90,7 @@ Requires API key authentication via the `X-API-Key` header.
 ### Import CSV Lab Results
 
 ```
-POST /api/import/labs/csv
+POST /api/v1/import/labs/csv
 ```
 
 #### Authentication
@@ -160,7 +160,7 @@ glucose,85,mg/dL,70-99,2025-05-15
 #### cURL
 
 ```bash
-curl -X POST "https://api.bondmcp.com/api/import/oura" \
+curl -X POST "https://api.bondmcp.com/api/v1/import/oura" \
   -H "Content-Type: application/json" \
   -H "X-API-Key: YOUR_API_KEY" \
   -d '{
@@ -258,7 +258,7 @@ except Exception as e:
 #### cURL
 
 ```bash
-curl -X POST "https://api.bondmcp.com/api/import/labs/csv" \
+curl -X POST "https://api.bondmcp.com/api/v1/import/labs/csv" \
   -H "X-API-Key: YOUR_API_KEY" \
   -F "file=@lab_results.csv" \
   -F "user_id=usr_123abc456def" \

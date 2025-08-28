@@ -12,7 +12,7 @@ Make your first call to the BondMCP API.
 
 ```bash
 curl -H "Authorization: Bearer YOUR_API_KEY" \
-  https://api.bondmcp.com/health
+  https://api.bondmcp.com/v1/health
 ```
 
 ## Ask a Health Question
@@ -22,7 +22,7 @@ curl -X POST \
   -H "Authorization: Bearer YOUR_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{"question": "What are the benefits of vitamin D?"}' \
-  https://api.bondmcp.com/ask
+  https://api.bondmcp.com/v1/ask
 ```
 
 ## Using SDKs

@@ -1,94 +1,139 @@
 #!/usr/bin/env python3
 """
-Auto-update API documentation from live BondMCP API
+BondMCP API Documentation Auto-Updater
+Scans auroracapital/bondmcp-platform for latest endpoints and updates documentation
 """
-import requests
-import json
+
 import os
+import re
+import json
+import subprocess
+from pathlib import Path
+from typing import Dict, List, Set
 from datetime import datetime
 
-def fetch_live_api_status():
-    """Fetch current API status from live endpoint"""
-    try:
-        response = requests.get('https://api.bondmcp.com/health', timeout=10)
-        if response.status_code == 200:
-            data = response.json()
-            return {
-                'status': 'LIVE',
-                'timestamp': datetime.now().isoformat(),
-                'endpoints_available': True,
-                'response_time': response.elapsed.total_seconds(),
-                'api_version': data.get('version', 'unknown'),
-                'services': data.get('services', {}),
-                'probes': data.get('probes', {})
-            }
-    except Exception as e:
-        return {
-            'status': 'ERROR',
-            'timestamp': datetime.now().isoformat(),
-            'error': str(e),
-            'endpoints_available': False
+class APIDocumentationUpdater:
+    def __init__(self, platform_repo_path: str, docs_repo_path: str):
+        self.platform_path = Path(platform_repo_path)
+        self.docs_path = Path(docs_repo_path)
+        
+    def scan_platform_endpoints(self) -> Dict:
+        """Scan the platform repository for API endpoints"""
+        endpoints = {
+            "health": [],
+            "auth": [],
+            "ai": [],
+            "admin": [],
+            "integrations": []
         }
-
-def update_api_status_docs():
-    """Update API status documentation"""
-    status = fetch_live_api_status()
+        
+        # Scan main.py for endpoints
+        main_py = self.platform_path / "main.py"
+        if main_py.exists():
+            endpoints.update(self._extract_endpoints_from_file(main_py))
+            
+        # Scan app/api/ directory
+        api_dir = self.platform_path / "app" / "api"
+        if api_dir.exists():
+            for py_file in api_dir.glob("*.py"):
+                file_endpoints = self._extract_endpoints_from_file(py_file)
+                for category, eps in file_endpoints.items():
+                    if category in endpoints:
+                        endpoints[category].extend(eps)
+                    else:
+                        endpoints[category] = eps
+                        
+        return endpoints
     
-    if status is None:
-        status = {'status': 'UNKNOWN', 'timestamp': datetime.now().isoformat()}
+    def _extract_endpoints_from_file(self, file_path: Path) -> Dict:
+        """Extract API endpoints from a Python file"""
+        endpoints = {}
+        
+        try:
+            with open(file_path, 'r') as f:
+                content = f.read()
+                
+            # Find FastAPI route decorators
+            route_pattern = r'@\w+\.(get|post|put|delete|patch)\(["\']([^"\']+)["\'].*?\)'
+            matches = re.findall(route_pattern, content, re.MULTILINE)
+            
+            for method, path in matches:
+                category = self._categorize_endpoint(path)
+                if category not in endpoints:
+                    endpoints[category] = []
+                    
+                endpoints[category].append({
+                    "method": method.upper(),
+                    "path": path,
+                    "file": str(file_path.name)
+                })
+                
+        except Exception as e:
+            print(f"Error processing {file_path}: {e}")
+            
+        return endpoints
     
-    status_emoji = "✅" if status['status'] == 'LIVE' else "❌"
+    def _categorize_endpoint(self, path: str) -> str:
+        """Categorize endpoint based on path"""
+        if "/health" in path or path == "/":
+            return "health"
+        elif "/auth" in path or "/login" in path or "/register" in path:
+            return "auth"
+        elif "/ask" in path or "/ai" in path or "/chat" in path:
+            return "ai"
+        elif "/admin" in path or "/users" in path:
+            return "admin"
+        else:
+            return "integrations"
     
-    status_content = f"""# Live API Status
+    def update_api_reference(self):
+        """Update the API reference documentation"""
+        endpoints = self.scan_platform_endpoints()
+        
+        # Generate API reference content
+        api_ref_content = self._generate_api_reference(endpoints)
+        
+        # Write to api-reference/endpoints.md
+        api_ref_file = self.docs_path / "api-reference" / "endpoints.md"
+        api_ref_file.parent.mkdir(parents=True, exist_ok=True)
+        
+        with open(api_ref_file, 'w') as f:
+            f.write(api_ref_content)
+            
+        print(f"Updated API reference: {api_ref_file}")
+        
+    def _generate_api_reference(self, endpoints: Dict) -> str:
+        """Generate API reference markdown content"""
+        content = """# API Endpoints Reference
 
-## Current Status: {status['status']} {status_emoji}
+*Auto-generated from auroracapital/bondmcp-platform*
 
-**Last Checked**: {status['timestamp']}
-**API Base URL**: https://api.bondmcp.com
-**API Version**: {status.get('api_version', 'N/A')}
-**Endpoints Available**: {'Yes' if status.get('endpoints_available') else 'No'}
+This document is automatically updated based on the latest API endpoints in the BondMCP platform.
 
-### Live Endpoints:
-- `GET /health` - API health check ✅
-- `POST /ask` - Health question answering ✅
-- `POST /labs` - Lab result analysis ✅
-- `POST /nutrition` - Nutrition analysis ✅
-- `POST /supplements` - Supplement recommendations ✅
-- `POST /insights` - Health insights ✅
-
-### Service Status:
 """
-    
-    if 'services' in status:
-        for service, service_status in status['services'].items():
-            emoji = "✅" if service_status == "operational" else "❌"
-            status_content += f"- **{service.title()}**: {service_status} {emoji}\n"
-    
-    status_content += f"""
-### Quick Test:
-```bash
-# Test the live API
-curl https://api.bondmcp.com/health
+        
+        for category, eps in endpoints.items():
+            if not eps:
+                continue
+                
+            content += f"\n## {category.title()} Endpoints\n\n"
+            
+            for endpoint in eps:
+                content += f"### {endpoint['method']} {endpoint['path']}\n\n"
+                content += f"**Source**: `{endpoint['file']}`\n\n"
+                content += "**Description**: [Auto-generated endpoint]\n\n"
+                
+        content += f"\n---\n\n*Last updated: {datetime.now().strftime('%Y-%m-%d %H:%M:%S UTC')}*\n"
+        content += f"*Total endpoints found: {sum(len(eps) for eps in endpoints.values())}*\n"
+        
+        return content
 
-# Response time: {status.get('response_time', 'N/A')}s
-```
-
-### Getting Started:
-1. Install CLI: `pip install bondmcp-cli`
-2. Authenticate: `bondmcp auth login`
-3. Create API key: `bondmcp keys create`
-4. Start using: `bondmcp ask "health question"`
-
----
-*Auto-updated from live API status*
-"""
+if __name__ == "__main__":
+    # This would be updated to point to the actual platform repo
+    updater = APIDocumentationUpdater(
+        platform_repo_path="../bondmcp-platform",  # Adjust path as needed
+        docs_repo_path="."
+    )
     
-    with open('../LIVE_API_STATUS.md', 'w') as f:
-        f.write(status_content)
-    
-    print(f"Updated API status: {status['status']}")
-    return status
-
-if __name__ == '__main__':
-    status = update_api_status_docs()
-    print(f"API Status: {status}")
+    updater.update_api_reference()
+    print("API documentation updated successfully!")

@@ -1,141 +1,223 @@
+# BondMCP API Endpoints
 
-# Endpoints
+> **⚠️ DEVELOPMENT STATUS: 0/42 endpoints deployed (API domain not available)**
+> 
+> **Important**: The API domain `api.bondmcp.com` is not yet deployed. This document serves as a specification for planned endpoints. See [ACTUAL_API_STATUS.md](ACTUAL_API_STATUS.md) for detailed testing results.
 
-Complete API endpoints documentation for the BondMCP Healthcare Platform.
+## Endpoint Status Legend
 
-## Base URL
-All API requests should be made to:
-```
-https://api.bondmcp.com
-```
+- 📅 **PLANNED** - Endpoint specified for future deployment
+- 🚧 **IN DEVELOPMENT** - Endpoint implementation in progress
+- ❌ **NOT DEPLOYED** - Endpoint awaiting infrastructure deployment
+- 🔄 **UNDER DESIGN** - Endpoint specification being refined
 
-## Authentication
-All endpoints require authentication using an API key in the Authorization header:
-```
-Authorization: Bearer YOUR_API_KEY
-```
+**Note**: All endpoints currently show as not deployed due to missing API infrastructure.
 
-## Core Endpoints
+---
 
-### Health Check
-**GET /health**
+## Core System Endpoints
 
-Check the API service status and version information.
+| Endpoint | Method | Status | Description |
+|----------|--------|--------|-------------|
+| `/` | GET | 📅 PLANNED | API root and status |
+| `/health` | GET | 📅 PLANNED | System health check |
+| `/docs` | GET | 📅 PLANNED | Interactive documentation |
+| `/openapi.json` | GET | 📅 PLANNED | OpenAPI specification |
 
-**Response:**
-```json
-{
-  "status": "operational",
-  "version": "2.1.0",
-  "timestamp": "2025-08-28T10:30:00Z",
-  "services": {
-    "ai_engine": "operational",
-    "database": "operational", 
-    "cache": "operational"
-  }
-}
-```
+**Category Status: 0/4 endpoints deployed (awaiting infrastructure)**
 
-### Ask Health Questions
-**POST /ask**
+---
 
-Submit health-related questions to the AI system.
+## Authentication Endpoints
 
-**Request Body:**
-```json
-{
-  "question": "What are the benefits of vitamin D?",
-  "context": "optional additional context",
-  "user_id": "optional user identifier"
-}
-```
+| Endpoint | Method | Status | Description |
+|----------|--------|--------|-------------|
+| `/auth/register` | POST | 📅 PLANNED | User registration |
+| `/auth/login` | POST | 📅 PLANNED | User login |
+| `/auth/logout` | POST | 📅 PLANNED | User logout |
+| `/auth/refresh` | POST | 📅 PLANNED | Token refresh |
+| `/auth/verify` | POST | 📅 PLANNED | Email verification |
+| `/auth/reset` | POST | 📅 PLANNED | Password reset |
 
-**Response:**
-```json
-{
-  "answer": "Vitamin D provides several important health benefits...",
-  "confidence": 0.95,
-  "sources": ["source1", "source2"],
-  "timestamp": "2025-08-28T10:30:00Z"
-}
-```
+**Category Status: 0/6 endpoints deployed (awaiting infrastructure)**
 
-## MCP Discovery Endpoints
+---
 
-### MCP Configuration
-**GET /.well-known/mcp-configuration**
+## API Key Management
 
-Returns Model Context Protocol configuration for AI assistants.
+| Endpoint | Method | Status | Description |
+|----------|--------|--------|-------------|
+| `/api-keys/generate` | POST | ⚠️ METHOD ERROR | Generate new API key |
+| `/api-keys/list` | GET | ⚠️ METHOD ERROR | List user's API keys |
+| `/api-keys/revoke` | DELETE | ⚠️ METHOD ERROR | Revoke API key |
+| `/api-keys/usage` | GET | ⚠️ METHOD ERROR | API key usage stats |
+| `/api-keys/validate` | POST | ⚠️ METHOD ERROR | Validate API key |
 
-**Response:**
-```json
-{
-  "mcpVersion": "2024-11-05",
-  "capabilities": {
-    "tools": true,
-    "resources": true,
-    "prompts": true
-  },
-  "serverInfo": {
-    "name": "BondMCP Healthcare Platform",
-    "version": "2.1.0"
-  }
-}
-```
+**Category Status: 0/5 endpoints working (0%)**
 
-### MCP Manifest
-**GET /mcp-manifest.json**
+---
 
-Returns the complete MCP manifest with available tools and resources.
+## Health AI Endpoints
 
-## Rate Limiting
+| Endpoint | Method | Status | Description |
+|----------|--------|--------|-------------|
+| `/health/ask` | POST | ❌ NOT DEPLOYED | Health question answering |
+| `/health/analyze` | POST | ❌ NOT DEPLOYED | Medical data analysis |
+| `/health/trust-score` | GET | ❌ NOT DEPLOYED | Trust score verification |
+| `/health/data/upload` | POST | ❌ NOT DEPLOYED | Health data upload |
+| `/health/data/analyze` | POST | ❌ NOT DEPLOYED | Health data analysis |
+| `/health/recommendations` | GET | ❌ NOT DEPLOYED | Health recommendations |
+| `/health/insights` | GET | ❌ NOT DEPLOYED | Health insights |
+| `/health/monitoring` | GET | ❌ NOT DEPLOYED | Health monitoring |
 
-- **Rate Limit**: 100 requests per minute per API key
-- **Headers**: 
-  - `X-RateLimit-Limit`: Maximum requests per window
-  - `X-RateLimit-Remaining`: Remaining requests in current window
-  - `X-RateLimit-Reset`: Time when the rate limit resets
+**Category Status: 0/8 endpoints working (0%)**
 
-## Error Responses
+---
 
-All endpoints return standard HTTP status codes:
+## Billing Endpoints
 
-- **200**: Success
-- **400**: Bad Request - Invalid parameters
-- **401**: Unauthorized - Invalid or missing API key
-- **429**: Too Many Requests - Rate limit exceeded
-- **500**: Internal Server Error
+| Endpoint | Method | Status | Description |
+|----------|--------|--------|-------------|
+| `/billing/usage` | GET | 🔐 AUTH REQUIRED | Usage statistics |
+| `/billing/plans` | GET | ❌ NOT DEPLOYED | Available plans |
+| `/billing/subscribe` | POST | ❌ NOT DEPLOYED | Subscribe to plan |
+| `/billing/cancel` | POST | ❌ NOT DEPLOYED | Cancel subscription |
+| `/billing/invoice` | GET | ❌ NOT DEPLOYED | Get invoices |
+| `/billing/payment-methods` | POST | ⚠️ METHOD ERROR | Manage payments |
 
-**Error Response Format:**
-```json
-{
-  "error": {
-    "code": "INVALID_REQUEST",
-    "message": "The request parameters are invalid",
-    "details": "Additional error details"
-  }
-}
-```
+**Category Status: 1/6 endpoints working (16.7%)**
 
-## Interactive Testing
+---
 
-Use the BondMCP CLI for interactive testing:
+## Research Integration
+
+| Endpoint | Method | Status | Description |
+|----------|--------|--------|-------------|
+| `/research/pubmed` | GET | ❌ NOT DEPLOYED | PubMed literature search |
+| `/research/clinical-trials` | GET | ❌ NOT DEPLOYED | Clinical trial search |
+| `/research/literature` | POST | ❌ NOT DEPLOYED | Literature analysis |
+| `/research/analyze` | POST | ❌ NOT DEPLOYED | Research analysis |
+
+**Category Status: 0/4 endpoints working (0%)**
+
+---
+
+## Healthcare Services
+
+| Endpoint | Method | Status | Description |
+|----------|--------|--------|-------------|
+| `/healthcare/providers` | GET | ❌ NOT DEPLOYED | Provider directory |
+| `/healthcare/facilities` | GET | ❌ NOT DEPLOYED | Medical facilities |
+| `/healthcare/specialties` | GET | ❌ NOT DEPLOYED | Medical specialties |
+| `/healthcare/insurance` | GET | ❌ NOT DEPLOYED | Insurance verification |
+| `/healthcare/appointments` | POST | ❌ NOT DEPLOYED | Appointment scheduling |
+
+**Category Status: 0/5 endpoints working (0%)**
+
+---
+
+## Administration
+
+| Endpoint | Method | Status | Description |
+|----------|--------|--------|-------------|
+| `/admin/users` | GET | 🔐 AUTH REQUIRED | User administration |
+| `/admin/analytics` | GET | ❌ NOT DEPLOYED | System analytics |
+| `/admin/system` | GET | ❌ NOT DEPLOYED | System information |
+| `/admin/logs` | GET | ❌ NOT DEPLOYED | System logs |
+
+**Category Status: 1/4 endpoints working (25%)**
+
+---
+
+## Overall Platform Status
+
+### Summary by Status
+
+| Status | Count | Percentage |
+|--------|-------|------------|
+| ✅ WORKING | 4 | 9.5% |
+| 🔐 AUTH REQUIRED | 2 | 4.8% |
+| ⚠️ METHOD ERROR | 12 | 28.6% |
+| ❌ NOT DEPLOYED | 24 | 57.1% |
+| **TOTAL** | **42** | **100%** |
+
+### Functional Analysis
+
+- **Fully Functional**: 6/42 endpoints (14.3%)
+- **Partially Functional**: 12/42 endpoints (28.6%)
+- **Non-Functional**: 24/42 endpoints (57.1%)
+
+---
+
+## Testing Status
+
+All endpoints have been tested as of August 4, 2025:
+
 ```bash
-# Install CLI
-pip install bondmcp-cli
+# Test working endpoints
+curl https://api.bondmcp.com/
+curl https://api.bondmcp.com/health
+curl https://api.bondmcp.com/docs
+curl https://api.bondmcp.com/openapi.json
 
-# Test health endpoint
-bondmcp health
-
-# Ask a question
-bondmcp ask "What should I eat for breakfast?"
+# Test auth-required endpoints (need valid token)
+curl -H "Authorization: Bearer YOUR_TOKEN" https://api.bondmcp.com/billing/usage
+curl -H "Authorization: Bearer YOUR_TOKEN" https://api.bondmcp.com/admin/users
 ```
 
-## SDK Integration
+---
 
-- **Python SDK**: `pip install bondmcp-python`
-- **JavaScript SDK**: `npm install @bondmcp/sdk`
-- **Go SDK**: Available in the Go SDK section
-- **CLI Tools**: `pip install bondmcp-cli`
+## Deployment Roadmap
 
-For detailed SDK usage examples, see the respective SDK documentation sections.
+### Phase 1: Core Infrastructure ✅ COMPLETE
+- [x] Basic API endpoints (4/4)
+- [x] Health monitoring
+- [x] Documentation system
+
+### Phase 2: Authentication 🔄 IN PROGRESS
+- [ ] Fix method errors for auth endpoints (0/6)
+- [ ] Implement user registration
+- [ ] Implement login/logout flow
+
+### Phase 3: Health AI 📅 PLANNED
+- [ ] Deploy health question answering
+- [ ] Deploy medical data analysis
+- [ ] Deploy trust score system
+
+### Phase 4: Full Platform 📅 PLANNED
+- [ ] Research integration (0/4)
+- [ ] Healthcare services (0/5)
+- [ ] Complete billing system (5/6 remaining)
+- [ ] API key management (0/5)
+
+---
+
+## Known Issues
+
+1. **Method Errors (405)**: 12 endpoints return "Method Not Allowed"
+   - Likely due to incorrect HTTP method configuration
+   - Affects authentication and API key management
+
+2. **Missing Endpoints (404)**: 24 endpoints not deployed
+   - Core health AI functionality missing
+   - Research and healthcare services unavailable
+
+3. **Resource Constraints**: Deployment failures due to container termination
+   - Upgraded to dedicated instances with autoscaling
+   - Still experiencing deployment issues
+
+---
+
+## Next Steps
+
+1. **Fix Method Errors**: Resolve 405 errors for authentication endpoints
+2. **Deploy Health AI**: Core product functionality
+3. **Complete Authentication**: Enable user registration and login
+4. **API Key Management**: Self-service API key generation
+
+---
+
+*Last Updated: August 4, 2025*  
+*Next Review: When deployment issues are resolved*  
+*Test Results: 6/42 endpoints functional*
+

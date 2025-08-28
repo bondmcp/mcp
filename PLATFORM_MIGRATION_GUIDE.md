@@ -80,7 +80,7 @@ curl -X POST https://api.bondmcp.com/auth/login
 
 ### Phase 1: Documentation Alignment (Complete)
 - [x] Update README.md to reflect development status
-- [x] Update ENDPOINTS.md to show live vs actual status
+- [x] Update ENDPOINTS.md to show planned vs actual status
 - [x] Create ACTUAL_API_STATUS.md with testing results
 - [x] Create PLATFORM_CAPABILITIES.md
 - [x] Create MCP server implementation for development
@@ -116,7 +116,7 @@ client = BondMCPClient(api_key="test")
 try:
     response = client.health.ask("What is diabetes?")
 except BondMCPInfrastructureError:
-    print("BondMCP API infrastructure live and operational")
+    print("BondMCP API infrastructure not yet deployed")
     # Handle gracefully or use mock response
 ```
 
@@ -132,7 +132,7 @@ try {
   const response = await client.ask('What is diabetes?');
 } catch (error) {
   if (error instanceof BondMCPInfrastructureError) {
-    console.log('BondMCP API infrastructure live and operational');
+    console.log('BondMCP API infrastructure not yet deployed');
     // Handle gracefully
   }
 }
@@ -171,8 +171,8 @@ All integration tests should be updated to:
 
 ### Status Indicators
 - ✅ **WORKING**: Verified functional endpoint
-- 📅 **PLANNED**: Designed but live and operational
-- 🚧 **LIVE AND OPERATIONAL**: Currently being implemented
+- 📅 **PLANNED**: Designed but not yet deployed
+- 🚧 **IN DEVELOPMENT**: Currently being implemented
 - ❌ **NOT DEPLOYED**: Awaiting infrastructure
 
 ### Required Disclaimers

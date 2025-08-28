@@ -100,7 +100,7 @@ Address:    127.0.0.53#53
 - [x] Updated README.md to reflect development status
 - [x] Updated ENDPOINTS.md with accurate status
 - [x] Created ACTUAL_API_STATUS.md with test results
-- [x] Created PLATFORM_CAPABILITIES.md documenting live features
+- [x] Created PLATFORM_CAPABILITIES.md documenting planned features
 - [x] Added clear development status indicators
 
 #### ✅ SDK Updates
@@ -111,7 +111,7 @@ Address:    127.0.0.53#53
 
 #### ✅ New Documentation
 - [x] ACTUAL_API_STATUS.md - Comprehensive testing results
-- [x] PLATFORM_CAPABILITIES.md - Current and live capabilities
+- [x] PLATFORM_CAPABILITIES.md - Current and planned capabilities
 - [x] PLATFORM_MIGRATION_GUIDE.md - Migration path documentation
 - [x] MCP server implementation in `mcp-server/`
 
@@ -156,7 +156,7 @@ python scripts/test_all_endpoints.py
 #### New Files Created
 ```
 /ACTUAL_API_STATUS.md           # Real-time API testing results
-/PLATFORM_CAPABILITIES.md      # Current and live capabilities  
+/PLATFORM_CAPABILITIES.md      # Current and planned capabilities  
 /PLATFORM_MIGRATION_GUIDE.md   # Migration path documentation
 /mcp-server/                    # MCP server implementation
   ├── server.py                 # Healthcare MCP server
