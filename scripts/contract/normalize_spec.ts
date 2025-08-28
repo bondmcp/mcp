@@ -1,6 +1,12 @@
 #!/usr/bin/env node
 
-
+/**
+ * OpenAPI Specification Normalization Script
+ * 
+ * Normalizes OpenAPI specifications for consistent diff generation by:
+ * - Sorting object keys recursively
+ * - Removing volatile metadata fields
+ * - Cleaning version-specific information
  */
 
 import * as fs from 'fs';
@@ -12,64 +18,6 @@ interface NormalizeOptions {
   verbose?: boolean;
 }
 
-/**
- * Normalizes an OpenAPI specification
- */
-function normalizeOpenAPISpec(spec: any): any {
-  // Deep clone to avoid modifying the original
-  const normalized = JSON.parse(JSON.stringify(spec));
-
-  // Sort properties alphabetically for consistent output
-  function sortObjectKeys(obj: any): any {
-    if (Array.isArray(obj)) {
-      return obj.map(sortObjectKeys);
-    } else if (obj !== null && typeof obj === 'object') {
-      const sorted: any = {};
-      Object.keys(obj).sort().forEach(key => {
-        sorted[key] = sortObjectKeys(obj[key]);
-      });
-      return sorted;
-    }
-    return obj;
-  }
-
-  // Ensure consistent properties order
-  const orderedSpec: any = {};
-  
-  // Standard OpenAPI property order
-  const propertyOrder = [
-    'openapi',
-    'info',
-    'servers',
-    'paths',
-    'components',
-    'security',
-    'tags',
-    'externalDocs'
-  ];
-
-  // Add properties in order
-  propertyOrder.forEach(prop => {
-    if (normalized[prop] !== undefined) {
-      orderedSpec[prop] = sortObjectKeys(normalized[prop]);
-    }
-  });
-
-  // Add any remaining properties
-  Object.keys(normalized).forEach(key => {
-    if (!propertyOrder.includes(key)) {
-      orderedSpec[key] = sortObjectKeys(normalized[key]);
-    }
-  });
-
-  // Normalize version format if present
-  if (orderedSpec.info && orderedSpec.info.version) {
-    // Remove timestamp suffixes for consistent versioning
-    orderedSpec.info.version = orderedSpec.info.version.replace(/-\d{4}-\d{2}-\d{2}$/, '');
-  }
-
-  return orderedSpec;
-=======
 interface OpenAPISpec {
   [key: string]: any;
 }
@@ -174,8 +122,11 @@ async function normalizeSpec(options: NormalizeOptions): Promise<void> {
     throw new Error('Input file is not a valid OpenAPI specification (missing "openapi" field)');
   }
 
-  // Normalize the specification
-  const normalizedSpec = normalizeOpenAPISpec(spec);
+  // Clean version-specific metadata
+  spec = cleanInfoSection(spec);
+  
+  // Normalize the entire specification
+  const normalizedSpec = normalizeObject(spec);
 
   // Ensure output directory exists
   const outputDir = path.dirname(outputFile);
@@ -191,8 +142,29 @@ async function normalizeSpec(options: NormalizeOptions): Promise<void> {
   }
 }
 
-// CLI interface
-if (require.main === module) {
+/**
+ * Recursively counts the number of keys in an object
+ * @param obj - Object to count keys in
+ * @returns Total number of keys
+ */
+function countKeys(obj: any): number {
+  if (!obj || typeof obj !== 'object' || Array.isArray(obj)) {
+    return 0;
+  }
+  
+  let count = Object.keys(obj).length;
+  
+  for (const value of Object.values(obj)) {
+    count += countKeys(value);
+  }
+  
+  return count;
+}
+
+/**
+ * CLI interface
+ */
+function main(): void {
   const args = process.argv.slice(2);
   const options: NormalizeOptions = {
     inputFile: '',
@@ -245,105 +217,6 @@ Options:
       console.error(`Error: ${error.message}`);
       process.exit(1);
     });
-}
-
-export { normalizeSpec, normalizeOpenAPISpec };
- * @param inputPath - Path to input OpenAPI specification file
- * @param outputPath - Optional output path (defaults to overwriting input)
- */
-function normalizeSpec(inputPath: string, outputPath?: string): void {
-  try {
-    console.log(`Normalizing OpenAPI specification: ${inputPath}`);
-    
-    // Read the specification file
-    if (!fs.existsSync(inputPath)) {
-      throw new Error(`Input file does not exist: ${inputPath}`);
-    }
-    
-    const fileContent = fs.readFileSync(inputPath, 'utf8');
-    let spec: OpenAPISpec;
-    
-    try {
-      spec = JSON.parse(fileContent);
-    } catch (parseError: any) {
-      throw new Error(`Failed to parse JSON: ${parseError.message}`);
-    }
-    
-    // Clean version-specific metadata
-    spec = cleanInfoSection(spec);
-    
-    // Normalize the entire specification
-    const normalizedSpec = normalizeObject(spec);
-    
-    // Determine output path
-    const finalOutputPath = outputPath || inputPath;
-    
-    // Write the normalized specification
-    fs.writeFileSync(finalOutputPath, JSON.stringify(normalizedSpec, null, 2));
-    
-    console.log(`✅ Normalized specification written to: ${finalOutputPath}`);
-    
-    // Report on changes made
-    const originalKeys = countKeys(spec);
-    const normalizedKeys = countKeys(normalizedSpec);
-    const removedFields = originalKeys - normalizedKeys;
-    
-    if (removedFields > 0) {
-      console.log(`📝 Removed ${removedFields} volatile field(s) during normalization`);
-    }
-    
-  } catch (error: any) {
-    console.error(`❌ Error normalizing specification: ${error.message}`);
-    process.exit(1);
-  }
-}
-
-/**
- * Recursively counts the number of keys in an object
- * @param obj - Object to count keys in
- * @returns Total number of keys
- */
-function countKeys(obj: any): number {
-  if (!obj || typeof obj !== 'object' || Array.isArray(obj)) {
-    return 0;
-  }
-  
-  let count = Object.keys(obj).length;
-  
-  for (const value of Object.values(obj)) {
-    count += countKeys(value);
-  }
-  
-  return count;
-}
-
-/**
- * CLI interface
- */
-function main(): void {
-  const args = process.argv.slice(2);
-  
-  if (args.length === 0 || args.includes('--help') || args.includes('-h')) {
-    console.log(`
-Usage: normalize_spec.ts <input-file> [output-file]
-
-Examples:
-  normalize_spec.ts openapi/latest.json
-  normalize_spec.ts openapi/latest.json openapi/normalized.json
-  
-Description:
-  Normalizes OpenAPI specifications for diff stability by:
-  - Sorting object keys recursively
-  - Removing volatile metadata fields
-  - Cleaning version-specific information
-    `);
-    process.exit(args.includes('--help') || args.includes('-h') ? 0 : 1);
-  }
-  
-  const inputPath = path.resolve(args[0]);
-  const outputPath = args[1] ? path.resolve(args[1]) : undefined;
-  
-  normalizeSpec(inputPath, outputPath);
 }
 
 // Run if called directly

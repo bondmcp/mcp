@@ -12,14 +12,20 @@
     "contract:label": "npx ts-node scripts/contract/apply_label.ts",
     "contract:migrate": "npx ts-node scripts/contract/assert_migration_file.ts",
     "build:ts": "npx tsc",
-    "spec:lint": "spectral lint spec/openapi.yaml --format stylish",
-    "spec:bundle": "redocly bundle spec/openapi.yaml --output openapi/bundled.json",
+    "spec:lint": "spectral lint spec/openapi.json --format stylish",
+    "spec:bundle": "redocly bundle spec/openapi.json --output openapi/bundled.json",
     "spec:diff": "openapi-diff openapi/latest.json spec/openapi.json --format markdown",
     "sdk:gen": "npm run sdk:gen:typescript && npm run sdk:gen:python",
     "sdk:gen:typescript": "openapi-generator-cli generate -i spec/openapi.json -g typescript-axios -o sdks/typescript/generated",
     "sdk:gen:python": "openapi-generator-cli generate -i spec/openapi.json -g python -o sdks/python/generated",
     "sdk:verify": "npm run sdk:gen && git diff --exit-code sdks/",
-    "release:prepare": "npm run spec:diff && npm run semver:check && npm run changelog:check"
+    "release:prepare": "npm run spec:diff && npm run semver:check && npm run changelog:check",
+    "semver:check": "npx ts-node scripts/semver-check.ts --classification openapi/diff/classification.json",
+    "changelog:check": "echo 'Changelog validation not yet implemented'",
+    "changelog:extract": "npx ts-node scripts/extract-changelog-section.ts",
+    "format": "prettier --write .",
+    "lint": "prettier --check . && npm run spec:lint",
+    "prepare": "lefthook install || echo 'Lefthook not available, skipping hook installation'"
   },
   "devDependencies": {
     "@octokit/rest": "^22.0.0",

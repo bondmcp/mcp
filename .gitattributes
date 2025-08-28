@@ -1,0 +1,93 @@
+# Ensure LF line endings across all platforms
+* text=auto eol=lf
+
+# Binary files
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.pdf binary
+*.zip binary
+*.tar.gz binary
+*.woff binary
+*.woff2 binary
+*.ttf binary
+*.eot binary
+
+# Explicitly set text files to LF
+*.md text eol=lf
+*.txt text eol=lf
+*.json text eol=lf
+*.yaml text eol=lf
+*.yml text eol=lf
+*.js text eol=lf
+*.ts text eol=lf
+*.tsx text eol=lf
+*.jsx text eol=lf
+*.py text eol=lf
+*.go text eol=lf
+*.rs text eol=lf
+*.sh text eol=lf
+*.bat text eol=crlf
+
+# Mark generated SDK files as vendored to reduce diff noise
+sdks/*/generated/** linguist-vendored
+sdks/*/src/generated/** linguist-vendored
+sdks/*/dist/** linguist-vendored
+sdks/*/build/** linguist-vendored
+
+# Mark bundled OpenAPI files as generated
+openapi/bundled/** linguist-generated
+openapi/history/diff-*.* linguist-generated
+
+# Mark dependency directories as vendored
+node_modules/** linguist-vendored
+**/node_modules/** linguist-vendored
+.venv/** linguist-vendored
+**/venv/** linguist-vendored
+**/__pycache__/** linguist-vendored
+
+# Configuration files should be treated as text
+.gitignore text eol=lf
+.gitattributes text eol=lf
+.editorconfig text eol=lf
+.prettierrc text eol=lf
+tsconfig.json text eol=lf
+package.json text eol=lf
+package-lock.json text eol=lf
+pyproject.toml text eol=lf
+Cargo.toml text eol=lf
+go.mod text eol=lf
+go.sum text eol=lf
+
+# YAML files (important for OpenAPI specs)
+*.yaml text eol=lf
+*.yml text eol=lf
+
+# Dockerfile and container files
+Dockerfile text eol=lf
+docker-compose.yml text eol=lf
+.dockerignore text eol=lf
+
+# CI/CD files
+.github/workflows/*.yml text eol=lf
+.github/workflows/*.yaml text eol=lf
+
+# Archive files are binary
+*.tar binary
+*.gz binary
+*.bz2 binary
+*.xz binary
+*.7z binary
+*.rar binary
+
+# Export ignore for git archive (for releases)
+.gitignore export-ignore
+.gitattributes export-ignore
+.github/ export-ignore
+tests/ export-ignore
+tmp/ export-ignore
+*.log export-ignore
+.DS_Store export-ignore
+Thumbs.db export-ignore

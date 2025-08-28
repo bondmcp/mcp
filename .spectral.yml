@@ -1,0 +1,6 @@
+extends: ["spectral:oas"]
+
+rules:
+  # Allow some flexibility for development
+  info-license: warn
+  contact-properties: warn

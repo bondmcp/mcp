@@ -4,6 +4,13 @@ description: BondMCP Health AI Platform - Complete AI-Powered Healthcare Platfor
 
 # BondMCP - AI Health Answers You Can Trust
 
+[![OpenAPI Validation](https://github.com/bondmcp/mcp/actions/workflows/openapi-validate.yml/badge.svg)](https://github.com/bondmcp/mcp/actions/workflows/openapi-validate.yml)
+[![OpenAPI Diff Guard](https://github.com/bondmcp/mcp/actions/workflows/openapi-diff.yml/badge.svg)](https://github.com/bondmcp/mcp/actions/workflows/openapi-diff.yml)
+[![SDK Auto-Regeneration](https://github.com/bondmcp/mcp/actions/workflows/sdk-regenerate.yml/badge.svg)](https://github.com/bondmcp/mcp/actions/workflows/sdk-regenerate.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![npm version](https://badge.fury.io/js/%40bondmcp%2Fsdk.svg)](https://badge.fury.io/js/%40bondmcp%2Fsdk)
+[![PyPI version](https://badge.fury.io/py/bondmcp-sdk.svg)](https://badge.fury.io/py/bondmcp-sdk)
+
 ## 🚀 **Live AI Platform**
 
 BondMCP is a **comprehensive health AI platform** providing intelligent health insights through multiple access methods including web interface, mobile apps, CLI tools, and direct API integration.
@@ -14,6 +21,26 @@ BondMCP is a **comprehensive health AI platform** providing intelligent health i
 2. **Mobile Apps**: Download from App Store or Google Play
 3. **CLI Tools**: `pip install bondmcp-cli` for command-line access
 4. **API Integration**: Direct API access for developers
+
+## 📚 **Developer Resources**
+
+### SDKs
+- **TypeScript/JavaScript**: [`@bondmcp/sdk`](https://www.npmjs.com/package/@bondmcp/sdk) - Auto-generated TypeScript SDK
+- **Python**: [`bondmcp-sdk`](https://pypi.org/project/bondmcp-sdk/) - Auto-generated Python SDK  
+- **Go**: Import directly from this repository's `sdks/go` module
+
+### Documentation
+- [API Reference](./docs/api/) - Complete API documentation
+- [SDK Publishing Guide](./docs/SDK_PUBLISHING.md) - How SDKs are built and released
+- [OpenAPI Style Guide](./docs/OPENAPI_STYLE.md) - API design conventions
+- [Contributing Guide](./contributing/CONTRIBUTING.md) - How to contribute
+
+### Change Management
+Our API follows strict change management practices:
+- **Automated diff analysis** for all API changes
+- **Semantic versioning** enforcement
+- **Automatic SDK regeneration** on specification updates
+- **Breaking change detection** with migration documentation
 
 ## 📋 **Getting Started**
 
