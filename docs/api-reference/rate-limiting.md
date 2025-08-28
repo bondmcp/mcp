@@ -163,7 +163,7 @@ When the API responds with `429 Too Many Requests`, the client waits for
 `retry_delay * 2^attempt` seconds (or the `Retry-After` header if provided)
 before retrying up to `max_retries` times.
 
-For more information on SDK configuration, see the **SDK Integration** (CLI/API only) guides.
+For more information on SDK configuration, see the **SDK Integration**  guides.
 
 ## Pricing Information
 

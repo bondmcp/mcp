@@ -4,7 +4,7 @@
 Application Programming Interface - A set of protocols and tools for building software applications.
 
 ## BondMCP
-A CLI and API-only health AI platform that provides evidence-based health answers and analysis.
+A comprehensive health AI health AI platform that provides evidence-based health answers and analysis.
 
 ## CLI
 Command Line Interface - A text-based interface for interacting with software applications.

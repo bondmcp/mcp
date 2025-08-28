@@ -62,4 +62,4 @@ bondmcp ask "health question"
 
 ## No Web Dashboard
 
-BondMCP is CLI/API only. Use the CLI tools for all account management and API key operations.
+BondMCP is . Use the CLI tools for all account management and API key operations.

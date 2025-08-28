@@ -107,4 +107,4 @@ bondmcp --verbose ask "test question"
 
 ## No Web Interface
 
-Remember: BondMCP is CLI/API only. There is no web dashboard to troubleshoot issues. All operations must be performed via command line or API calls.
+Remember: BondMCP is . There is no web dashboard to troubleshoot issues. All operations must be performed via command line or API calls.

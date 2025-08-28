@@ -1,61 +1,61 @@
 # Table of Contents
 
 ## Getting Started
-* **Introduction** (CLI/API only)
-* **Quick Start** (CLI/API only)
-* **Authentication Setup** (CLI/API only)
-* **First API Call** (CLI/API only)
+* **Introduction** 
+* **Quick Start** 
+* **Authentication Setup** 
+* **First API Call** 
 
 ## API Reference
-* **API Overview** (CLI/API only)
+* **API Overview** 
 * [Endpoints](../endpoints/README.md)
-* **Authentication** (CLI/API only)
-* **Error Handling** (CLI/API only)
-* **Rate Limiting** (CLI/API only)
-* **OpenAPI Specification** (CLI/API only)
+* **Authentication** 
+* **Error Handling** 
+* **Rate Limiting** 
+* **OpenAPI Specification** 
 
 ## SDKs & Tools
-* **SDK Overview** (CLI/API only)
-* **Python SDK** (CLI/API only)
-  * **Installation** (CLI/API only)
-  * **Quick Start** (CLI/API only)
-  * **API Reference** (CLI/API only)
-  * **Examples** (CLI/API only)
-* **JavaScript SDK** (CLI/API only)
-  * **Installation** (CLI/API only)
-  * **Quick Start** (CLI/API only)
-  * **API Reference** (CLI/API only)
-  * **Examples** (CLI/API only)
-* **CLI Tools** (CLI/API only)
-  * **Installation** (CLI/API only)
-  * **Commands** (CLI/API only)
-  * **Configuration** (CLI/API only)
-* **Go SDK** (CLI/API only)
-  * **Installation** (CLI/API only)
-  * **Quick Start** (CLI/API only)
-  * **API Reference** (CLI/API only)
+* **SDK Overview** 
+* **Python SDK** 
+  * **Installation** 
+  * **Quick Start** 
+  * **API Reference** 
+  * **Examples** 
+* **JavaScript SDK** 
+  * **Installation** 
+  * **Quick Start** 
+  * **API Reference** 
+  * **Examples** 
+* **CLI Tools** 
+  * **Installation** 
+  * **Commands** 
+  * **Configuration** 
+* **Go SDK** 
+  * **Installation** 
+  * **Quick Start** 
+  * **API Reference** 
 
 ## Integration Guides
-* **Health AI Integration** (CLI/API only)
-* **Billing Setup** (CLI/API only)
-* **Webhook Configuration** (CLI/API only)
-* **Migration Guide** (CLI/API only)
+* **Health AI Integration** 
+* **Billing Setup** 
+* **Webhook Configuration** 
+* **Migration Guide** 
 * **API Playground** (Use CLI: `bondmcp --help`)
-* **Troubleshooting** (CLI/API only)
+* **Troubleshooting** 
 
 ## Examples
-* **Health AI Examples** (CLI/API only)
-* **Authentication Examples** (CLI/API only)
-* **Billing Examples** (CLI/API only)
-* **Full Applications** (CLI/API only)
+* **Health AI Examples** 
+* **Authentication Examples** 
+* **Billing Examples** 
+* **Full Applications** 
 
 ## Resources
-* **Changelog** (CLI/API only)
-* **API Status** (CLI/API only)
-* **Postman Collection** (CLI/API only)
+* **Changelog** 
+* **API Status** 
+* **Postman Collection** 
 
 ## Contributing
-* **Contributing Guide** (CLI/API only)
-* **Development Setup** (CLI/API only)
-* **API Pipeline** (CLI/API only)
-* **Best Practices** (CLI/API only)
+* **Contributing Guide** 
+* **Development Setup** 
+* **API Pipeline** 
+* **Best Practices** 

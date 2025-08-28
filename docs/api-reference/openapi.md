@@ -23,12 +23,12 @@ For detailed information about authentication, please refer to the [Authenticati
 
 ## API Versioning
 
-API versioning information can be found in the **Versioning** (CLI/API only) documentation.
+API versioning information can be found in the **Versioning**  documentation.
 
 ## Error Handling
 
-For details on error codes and handling, see the **Error Handling** (CLI/API only) guide.
+For details on error codes and handling, see the **Error Handling**  guide.
 
 ## Rate Limiting
 
-Information about rate limits can be found in the **Rate Limiting** (CLI/API only) documentation.
+Information about rate limits can be found in the **Rate Limiting**  documentation.

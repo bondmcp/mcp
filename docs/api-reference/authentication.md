@@ -92,7 +92,7 @@ If authentication fails, you'll receive one of these error responses:
 | 403 | Forbidden | The provided API key is invalid or has been revoked |
 | 429 | Too Many Requests | The API key has exceeded its rate limit |
 
-For more information on handling errors, see the **Error Handling** (CLI/API only) guide.
+For more information on handling errors, see the **Error Handling**  guide.
 
 ## SDK Authentication
 
@@ -110,4 +110,4 @@ const client = new BondMCPClient({
 client = BondMCPClient(api_key="YOUR_API_KEY")
 ```
 
-For more information on using our SDKs, see the **SDK Integration** (CLI/API only) guides.
+For more information on using our SDKs, see the **SDK Integration**  guides.

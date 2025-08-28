@@ -4,10 +4,10 @@ Welcome to the comprehensive API reference for BondMCP - the premier healthcare 
 
 ## Getting Started
 
-- **Quick Start Guide** (CLI/API only) - Get up and running in under 5 minutes
-- **Authentication** (CLI/API only) - API key setup and management
-- **Error Handling** (CLI/API only) - Common errors and resolution strategies
-- **Rate Limiting** (CLI/API only) - Understanding usage limits and optimization
+- **Quick Start Guide**  - Get up and running in under 5 minutes
+- **Authentication**  - API key setup and management
+- **Error Handling**  - Common errors and resolution strategies
+- **Rate Limiting**  - Understanding usage limits and optimization
 
 ## Core Endpoints
 
@@ -25,37 +25,37 @@ Welcome to the comprehensive API reference for BondMCP - the premier healthcare 
 
 ## SDK Integration
 
-- **JavaScript/TypeScript SDK** (CLI/API only)
-- **Python SDK** (CLI/API only)
-- **Go SDK** (CLI/API only)
-- **Ruby SDK** (CLI/API only)
-- **Java SDK** (CLI/API only)
-- **C# SDK** (CLI/API only)
+- **JavaScript/TypeScript SDK** 
+- **Python SDK** 
+- **Go SDK** 
+- **Ruby SDK** 
+- **Java SDK** 
+- **C# SDK** 
 
 ## Integration Examples
 
-- **React Web Application** (CLI/API only)
-- **Node.js Backend** (CLI/API only)
-- **Python Flask Application** (CLI/API only)
-- **Mobile Integration (React Native)** (CLI/API only)
-- **Mobile Integration (Swift)** (CLI/API only)
-- **Mobile Integration (Kotlin)** (CLI/API only)
+- **React Web Application** 
+- **Node.js Backend** 
+- **Python Flask Application** 
+- **Mobile Integration (React Native)** 
+- **Mobile Integration (Swift)** 
+- **Mobile Integration (Kotlin)** 
 
 ## Advanced Topics
 
-- **Webhook Configuration** (CLI/API only)
-- **Multi-Model Consensus** (CLI/API only)
-- **HIPAA Compliance** (CLI/API only)
-- **Custom Tool Integration** (CLI/API only)
-- **Enterprise Integration** (CLI/API only)
+- **Webhook Configuration** 
+- **Multi-Model Consensus** 
+- **HIPAA Compliance** 
+- **Custom Tool Integration** 
+- **Enterprise Integration** 
 
 ## Support & Community
 
-- **Troubleshooting Guide** (CLI/API only)
-- **FAQ** (CLI/API only)
-- **Community Examples** (CLI/API only)
-- **Contributing** (CLI/API only)
+- **Troubleshooting Guide** 
+- **FAQ** 
+- **Community Examples** 
+- **Contributing** 
 
 ## API Changelog
 
-See our **Changelog** (CLI/API only) for API updates and new features.
+See our **Changelog**  for API updates and new features.

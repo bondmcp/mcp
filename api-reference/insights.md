@@ -396,7 +396,7 @@ The API can generate insights for various health categories, including:
 | 422 | `insufficient_data` | Not enough data to generate insights |
 | 429 | `rate_limit_exceeded` | Rate limit exceeded |
 
-For more details on error handling, see the **Error Handling Guide** (CLI/API only).
+For more details on error handling, see the **Error Handling Guide** .
 
 ## Best Practices
 
@@ -415,6 +415,6 @@ For more details on error handling, see the **Error Handling Guide** (CLI/API on
 
 ## Related Endpoints
 
-- **Health Data Analysis** (CLI/API only)
-- **Lab Result Interpretation** (CLI/API only)
-- **Health Data Import** (CLI/API only)
+- **Health Data Analysis** 
+- **Lab Result Interpretation** 
+- **Health Data Import** 

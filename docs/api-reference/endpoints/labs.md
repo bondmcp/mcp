@@ -186,7 +186,7 @@ The API supports a wide range of common laboratory tests, including but not limi
 - **Vitamins & Minerals**: Vitamin D, Vitamin B12, Folate, Iron, Ferritin
 - **Inflammatory Markers**: CRP, ESR
 
-For a complete list of supported tests, refer to our **Lab Test Reference Guide** (CLI/API only).
+For a complete list of supported tests, refer to our **Lab Test Reference Guide** .
 
 ## Error Responses
 
@@ -198,7 +198,7 @@ For a complete list of supported tests, refer to our **Lab Test Reference Guide*
 | 422 | `validation_error` | Request validation failed (e.g., invalid lab test names) |
 | 429 | `rate_limit_exceeded` | Rate limit exceeded |
 
-For more details on error handling, see the **Error Handling Guide** (CLI/API only).
+For more details on error handling, see the **Error Handling Guide** .
 
 ## Best Practices
 
@@ -217,5 +217,5 @@ For more details on error handling, see the **Error Handling Guide** (CLI/API on
 
 ## Related Endpoints
 
-- **Health Question Answering** (CLI/API only)
-- **Health Data Analysis** (CLI/API only)
+- **Health Question Answering** 
+- **Health Data Analysis** 

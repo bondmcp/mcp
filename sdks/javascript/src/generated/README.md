@@ -51,18 +51,18 @@ All URIs are relative to *https://api.bondmcp.com*
 
 Class | Method | HTTP request | Description
 ------------ | ------------- | ------------- | -------------
-*DefaultApi* | ****apiV1AskPost**** (CLI/API only) | **POST** /api/v1/ask | Ask a health question
-*DefaultApi* | ****apiV1HealthGet**** (CLI/API only) | **GET** /api/v1/health | Health check endpoint
-*DefaultApi* | ****apiV1SymptomsPost**** (CLI/API only) | **POST** /api/v1/symptoms | Analyze symptoms (NEW in v1.0.1)
+*DefaultApi* | ****apiV1AskPost****  | **POST** /api/v1/ask | Ask a health question
+*DefaultApi* | ****apiV1HealthGet****  | **GET** /api/v1/health | Health check endpoint
+*DefaultApi* | ****apiV1SymptomsPost****  | **POST** /api/v1/symptoms | Analyze symptoms (NEW in v1.0.1)
 
 
 ### Documentation For Models
 
- - **ApiV1AskPost200Response** (CLI/API only)
- - **ApiV1AskPostRequest** (CLI/API only)
- - **ApiV1HealthGet200Response** (CLI/API only)
- - **ApiV1SymptomsPost200Response** (CLI/API only)
- - **ApiV1SymptomsPostRequest** (CLI/API only)
+ - **ApiV1AskPost200Response** 
+ - **ApiV1AskPostRequest** 
+ - **ApiV1HealthGet200Response** 
+ - **ApiV1SymptomsPost200Response** 
+ - **ApiV1SymptomsPostRequest** 
 
 
 <a id="documentation-for-authorization"></a>

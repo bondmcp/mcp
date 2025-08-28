@@ -73,7 +73,7 @@ console.log(response.answer);
 
 ## No Web Interface
 
-BondMCP is CLI/API only. There is no web dashboard or browser-based interface.
+BondMCP is . There is no web dashboard or browser-based interface.
 
 ## Next Steps
 

@@ -102,8 +102,8 @@ BondMCP powers healthcare AI across the entire ecosystem:
 Ready to transform your healthcare AI infrastructure?
 
 1. [Sign up](https://bondmcp.com/signup) for a free developer account
-2. Follow our **Quick Start Guide** (CLI/API only) to deploy your first application
-3. Explore our **comprehensive documentation** (CLI/API only) for detailed information
+2. Follow our **Quick Start Guide**  to deploy your first application
+3. Explore our **comprehensive documentation**  for detailed information
 
 ## Customer Testimonials
 

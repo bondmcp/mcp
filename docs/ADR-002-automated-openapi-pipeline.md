@@ -107,9 +107,9 @@ curl -X POST \
 
 ## References
 
-- **Pipeline Implementation Guide** (CLI/API only)
-- **Usage Examples** (CLI/API only)
-- **Migration Guide** (CLI/API only)
+- **Pipeline Implementation Guide** 
+- **Usage Examples** 
+- **Migration Guide** 
 
 ---
 

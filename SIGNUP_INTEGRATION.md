@@ -1,6 +1,6 @@
 # CLI-Based Setup Guide
 
-Since BondMCP is CLI/API only, all account management is done through the command line.
+Since BondMCP is , all account management is done through the command line.
 
 ## Setup Process
 

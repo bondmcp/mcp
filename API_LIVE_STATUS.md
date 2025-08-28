@@ -77,7 +77,7 @@ curl -X POST https://api.bondmcp.com/ask \
 
 ## 🎯 Platform Design
 
-BondMCP is **CLI/API only by design**:
+BondMCP is ** by design**:
 - ❌ No web dashboard
 - ❌ No browser registration
 - ❌ No online billing interface
