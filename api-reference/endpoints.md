@@ -1,42 +1,43 @@
----
-description: Complete API endpoints documentation for BondMCP Healthcare Platform
----
 
 # Endpoints
 
-BondMCP provides a comprehensive REST API for healthcare AI interactions. All endpoints are available at `https://api.bondmcp.com`.
+Complete API endpoints documentation for the BondMCP Healthcare Platform.
 
 ## Base URL
+All API requests should be made to:
 ```
 https://api.bondmcp.com
 ```
 
 ## Authentication
-All API requests require authentication using Bearer tokens. See [Authentication](authentication.md) for details.
+All endpoints require authentication using an API key in the Authorization header:
+```
+Authorization: Bearer YOUR_API_KEY
+```
 
 ## Core Endpoints
 
 ### Health Check
-**GET** `/health`
+**GET /health**
 
 Check the API service status and version information.
 
 **Response:**
 ```json
 {
-  "status": "healthy",
+  "status": "operational",
   "version": "2.1.0",
   "timestamp": "2025-08-28T10:30:00Z",
   "services": {
-    "database": "operational",
     "ai_engine": "operational",
+    "database": "operational", 
     "cache": "operational"
   }
 }
 ```
 
-### Ask Questions
-**POST** `/ask`
+### Ask Health Questions
+**POST /ask**
 
 Submit health-related questions to the AI system.
 
@@ -44,8 +45,8 @@ Submit health-related questions to the AI system.
 ```json
 {
   "question": "What are the benefits of vitamin D?",
-  "context": "general health inquiry",
-  "user_id": "optional-user-identifier"
+  "context": "optional additional context",
+  "user_id": "optional user identifier"
 }
 ```
 
@@ -54,7 +55,7 @@ Submit health-related questions to the AI system.
 {
   "answer": "Vitamin D provides several important health benefits...",
   "confidence": 0.95,
-  "sources": ["medical-journal-1", "clinical-study-2"],
+  "sources": ["source1", "source2"],
   "timestamp": "2025-08-28T10:30:00Z"
 }
 ```
@@ -62,103 +63,79 @@ Submit health-related questions to the AI system.
 ## MCP Discovery Endpoints
 
 ### MCP Configuration
-**GET** `/.well-known/mcp-configuration`
+**GET /.well-known/mcp-configuration**
 
-Retrieve complete MCP (Model Context Protocol) service configuration.
+Returns Model Context Protocol configuration for AI assistants.
 
 **Response:**
 ```json
 {
-  "name": "BondMCP Healthcare Platform",
-  "version": "2.1.0",
-  "description": "AI-powered healthcare information platform",
+  "mcpVersion": "2024-11-05",
   "capabilities": {
-    "tools": ["health_query", "symptom_analysis"],
-    "resources": ["medical_database", "clinical_studies"],
-    "prompts": ["health_assessment", "treatment_guidance"]
+    "tools": true,
+    "resources": true,
+    "prompts": true
   },
-  "endpoints": {
-    "ask": "/ask",
-    "health": "/health"
+  "serverInfo": {
+    "name": "BondMCP Healthcare Platform",
+    "version": "2.1.0"
   }
 }
 ```
 
 ### MCP Manifest
-**GET** `/.well-known/mcp-manifest.json`
+**GET /mcp-manifest.json**
 
-Lightweight manifest with service verification.
-
-**Response:**
-```json
-{
-  "name": "BondMCP",
-  "version": "2.1.0",
-  "mcp_version": "1.0",
-  "capabilities": ["tools", "resources", "prompts"],
-  "verification": {
-    "signature": "sha256:abc123...",
-    "timestamp": "2025-08-28T10:30:00Z"
-  }
-}
-```
+Returns the complete MCP manifest with available tools and resources.
 
 ## Rate Limiting
 
-All endpoints are subject to rate limiting:
-- **Free tier**: 100 requests per hour
-- **Pro tier**: 1,000 requests per hour
-- **Enterprise**: Custom limits
-
-Rate limit headers are included in all responses:
-```
-X-RateLimit-Limit: 100
-X-RateLimit-Remaining: 95
-X-RateLimit-Reset: 1693228800
-```
+- **Rate Limit**: 100 requests per minute per API key
+- **Headers**: 
+  - `X-RateLimit-Limit`: Maximum requests per window
+  - `X-RateLimit-Remaining`: Remaining requests in current window
+  - `X-RateLimit-Reset`: Time when the rate limit resets
 
 ## Error Responses
 
-All endpoints return consistent error responses:
+All endpoints return standard HTTP status codes:
 
+- **200**: Success
+- **400**: Bad Request - Invalid parameters
+- **401**: Unauthorized - Invalid or missing API key
+- **429**: Too Many Requests - Rate limit exceeded
+- **500**: Internal Server Error
+
+**Error Response Format:**
 ```json
 {
   "error": {
     "code": "INVALID_REQUEST",
-    "message": "The request is missing required parameters",
-    "details": {
-      "missing_fields": ["question"]
-    }
-  },
-  "timestamp": "2025-08-28T10:30:00Z"
+    "message": "The request parameters are invalid",
+    "details": "Additional error details"
+  }
 }
 ```
 
-## Status Codes
+## Interactive Testing
 
-- `200` - Success
-- `400` - Bad Request
-- `401` - Unauthorized
-- `403` - Forbidden
-- `429` - Rate Limited
-- `500` - Internal Server Error
+Use the BondMCP CLI for interactive testing:
+```bash
+# Install CLI
+pip install bondmcp-cli
 
-## Interactive API Testing
+# Test health endpoint
+bondmcp health
 
-For interactive API testing, use the [OpenAPI Specification](openapi-specification-cli-api-only.md) with tools like:
-- Postman
-- curl
-- HTTPie
-- Insomnia
+# Ask a question
+bondmcp ask "What should I eat for breakfast?"
+```
 
-## SDK Support
+## SDK Integration
 
-Use our official SDKs for easier integration:
-- [Python SDK](../sdks/python/README.md)
-- [JavaScript SDK](../sdks/javascript/README.md)
-- [CLI Tools](../sdks/cli/README.md)
-- [Go SDK](../sdks/go/README.md)
+- **Python SDK**: `pip install bondmcp-python`
+- **JavaScript SDK**: `npm install @bondmcp/sdk`
+- **Go SDK**: Available in the Go SDK section
+- **CLI Tools**: `pip install bondmcp-cli`
 
----
-
-**Next:** [Authentication](authentication.md) | **Previous:** [API Overview](api-overview-cli-api-only.md)
+For detailed SDK usage examples, see the respective SDK documentation sections.
