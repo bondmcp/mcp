@@ -1,0 +1,323 @@
+name: OpenAPI Diff Guard
+
+on:
+  pull_request:
+    paths:
+      - 'openapi/**'
+      - 'spec/**'
+      - '*.yaml'
+      - '*.json'
+    types: [opened, synchronize, reopened, ready_for_review]
+
+jobs:
+  openapi-diff:
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.draft == false
+    permissions:
+      contents: read
+      pull-requests: write
+    
+    outputs:
+      classification: ${{ steps.classify.outputs.classification }}
+      has_breaking: ${{ steps.classify.outputs.has_breaking }}
+      has_additive: ${{ steps.classify.outputs.has_additive }}
+      
+    steps:
+      - name: Checkout PR branch
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: ${{ github.event.pull_request.head.sha }}
+
+      - name: Checkout base branch for comparison
+        run: |
+          git fetch origin ${{ github.event.pull_request.base.ref }}
+          git checkout origin/${{ github.event.pull_request.base.ref }} -- openapi/ spec/ || true
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: |
+          npm ci
+          npm install -g openapi-diff @redocly/cli @stoplight/spectral-cli
+
+      - name: Prepare spec files for comparison
+        run: |
+          mkdir -p .diff-temp
+          
+          # Find the primary OpenAPI spec files
+          if [ -f "spec/openapi.json" ]; then
+            echo "Using spec/openapi.json as primary spec"
+            cp spec/openapi.json .diff-temp/current.json
+          elif [ -f "spec/openapi.yaml" ]; then
+            echo "Using spec/openapi.yaml as primary spec"
+            redocly bundle spec/openapi.yaml --output .diff-temp/current.json
+          elif [ -f "openapi/latest.json" ]; then
+            echo "Using openapi/latest.json as primary spec"
+            cp openapi/latest.json .diff-temp/current.json
+          else
+            echo "❌ No OpenAPI spec file found"
+            exit 1
+          fi
+          
+          # Get base branch version
+          git checkout HEAD~1 -- spec/ openapi/ 2>/dev/null || true
+          
+          if [ -f "spec/openapi.json" ]; then
+            cp spec/openapi.json .diff-temp/base.json
+          elif [ -f "spec/openapi.yaml" ]; then
+            redocly bundle spec/openapi.yaml --output .diff-temp/base.json
+          elif [ -f "openapi/latest.json" ]; then
+            cp openapi/latest.json .diff-temp/base.json
+          else
+            # Create empty base if no previous version exists
+            echo '{"openapi":"3.0.0","info":{"title":"Empty","version":"0.0.0"},"paths":{}}' > .diff-temp/base.json
+          fi
+          
+          # Restore current branch files
+          git checkout ${{ github.event.pull_request.head.sha }} -- spec/ openapi/
+
+      - name: Generate OpenAPI diff
+        id: diff
+        run: |
+          echo "🔄 Generating OpenAPI diff..."
+          
+          # Generate detailed diff
+          openapi-diff .diff-temp/base.json .diff-temp/current.json \
+            --format json > .diff-temp/diff.json || echo "Diff generation completed with warnings"
+          
+          openapi-diff .diff-temp/base.json .diff-temp/current.json \
+            --format markdown > .diff-temp/diff.md || echo "Diff generation completed with warnings"
+          
+          # Check if diff files exist and have content
+          if [ -s .diff-temp/diff.json ]; then
+            echo "has_changes=true" >> $GITHUB_OUTPUT
+            echo "✅ Diff generated successfully"
+          else
+            echo "has_changes=false" >> $GITHUB_OUTPUT
+            echo "ℹ️ No significant changes detected"
+          fi
+
+      - name: Classify changes
+        id: classify
+        run: |
+          echo "📊 Classifying API changes..."
+          
+          if [ ! -f .diff-temp/diff.json ] || [ ! -s .diff-temp/diff.json ]; then
+            echo "classification=patch" >> $GITHUB_OUTPUT
+            echo "has_breaking=false" >> $GITHUB_OUTPUT
+            echo "has_additive=false" >> $GITHUB_OUTPUT
+            echo "ℹ️ No changes to classify"
+            exit 0
+          fi
+          
+          # Analyze diff for breaking changes
+          BREAKING_INDICATORS="removed|deleted|incompatible|required.*added"
+          ADDITIVE_INDICATORS="added.*endpoint|added.*operation|added.*parameter|added.*property"
+          
+          HAS_BREAKING=false
+          HAS_ADDITIVE=false
+          
+          # Check for breaking changes in diff
+          if grep -Ei "$BREAKING_INDICATORS" .diff-temp/diff.md >/dev/null 2>&1; then
+            HAS_BREAKING=true
+            echo "🚨 Breaking changes detected"
+          fi
+          
+          # Check for additive changes
+          if grep -Ei "$ADDITIVE_INDICATORS" .diff-temp/diff.md >/dev/null 2>&1; then
+            HAS_ADDITIVE=true
+            echo "➕ Additive changes detected"
+          fi
+          
+          # Determine classification
+          if [ "$HAS_BREAKING" = "true" ]; then
+            CLASSIFICATION="major"
+          elif [ "$HAS_ADDITIVE" = "true" ]; then
+            CLASSIFICATION="minor"
+          else
+            CLASSIFICATION="patch"
+          fi
+          
+          echo "classification=$CLASSIFICATION" >> $GITHUB_OUTPUT
+          echo "has_breaking=$HAS_BREAKING" >> $GITHUB_OUTPUT
+          echo "has_additive=$HAS_ADDITIVE" >> $GITHUB_OUTPUT
+          
+          # Save classification to file for other jobs
+          cat > .diff-temp/classification.json << EOF
+          {
+            "classification": "$CLASSIFICATION",
+            "summary": "API changes detected requiring ${CLASSIFICATION} version bump",
+            "has_breaking_changes": $HAS_BREAKING,
+            "has_additive_changes": $HAS_ADDITIVE
+          }
+          EOF
+          
+          echo "📋 Classification: $CLASSIFICATION"
+
+      - name: Check required labels and CHANGELOG
+        id: check_requirements
+        if: steps.diff.outputs.has_changes == 'true'
+        run: |
+          echo "🔍 Checking PR requirements..."
+          
+          CLASSIFICATION="${{ steps.classify.outputs.classification }}"
+          HAS_BREAKING="${{ steps.classify.outputs.has_breaking }}"
+          
+          # Get PR labels
+          PR_LABELS=$(gh pr view ${{ github.event.pull_request.number }} --json labels --jq '.labels[].name' | tr '\n' ' ')
+          echo "Current labels: $PR_LABELS"
+          
+          MISSING_REQUIREMENTS=()
+          
+          # Check label requirements based on classification
+          if [ "$CLASSIFICATION" = "major" ] && [ "$HAS_BREAKING" = "true" ]; then
+            if ! echo "$PR_LABELS" | grep -q "breaking-change"; then
+              MISSING_REQUIREMENTS+=("Label 'breaking-change' required for breaking changes")
+            fi
+          elif [ "$CLASSIFICATION" = "minor" ]; then
+            if ! echo "$PR_LABELS" | grep -qE "(feat|docs-update)"; then
+              MISSING_REQUIREMENTS+=("Label 'feat' or 'docs-update' required for additive changes")
+            fi
+          elif [ "$CLASSIFICATION" = "patch" ]; then
+            if ! echo "$PR_LABELS" | grep -qE "(docs|chore)"; then
+              MISSING_REQUIREMENTS+=("Label 'docs' or 'chore' required for documentation/example changes")
+            fi
+          fi
+          
+          # Check CHANGELOG requirements
+          if [ "$CLASSIFICATION" != "patch" ]; then
+            if ! grep -q "### $CLASSIFICATION" CHANGELOG.md && ! grep -q "## \[Unreleased\]" CHANGELOG.md; then
+              MISSING_REQUIREMENTS+=("CHANGELOG.md entry required for $CLASSIFICATION changes")
+            fi
+          fi
+          
+          if [ ${#MISSING_REQUIREMENTS[@]} -gt 0 ]; then
+            echo "requirements_met=false" >> $GITHUB_OUTPUT
+            printf '%s\n' "${MISSING_REQUIREMENTS[@]}" > .diff-temp/missing_requirements.txt
+            echo "❌ Requirements not met:"
+            printf '  - %s\n' "${MISSING_REQUIREMENTS[@]}"
+          else
+            echo "requirements_met=true" >> $GITHUB_OUTPUT
+            echo "✅ All requirements met"
+          fi
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Create or update PR comment
+        if: steps.diff.outputs.has_changes == 'true'
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const fs = require('fs');
+            const classification = '${{ steps.classify.outputs.classification }}';
+            const hasBreaking = '${{ steps.classify.outputs.has_breaking }}' === 'true';
+            const requirementsMet = '${{ steps.check_requirements.outputs.requirements_met }}' === 'true';
+            
+            // Read diff content
+            let diffContent = '';
+            try {
+              diffContent = fs.readFileSync('.diff-temp/diff.md', 'utf8');
+            } catch (error) {
+              diffContent = 'Diff content not available';
+            }
+            
+            // Read missing requirements if any
+            let missingRequirements = '';
+            try {
+              missingRequirements = fs.readFileSync('.diff-temp/missing_requirements.txt', 'utf8');
+            } catch (error) {
+              // No missing requirements file means all requirements are met
+            }
+            
+            const emoji = classification === 'major' ? '🚨' : classification === 'minor' ? '➕' : '📝';
+            const classificationText = classification.toUpperCase();
+            
+            let comment = `## ${emoji} OpenAPI Diff Analysis
+            
+**Classification:** ${classificationText} (${hasBreaking ? 'includes breaking changes' : 'non-breaking'})
+
+### Change Summary
+${diffContent.length > 3000 ? diffContent.substring(0, 3000) + '\n\n*[Diff truncated - view full diff in workflow logs]*' : diffContent}
+
+### Requirements Check
+`;
+
+            if (requirementsMet) {
+              comment += '✅ **All requirements met** - Ready for review\n\n';
+            } else {
+              comment += '❌ **Missing requirements:**\n\n';
+              missingRequirements.split('\n').filter(req => req.trim()).forEach(req => {
+                comment += `- ${req}\n`;
+              });
+              comment += '\n';
+            }
+            
+            comment += `### Next Steps
+- ${classification === 'major' ? 'Ensure migration documentation is prepared' : ''}
+- ${classification === 'minor' ? 'Verify backward compatibility' : ''}  
+- ${classification === 'patch' ? 'Confirm only documentation/examples changed' : ''}
+- Review generated SDKs will be updated automatically on merge
+
+---
+*This comment is automatically updated on every push*`;
+
+            // Find existing comment
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+            });
+            
+            const existingComment = comments.find(comment => 
+              comment.body.includes('OpenAPI Diff Analysis')
+            );
+            
+            if (existingComment) {
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: existingComment.id,
+                body: comment
+              });
+            } else {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                body: comment
+              });
+            }
+
+      - name: Fail if requirements not met
+        if: steps.diff.outputs.has_changes == 'true' && steps.check_requirements.outputs.requirements_met == 'false'
+        run: |
+          echo "❌ OpenAPI Diff Guard failed: Requirements not met"
+          echo "Please address the missing requirements listed in the PR comment"
+          exit 1
+
+      - name: Upload diff artifacts
+        if: steps.diff.outputs.has_changes == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: openapi-diff-${{ github.event.pull_request.number }}
+          path: |
+            .diff-temp/diff.json
+            .diff-temp/diff.md
+            .diff-temp/classification.json
+          retention-days: 30
+
+      - name: Summary
+        run: |
+          if [ "${{ steps.diff.outputs.has_changes }}" = "true" ]; then
+            echo "📊 OpenAPI changes detected and analyzed"
+            echo "🏷️ Classification: ${{ steps.classify.outputs.classification }}"
+            echo "✅ Diff guard completed"
+          else
+            echo "ℹ️ No significant OpenAPI changes detected"
+          fi

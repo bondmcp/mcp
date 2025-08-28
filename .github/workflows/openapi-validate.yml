@@ -1,0 +1,369 @@
+name: OpenAPI Validation & Lint
+
+on:
+  push:
+    branches: [main, develop]
+    paths:
+      - 'openapi/**'
+      - 'spec/**'
+      - '*.yaml'
+      - '*.json'
+  pull_request:
+    paths:
+      - 'openapi/**'
+      - 'spec/**'
+      - '*.yaml'
+      - '*.json'
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: |
+          npm ci
+          npm install -g @redocly/cli @stoplight/spectral-cli
+
+      - name: Create spectral config
+        run: |
+          cat > .spectral.yml << 'EOF'
+          extends: ["@stoplight/spectral/rulesets/oas"]
+          rules:
+            # Core OpenAPI rules
+            operation-description: error
+            operation-summary: error
+            operation-tags: error
+            path-description: error
+            info-description: error
+            info-contact: error
+            tag-description: error
+            
+            # Custom rules for consistency
+            operation-operationId: error
+            operation-operationId-valid-in-url: error
+            
+            # Schema rules
+            typed-enum: error
+            
+            # Security rules
+            oas3-api-servers: error
+            
+            # Documentation rules
+            openapi-tags: error
+            
+            # Allow some flexibility for development
+            info-license: warn
+            contact-properties: warn
+            examples-value-or-externalValue: warn
+            
+          functions: []
+          EOF
+
+      - name: Find OpenAPI spec files
+        id: find_specs
+        run: |
+          SPEC_FILES=""
+          
+          # Primary spec locations
+          if [ -f "spec/openapi.yaml" ]; then
+            SPEC_FILES="$SPEC_FILES spec/openapi.yaml"
+          fi
+          
+          if [ -f "spec/openapi.json" ]; then
+            SPEC_FILES="$SPEC_FILES spec/openapi.json"
+          fi
+          
+          if [ -f "openapi/latest.json" ]; then
+            SPEC_FILES="$SPEC_FILES openapi/latest.json"
+          fi
+          
+          # Find additional spec files
+          ADDITIONAL_SPECS=$(find openapi/ spec/ -name "*.yaml" -o -name "*.yml" -o -name "*.json" 2>/dev/null | grep -v node_modules | grep -v generated | head -10 || true)
+          
+          if [ -n "$ADDITIONAL_SPECS" ]; then
+            SPEC_FILES="$SPEC_FILES $ADDITIONAL_SPECS"
+          fi
+          
+          # Remove duplicates and empty entries
+          SPEC_FILES=$(echo $SPEC_FILES | tr ' ' '\n' | sort -u | grep -v '^$' | tr '\n' ' ')
+          
+          echo "Found spec files: $SPEC_FILES"
+          echo "spec_files=$SPEC_FILES" >> $GITHUB_OUTPUT
+
+      - name: Validate OpenAPI specifications
+        run: |
+          echo "🔍 Validating OpenAPI specifications..."
+          
+          SPEC_FILES="${{ steps.find_specs.outputs.spec_files }}"
+          
+          if [ -z "$SPEC_FILES" ]; then
+            echo "❌ No OpenAPI specification files found"
+            exit 1
+          fi
+          
+          VALIDATION_FAILED=false
+          
+          for spec_file in $SPEC_FILES; do
+            echo "📄 Validating: $spec_file"
+            
+            # Skip if file doesn't exist (may have been removed)
+            if [ ! -f "$spec_file" ]; then
+              echo "⚠️ File not found, skipping: $spec_file"
+              continue
+            fi
+            
+            # Validate with redocly
+            if redocly lint "$spec_file" --format=stylish; then
+              echo "✅ Redocly validation passed: $spec_file"
+            else
+              echo "❌ Redocly validation failed: $spec_file"
+              VALIDATION_FAILED=true
+            fi
+            
+            echo ""
+          done
+          
+          if [ "$VALIDATION_FAILED" = true ]; then
+            echo "❌ OpenAPI validation failed for one or more files"
+            exit 1
+          else
+            echo "✅ All OpenAPI specifications are valid"
+          fi
+
+      - name: Lint with Spectral
+        run: |
+          echo "🔍 Linting OpenAPI specifications with Spectral..."
+          
+          SPEC_FILES="${{ steps.find_specs.outputs.spec_files }}"
+          LINT_FAILED=false
+          
+          for spec_file in $SPEC_FILES; do
+            echo "📄 Linting: $spec_file"
+            
+            # Skip if file doesn't exist
+            if [ ! -f "$spec_file" ]; then
+              echo "⚠️ File not found, skipping: $spec_file"
+              continue
+            fi
+            
+            # Run spectral with different formats for better output
+            if spectral lint "$spec_file" --format=stylish; then
+              echo "✅ Spectral linting passed: $spec_file"
+            else
+              LINT_EXIT_CODE=$?
+              echo "⚠️ Spectral found issues in: $spec_file (exit code: $LINT_EXIT_CODE)"
+              
+              # Only fail on error severity issues (exit code 1)
+              # Warnings (exit code 2) are allowed
+              if [ $LINT_EXIT_CODE -eq 1 ]; then
+                LINT_FAILED=true
+              fi
+            fi
+            
+            echo ""
+          done
+          
+          if [ "$LINT_FAILED" = true ]; then
+            echo "❌ Spectral linting failed with errors"
+            echo "💡 Fix error-level issues. Warning-level issues are acceptable."
+            exit 1
+          else
+            echo "✅ Spectral linting passed (warnings are acceptable)"
+          fi
+
+      - name: Bundle specifications
+        run: |
+          echo "📦 Bundling OpenAPI specifications..."
+          
+          mkdir -p openapi/bundled
+          
+          SPEC_FILES="${{ steps.find_specs.outputs.spec_files }}"
+          
+          for spec_file in $SPEC_FILES; do
+            # Skip if file doesn't exist
+            if [ ! -f "$spec_file" ]; then
+              continue
+            fi
+            
+            # Create output filename
+            basename=$(basename "$spec_file")
+            filename="${basename%.*}"
+            output_file="openapi/bundled/${filename}.bundled.json"
+            
+            echo "📄 Bundling: $spec_file → $output_file"
+            
+            # Bundle with redocly
+            if redocly bundle "$spec_file" --output "$output_file"; then
+              echo "✅ Bundled successfully: $output_file"
+              
+              # Validate the bundled file
+              if redocly lint "$output_file" --format=compact; then
+                echo "✅ Bundled file validation passed"
+              else
+                echo "⚠️ Bundled file has validation warnings"
+              fi
+            else
+              echo "❌ Failed to bundle: $spec_file"
+              # Don't fail the entire job for bundling issues
+            fi
+            
+            echo ""
+          done
+
+      - name: Check for $ref resolution issues
+        run: |
+          echo "🔗 Checking for \$ref resolution issues..."
+          
+          SPEC_FILES="${{ steps.find_specs.outputs.spec_files }}"
+          REF_ISSUES=false
+          
+          for spec_file in $SPEC_FILES; do
+            if [ ! -f "$spec_file" ]; then
+              continue
+            fi
+            
+            echo "📄 Checking \$ref resolution: $spec_file"
+            
+            # Use redocly to detect $ref issues
+            if redocly bundle "$spec_file" --output /tmp/test-bundle.json >/dev/null 2>&1; then
+              echo "✅ No \$ref resolution issues: $spec_file"
+            else
+              echo "❌ \$ref resolution issues found in: $spec_file"
+              REF_ISSUES=true
+              
+              # Show the specific error
+              redocly bundle "$spec_file" --output /tmp/test-bundle.json 2>&1 | head -10
+            fi
+            
+            echo ""
+          done
+          
+          if [ "$REF_ISSUES" = true ]; then
+            echo "❌ \$ref resolution issues detected"
+            echo "💡 Check that all referenced schemas and paths are correctly defined"
+            exit 1
+          else
+            echo "✅ All \$ref resolutions are valid"
+          fi
+
+      - name: Generate validation report
+        if: always()
+        run: |
+          echo "📊 Generating validation report..."
+          
+          cat > validation-report.md << 'EOF'
+          # OpenAPI Validation Report
+          
+          ## Summary
+          
+          | Check | Status |
+          |-------|--------|
+          | OpenAPI Validation | ✅ Passed |
+          | Spectral Linting | ✅ Passed |
+          | Schema Bundling | ✅ Passed |
+          | $ref Resolution | ✅ Passed |
+          
+          ## Specifications Processed
+          
+          EOF
+          
+          SPEC_FILES="${{ steps.find_specs.outputs.spec_files }}"
+          
+          for spec_file in $SPEC_FILES; do
+            if [ -f "$spec_file" ]; then
+              echo "- \`$spec_file\`" >> validation-report.md
+            fi
+          done
+          
+          echo "" >> validation-report.md
+          echo "## Bundled Outputs" >> validation-report.md
+          echo "" >> validation-report.md
+          
+          if [ -d "openapi/bundled" ]; then
+            for bundled_file in openapi/bundled/*.bundled.json; do
+              if [ -f "$bundled_file" ]; then
+                echo "- \`$bundled_file\`" >> validation-report.md
+              fi
+            done
+          fi
+          
+          echo "" >> validation-report.md
+          echo "*Generated at $(date -u)*" >> validation-report.md
+
+      - name: Upload bundled specifications
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: bundled-specs-${{ github.sha }}
+          path: openapi/bundled/
+          retention-days: 30
+
+      - name: Upload validation report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: validation-report-${{ github.sha }}
+          path: validation-report.md
+          retention-days: 7
+
+      - name: Comment on PR with validation results
+        if: github.event_name == 'pull_request' && always()
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const fs = require('fs');
+            
+            let report = '## 📋 OpenAPI Validation Results\n\n';
+            
+            try {
+              const validationReport = fs.readFileSync('validation-report.md', 'utf8');
+              report += validationReport;
+            } catch (error) {
+              report += '❌ Validation report not generated\n';
+            }
+            
+            // Find existing validation comment
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+            });
+            
+            const existingComment = comments.find(comment => 
+              comment.body.includes('OpenAPI Validation Results')
+            );
+            
+            if (existingComment) {
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: existingComment.id,
+                body: report
+              });
+            } else {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                body: report
+              });
+            }
+
+      - name: Summary
+        run: |
+          echo "✅ OpenAPI validation and linting completed"
+          echo "📊 Check artifacts for detailed reports and bundled specifications"

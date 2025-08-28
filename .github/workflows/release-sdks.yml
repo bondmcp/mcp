@@ -1,0 +1,521 @@
+name: Release SDKs
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'  # Triggers on version tags like v1.0.0, v2.1.3, etc.
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version to release (e.g., 1.0.0)'
+        required: true
+        type: string
+      dry_run:
+        description: 'Dry run (do not actually publish)'
+        required: false
+        default: true
+        type: boolean
+
+env:
+  TYPESCRIPT_SDK_PATH: sdks/typescript
+  PYTHON_SDK_PATH: sdks/python
+
+jobs:
+  prepare-release:
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.version.outputs.version }}
+      changelog_content: ${{ steps.changelog.outputs.content }}
+      
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Extract version
+        id: version
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            VERSION="${{ github.event.inputs.version }}"
+          else
+            # Extract version from tag (remove 'v' prefix)
+            VERSION="${GITHUB_REF#refs/tags/v}"
+          fi
+          
+          # Validate semantic version format
+          if [[ ! "$VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+(-[a-zA-Z0-9.-]+)?$ ]]; then
+            echo "❌ Invalid version format: $VERSION"
+            echo "Expected format: X.Y.Z or X.Y.Z-prerelease"
+            exit 1
+          fi
+          
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "📦 Release version: $VERSION"
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Extract changelog content
+        id: changelog
+        run: |
+          VERSION="${{ steps.version.outputs.version }}"
+          
+          echo "📄 Extracting changelog for version $VERSION..."
+          
+          if [ ! -f "CHANGELOG.md" ]; then
+            echo "⚠️ CHANGELOG.md not found, creating basic changelog entry"
+            CHANGELOG_CONTENT="## Release $VERSION\n\nSee commit history for details."
+          else
+            # Use our changelog extraction script
+            if npx ts-node scripts/extract-changelog-section.ts "$VERSION" > /tmp/changelog_content.txt 2>/tmp/changelog_error.txt; then
+              CHANGELOG_CONTENT=$(cat /tmp/changelog_content.txt)
+              echo "✅ Changelog extracted successfully"
+            else
+              echo "⚠️ Changelog extraction failed, using fallback"
+              CHANGELOG_CONTENT="## Release $VERSION\n\nChangelog extraction failed. See CHANGELOG.md and commit history for details."
+            fi
+          fi
+          
+          # Save to file and output
+          echo "$CHANGELOG_CONTENT" > /tmp/release_notes.md
+          echo "content<<EOF" >> $GITHUB_OUTPUT
+          echo "$CHANGELOG_CONTENT" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+      - name: Upload changelog artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-notes
+          path: /tmp/release_notes.md
+          retention-days: 7
+
+  validate-sdks:
+    runs-on: ubuntu-latest
+    needs: prepare-release
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          npm ci
+          pip install build twine hatch
+
+      - name: Validate TypeScript SDK version
+        run: |
+          VERSION="${{ needs.prepare-release.outputs.version }}"
+          
+          if [ ! -f "${{ env.TYPESCRIPT_SDK_PATH }}/package.json" ]; then
+            echo "❌ TypeScript SDK package.json not found"
+            exit 1
+          fi
+          
+          SDK_VERSION=$(jq -r '.version' "${{ env.TYPESCRIPT_SDK_PATH }}/package.json")
+          
+          if [ "$SDK_VERSION" != "$VERSION" ]; then
+            echo "❌ Version mismatch in TypeScript SDK"
+            echo "Expected: $VERSION"
+            echo "Found: $SDK_VERSION"
+            exit 1
+          fi
+          
+          echo "✅ TypeScript SDK version matches: $VERSION"
+
+      - name: Validate Python SDK version (if exists)
+        run: |
+          VERSION="${{ needs.prepare-release.outputs.version }}"
+          
+          if [ -f "${{ env.PYTHON_SDK_PATH }}/pyproject.toml" ]; then
+            SDK_VERSION=$(grep -E '^version\s*=' "${{ env.PYTHON_SDK_PATH }}/pyproject.toml" | cut -d'"' -f2)
+            
+            if [ "$SDK_VERSION" != "$VERSION" ]; then
+              echo "❌ Version mismatch in Python SDK"
+              echo "Expected: $VERSION"
+              echo "Found: $SDK_VERSION"
+              exit 1
+            fi
+            
+            echo "✅ Python SDK version matches: $VERSION"
+          else
+            echo "ℹ️ Python SDK not found, skipping version check"
+          fi
+
+      - name: Regenerate SDKs for safety
+        run: |
+          echo "🔄 Regenerating SDKs to ensure they're up to date..."
+          
+          # Find the primary spec file
+          if [ -f "spec/openapi.json" ]; then
+            SPEC_FILE="spec/openapi.json"
+          elif [ -f "spec/openapi.yaml" ]; then
+            SPEC_FILE="spec/openapi.yaml"
+          elif [ -f "openapi/latest.json" ]; then
+            SPEC_FILE="openapi/latest.json"
+          else
+            echo "❌ No OpenAPI spec file found"
+            exit 1
+          fi
+          
+          echo "Using spec file: $SPEC_FILE"
+          
+          # Install generation tools
+          npm install -g @openapitools/openapi-generator-cli @redocly/cli
+          
+          # Regenerate TypeScript SDK
+          if [ -d "${{ env.TYPESCRIPT_SDK_PATH }}" ]; then
+            echo "Regenerating TypeScript SDK..."
+            npm run sdk:gen:typescript || echo "TypeScript generation completed with warnings"
+          fi
+          
+          # Check for changes
+          if ! git diff --exit-code ${{ env.TYPESCRIPT_SDK_PATH }}/ >/dev/null 2>&1; then
+            echo "⚠️ SDK regeneration produced changes - this may indicate the SDKs were not up to date"
+            echo "Changed files:"
+            git diff --name-only ${{ env.TYPESCRIPT_SDK_PATH }}/
+            echo "Continuing with release but consider updating the SDKs in the repository"
+          else
+            echo "✅ SDKs are up to date"
+          fi
+
+      - name: Build TypeScript SDK
+        run: |
+          echo "🔨 Building TypeScript SDK..."
+          
+          cd ${{ env.TYPESCRIPT_SDK_PATH }}
+          
+          # Install dependencies
+          npm install
+          
+          # Build
+          npm run build
+          
+          # Verify build outputs
+          if [ ! -f "dist/index.js" ]; then
+            echo "❌ TypeScript SDK build failed - dist/index.js not found"
+            exit 1
+          fi
+          
+          if [ ! -f "dist/index.d.ts" ]; then
+            echo "❌ TypeScript SDK build failed - dist/index.d.ts not found"
+            exit 1
+          fi
+          
+          echo "✅ TypeScript SDK built successfully"
+
+      - name: Build Python SDK (if exists)
+        run: |
+          if [ -f "${{ env.PYTHON_SDK_PATH }}/pyproject.toml" ]; then
+            echo "🔨 Building Python SDK..."
+            
+            cd ${{ env.PYTHON_SDK_PATH }}
+            
+            # Build with hatch
+            python -m hatch build
+            
+            # Verify build outputs
+            if [ ! -d "dist" ] || [ -z "$(ls -A dist)" ]; then
+              echo "❌ Python SDK build failed - no dist files found"
+              exit 1
+            fi
+            
+            echo "✅ Python SDK built successfully"
+            echo "Built files:"
+            ls -la dist/
+          else
+            echo "ℹ️ Python SDK not found, skipping build"
+          fi
+
+  publish-npm:
+    runs-on: ubuntu-latest
+    needs: [prepare-release, validate-sdks]
+    environment: production
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          registry-url: 'https://registry.npmjs.org'
+          cache: 'npm'
+
+      - name: Install dependencies and build
+        run: |
+          npm ci
+          cd ${{ env.TYPESCRIPT_SDK_PATH }}
+          npm install
+          npm run build
+
+      - name: Publish to npm
+        if: github.event.inputs.dry_run != 'true' && env.NPM_PUBLISH_ENABLED == '1'
+        run: |
+          cd ${{ env.TYPESCRIPT_SDK_PATH }}
+          
+          # Check if version already exists on npm
+          PACKAGE_NAME=$(jq -r '.name' package.json)
+          VERSION="${{ needs.prepare-release.outputs.version }}"
+          
+          if npm view "$PACKAGE_NAME@$VERSION" version >/dev/null 2>&1; then
+            echo "⚠️ Version $VERSION already exists on npm, skipping publish"
+            exit 0
+          fi
+          
+          echo "🚀 Publishing $PACKAGE_NAME@$VERSION to npm..."
+          npm publish --access public
+          echo "✅ Published to npm successfully"
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NPM_PUBLISH_ENABLED: ${{ secrets.NPM_PUBLISH_ENABLED }}
+
+      - name: Dry run npm publish
+        if: github.event.inputs.dry_run == 'true' || env.NPM_PUBLISH_ENABLED != '1'
+        run: |
+          cd ${{ env.TYPESCRIPT_SDK_PATH }}
+          
+          PACKAGE_NAME=$(jq -r '.name' package.json)
+          VERSION="${{ needs.prepare-release.outputs.version }}"
+          
+          echo "🧪 DRY RUN: Would publish $PACKAGE_NAME@$VERSION to npm"
+          npm pack --dry-run
+          
+          if [ "${{ secrets.NPM_PUBLISH_ENABLED }}" != "1" ]; then
+            echo "ℹ️ NPM publishing disabled (NPM_PUBLISH_ENABLED != 1)"
+          fi
+        env:
+          NPM_PUBLISH_ENABLED: ${{ secrets.NPM_PUBLISH_ENABLED }}
+
+  publish-pypi:
+    runs-on: ubuntu-latest
+    needs: [prepare-release, validate-sdks]
+    environment: production
+    if: needs.validate-sdks.result == 'success'
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          pip install build twine hatch
+
+      - name: Check if Python SDK exists
+        id: check_python
+        run: |
+          if [ -f "${{ env.PYTHON_SDK_PATH }}/pyproject.toml" ]; then
+            echo "python_sdk_exists=true" >> $GITHUB_OUTPUT
+            echo "✅ Python SDK found"
+          else
+            echo "python_sdk_exists=false" >> $GITHUB_OUTPUT
+            echo "ℹ️ Python SDK not found, skipping PyPI publish"
+          fi
+
+      - name: Build Python package
+        if: steps.check_python.outputs.python_sdk_exists == 'true'
+        run: |
+          cd ${{ env.PYTHON_SDK_PATH }}
+          python -m hatch build
+
+      - name: Publish to PyPI
+        if: steps.check_python.outputs.python_sdk_exists == 'true' && github.event.inputs.dry_run != 'true' && env.PYPI_PUBLISH_ENABLED == '1'
+        run: |
+          cd ${{ env.PYTHON_SDK_PATH }}
+          
+          # Check if version already exists on PyPI
+          PACKAGE_NAME=$(grep -E '^name\s*=' pyproject.toml | cut -d'"' -f2)
+          VERSION="${{ needs.prepare-release.outputs.version }}"
+          
+          if pip index versions "$PACKAGE_NAME" | grep -q "$VERSION"; then
+            echo "⚠️ Version $VERSION already exists on PyPI, skipping publish"
+            exit 0
+          fi
+          
+          echo "🚀 Publishing $PACKAGE_NAME@$VERSION to PyPI..."
+          python -m twine upload dist/*
+          echo "✅ Published to PyPI successfully"
+        env:
+          TWINE_USERNAME: __token__
+          TWINE_PASSWORD: ${{ secrets.PYPI_TOKEN }}
+          PYPI_PUBLISH_ENABLED: ${{ secrets.PYPI_PUBLISH_ENABLED }}
+
+      - name: Dry run PyPI publish
+        if: steps.check_python.outputs.python_sdk_exists == 'true' && (github.event.inputs.dry_run == 'true' || env.PYPI_PUBLISH_ENABLED != '1')
+        run: |
+          cd ${{ env.PYTHON_SDK_PATH }}
+          
+          PACKAGE_NAME=$(grep -E '^name\s*=' pyproject.toml | cut -d'"' -f2)
+          VERSION="${{ needs.prepare-release.outputs.version }}"
+          
+          echo "🧪 DRY RUN: Would publish $PACKAGE_NAME@$VERSION to PyPI"
+          python -m twine check dist/*
+          
+          if [ "${{ secrets.PYPI_PUBLISH_ENABLED }}" != "1" ]; then
+            echo "ℹ️ PyPI publishing disabled (PYPI_PUBLISH_ENABLED != 1)"
+          fi
+        env:
+          PYPI_PUBLISH_ENABLED: ${{ secrets.PYPI_PUBLISH_ENABLED }}
+
+  create-github-release:
+    runs-on: ubuntu-latest
+    needs: [prepare-release, validate-sdks, publish-npm]
+    if: always() && needs.prepare-release.result == 'success'
+    permissions:
+      contents: write
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Download release notes
+        uses: actions/download-artifact@v4
+        with:
+          name: release-notes
+          path: /tmp/
+
+      - name: Create GitHub Release
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const fs = require('fs');
+            const version = '${{ needs.prepare-release.outputs.version }}';
+            const tagName = `v${version}`;
+            
+            // Read changelog content
+            let releaseNotes = '';
+            try {
+              releaseNotes = fs.readFileSync('/tmp/release_notes.md', 'utf8');
+            } catch (error) {
+              releaseNotes = `Release ${version}\n\nSee commit history for details.`;
+            }
+            
+            // Add SDK information to release notes
+            const npmPublished = '${{ needs.publish-npm.result }}' === 'success';
+            const pypiPublished = '${{ needs.publish-pypi.result }}' === 'success';
+            const isDryRun = '${{ github.event.inputs.dry_run }}' === 'true';
+            
+            let sdkInfo = '\n\n## 📦 SDK Releases\n\n';
+            
+            if (isDryRun) {
+              sdkInfo += '🧪 **DRY RUN** - No packages were actually published\n\n';
+            }
+            
+            sdkInfo += '| SDK | Status | Package |\n';
+            sdkInfo += '|-----|--------|----------|\n';
+            sdkInfo += `| TypeScript | ${npmPublished && !isDryRun ? '✅ Published' : isDryRun ? '🧪 Dry Run' : '❌ Failed'} | [@bondmcp/sdk@${version}](https://www.npmjs.com/package/@bondmcp/sdk) |\n`;
+            
+            if (pypiPublished || isDryRun) {
+              sdkInfo += `| Python | ${pypiPublished && !isDryRun ? '✅ Published' : isDryRun ? '🧪 Dry Run' : '❌ Failed'} | [bondmcp-sdk==${version}](https://pypi.org/project/bondmcp-sdk/) |\n`;
+            }
+            
+            const fullReleaseNotes = releaseNotes + sdkInfo;
+            
+            try {
+              // Check if release already exists
+              try {
+                const existingRelease = await github.rest.repos.getReleaseByTag({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  tag: tagName
+                });
+                
+                // Update existing release
+                await github.rest.repos.updateRelease({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  release_id: existingRelease.data.id,
+                  name: `Release ${version}`,
+                  body: fullReleaseNotes,
+                  draft: isDryRun,
+                  prerelease: version.includes('-')
+                });
+                
+                console.log(`✅ Updated existing release: ${tagName}`);
+                
+              } catch (error) {
+                // Create new release
+                await github.rest.repos.createRelease({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  tag_name: tagName,
+                  name: `Release ${version}`,
+                  body: fullReleaseNotes,
+                  draft: isDryRun,
+                  prerelease: version.includes('-')
+                });
+                
+                console.log(`✅ Created new release: ${tagName}`);
+              }
+              
+            } catch (error) {
+              console.error('❌ Failed to create/update release:', error);
+              throw error;
+            }
+
+  summary:
+    runs-on: ubuntu-latest
+    needs: [prepare-release, validate-sdks, publish-npm, publish-pypi, create-github-release]
+    if: always()
+    
+    steps:
+      - name: Release Summary
+        run: |
+          VERSION="${{ needs.prepare-release.outputs.version }}"
+          IS_DRY_RUN="${{ github.event.inputs.dry_run }}"
+          
+          echo "## 🚀 Release Summary for v$VERSION"
+          echo ""
+          
+          if [ "$IS_DRY_RUN" = "true" ]; then
+            echo "🧪 **DRY RUN MODE** - No actual publishing occurred"
+            echo ""
+          fi
+          
+          echo "| Component | Status |"
+          echo "|-----------|--------|"
+          echo "| Version Validation | ${{ needs.prepare-release.result == 'success' && '✅' || '❌' }} |"
+          echo "| SDK Validation | ${{ needs.validate-sdks.result == 'success' && '✅' || '❌' }} |"
+          echo "| npm Publish | ${{ needs.publish-npm.result == 'success' && '✅' || needs.publish-npm.result == 'skipped' && '⏭️' || '❌' }} |"
+          echo "| PyPI Publish | ${{ needs.publish-pypi.result == 'success' && '✅' || needs.publish-pypi.result == 'skipped' && '⏭️' || '❌' }} |"
+          echo "| GitHub Release | ${{ needs.create-github-release.result == 'success' && '✅' || '❌' }} |"
+          echo ""
+          
+          if [ "$IS_DRY_RUN" != "true" ]; then
+            echo "### 📦 Published Packages"
+            echo "- TypeScript SDK: [@bondmcp/sdk@$VERSION](https://www.npmjs.com/package/@bondmcp/sdk)"
+            echo "- Python SDK: [bondmcp-sdk==$VERSION](https://pypi.org/project/bondmcp-sdk/)"
+            echo ""
+            echo "### 🔗 Release"
+            echo "- [GitHub Release v$VERSION](https://github.com/${{ github.repository }}/releases/tag/v$VERSION)"
+          else
+            echo "### ⚙️ To Enable Actual Publishing"
+            echo "1. Set NPM_PUBLISH_ENABLED=1 in repository secrets"
+            echo "2. Set PYPI_PUBLISH_ENABLED=1 in repository secrets"
+            echo "3. Ensure NPM_TOKEN and PYPI_TOKEN secrets are configured"
+            echo "4. Run workflow_dispatch with dry_run=false"
+          fi

@@ -11,16 +11,27 @@
     "contract:preflight": "npx ts-node scripts/contract/publish_preflight.ts",
     "contract:label": "npx ts-node scripts/contract/apply_label.ts",
     "contract:migrate": "npx ts-node scripts/contract/assert_migration_file.ts",
-    "build:ts": "npx tsc"
+    "build:ts": "npx tsc",
+    "spec:lint": "spectral lint spec/openapi.yaml --format stylish",
+    "spec:bundle": "redocly bundle spec/openapi.yaml --output openapi/bundled.json",
+    "spec:diff": "openapi-diff openapi/latest.json spec/openapi.json --format markdown",
+    "sdk:gen": "npm run sdk:gen:typescript && npm run sdk:gen:python",
+    "sdk:gen:typescript": "openapi-generator-cli generate -i spec/openapi.json -g typescript-axios -o sdks/typescript/generated",
+    "sdk:gen:python": "openapi-generator-cli generate -i spec/openapi.json -g python -o sdks/python/generated",
+    "sdk:verify": "npm run sdk:gen && git diff --exit-code sdks/",
+    "release:prepare": "npm run spec:diff && npm run semver:check && npm run changelog:check"
   },
   "devDependencies": {
     "@octokit/rest": "^22.0.0",
     "@types/node": "^24.3.0",
-    "test": "node --test tests/test_bondmcp_node.js"
-  },
-  "devDependencies": {
-    "@types/node": "^24.3.0",
     "ts-node": "^10.9.2",
-    "typescript": "^5.9.2"
+    "typescript": "^5.9.2",
+    "@stoplight/spectral-cli": "^6.11.0",
+    "@redocly/cli": "^1.10.1",
+    "openapi-diff": "^0.24.0",
+    "@openapitools/openapi-generator-cli": "^2.7.0",
+    "husky": "^9.0.11",
+    "lefthook": "^1.6.7",
+    "prettier": "^3.2.5"
   }
 }
