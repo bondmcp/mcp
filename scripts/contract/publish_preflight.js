@@ -7,22 +7,13 @@
  * Exits with specific codes: 20 (npm exists), 21 (PyPI exists), 0 (clear), >1 (error)
  */
 
-import * as https from 'https';
-import * as http from 'http';
-
-interface RegistryCheckResult {
-  registry: string;
-  package: string;
-  version: string;
-  exists: boolean;
-  error?: string;
-  url: string;
-}
+const https = require('https');
+const http = require('http');
 
 /**
  * Make HTTP/HTTPS request with timeout
  */
-function makeRequest(url: string, timeout: number = 10000): Promise<{ statusCode: number; body: string }> {
+function makeRequest(url, timeout = 10000) {
   return new Promise((resolve, reject) => {
     const urlObj = new URL(url);
     const client = urlObj.protocol === 'https:' ? https : http;
@@ -58,13 +49,13 @@ function makeRequest(url: string, timeout: number = 10000): Promise<{ statusCode
 /**
  * Check if package exists in npm registry
  */
-async function checkNpmRegistry(packageName: string, version: string): Promise<RegistryCheckResult> {
+async function checkNpmRegistry(packageName, version) {
   const url = `https://registry.npmjs.org/${packageName}/${version}`;
   
   try {
     const response = await makeRequest(url);
     
-    const result: RegistryCheckResult = {
+    const result = {
       registry: 'npm',
       package: packageName,
       version,
@@ -87,7 +78,7 @@ async function checkNpmRegistry(packageName: string, version: string): Promise<R
       package: packageName,
       version,
       exists: false,
-      error: error instanceof Error ? error.message : 'Unknown error',
+      error: error.message,
       url
     };
   }
@@ -96,13 +87,13 @@ async function checkNpmRegistry(packageName: string, version: string): Promise<R
 /**
  * Check if package exists in PyPI registry
  */
-async function checkPyPIRegistry(packageName: string, version: string): Promise<RegistryCheckResult> {
+async function checkPyPIRegistry(packageName, version) {
   const url = `https://pypi.org/pypi/${packageName}/${version}/json`;
   
   try {
     const response = await makeRequest(url);
     
-    const result: RegistryCheckResult = {
+    const result = {
       registry: 'pypi',
       package: packageName,
       version,
@@ -125,7 +116,7 @@ async function checkPyPIRegistry(packageName: string, version: string): Promise<
       package: packageName,
       version,
       exists: false,
-      error: error instanceof Error ? error.message : 'Unknown error',
+      error: error.message,
       url
     };
   }
@@ -162,7 +153,7 @@ async function main() {
 
     console.error(`Checking ${registry.toUpperCase()} registry for ${packageName} version ${version}...`);
 
-    let result: RegistryCheckResult;
+    let result;
     
     if (registry === 'npm') {
       result = await checkNpmRegistry(packageName, version);
@@ -205,4 +196,4 @@ if (require.main === module) {
   main();
 }
 
-export { checkNpmRegistry, checkPyPIRegistry, RegistryCheckResult };
+module.exports = { checkNpmRegistry, checkPyPIRegistry };

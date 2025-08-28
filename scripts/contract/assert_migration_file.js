@@ -7,29 +7,13 @@
  * Reads diff classification and validates required migration documentation.
  */
 
-import * as fs from 'fs';
-import * as path from 'path';
-
-interface DiffClassification {
-  semanticChange: 'patch' | 'minor' | 'major';
-  summary?: string;
-  breakingChanges?: string[];
-  addedEndpoints?: string[];
-  removedEndpoints?: string[];
-  modifiedEndpoints?: string[];
-}
-
-interface MigrationFile {
-  path: string;
-  exists: boolean;
-  content?: string;
-  version?: string;
-}
+const fs = require('fs');
+const path = require('path');
 
 /**
  * Read diff classification from file or environment
  */
-function readDiffClassification(classificationPath?: string): DiffClassification | null {
+function readDiffClassification(classificationPath) {
   try {
     // Try from command line argument
     if (classificationPath && fs.existsSync(classificationPath)) {
@@ -60,8 +44,8 @@ function readDiffClassification(classificationPath?: string): DiffClassification
 /**
  * Find migration files in the MIGRATIONS directory
  */
-function findMigrationFiles(migrationsDir: string = 'MIGRATIONS'): MigrationFile[] {
-  const migrationFiles: MigrationFile[] = [];
+function findMigrationFiles(migrationsDir = 'MIGRATIONS') {
+  const migrationFiles = [];
   
   if (!fs.existsSync(migrationsDir)) {
     return migrationFiles;
@@ -99,8 +83,8 @@ function findMigrationFiles(migrationsDir: string = 'MIGRATIONS'): MigrationFile
 /**
  * Check if migration file content is adequate
  */
-function validateMigrationContent(content: string, classification: DiffClassification): { valid: boolean; issues: string[] } {
-  const issues: string[] = [];
+function validateMigrationContent(content, classification) {
+  const issues = [];
   const contentLower = content.toLowerCase();
 
   // Check minimum content length
@@ -137,7 +121,7 @@ function validateMigrationContent(content: string, classification: DiffClassific
 /**
  * Generate a template migration file
  */
-function generateMigrationTemplate(classification: DiffClassification): string {
+function generateMigrationTemplate(classification) {
   const version = process.env.CONTRACT_VERSION || 'x.x.x';
   const changeType = classification.semanticChange.toUpperCase();
   
@@ -285,7 +269,7 @@ async function main() {
 
     // Validate existing migration files
     let hasValidMigration = false;
-    const validationResults: any[] = [];
+    const validationResults = [];
 
     for (const migrationFile of migrationFiles) {
       if (migrationFile.content) {
@@ -339,4 +323,4 @@ if (require.main === module) {
   main();
 }
 
-export { readDiffClassification, findMigrationFiles, validateMigrationContent, generateMigrationTemplate };
+module.exports = { readDiffClassification, findMigrationFiles, validateMigrationContent, generateMigrationTemplate };

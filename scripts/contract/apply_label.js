@@ -6,27 +6,12 @@
  * Adds 'contract' label to the associated PR. Creates label if missing.
  */
 
-import * as https from 'https';
-
-interface GitHubAPIResponse {
-  [key: string]: any;
-}
-
-interface LabelData {
-  name: string;
-  color: string;
-  description: string;
-}
+const https = require('https');
 
 /**
  * Make GitHub API request
  */
-function makeGitHubRequest(
-  path: string, 
-  method: string = 'GET', 
-  data?: any, 
-  token?: string
-): Promise<{ statusCode: number; body: string }> {
+function makeGitHubRequest(path, method = 'GET', data, token) {
   return new Promise((resolve, reject) => {
     const options = {
       hostname: 'api.github.com',
@@ -70,7 +55,7 @@ function makeGitHubRequest(
 /**
  * Get PR number from GitHub context
  */
-function getPRNumber(): number | null {
+function getPRNumber() {
   // Try environment variables from GitHub Actions
   const prNumber = process.env.GITHUB_PR_NUMBER || 
                    process.env.PR_NUMBER ||
@@ -96,7 +81,7 @@ function getPRNumber(): number | null {
 /**
  * Get repository information from GitHub context
  */
-function getRepoInfo(): { owner: string; repo: string } | null {
+function getRepoInfo() {
   const repository = process.env.GITHUB_REPOSITORY;
   if (!repository) {
     return null;
@@ -113,7 +98,7 @@ function getRepoInfo(): { owner: string; repo: string } | null {
 /**
  * Check if label exists in repository
  */
-async function labelExists(owner: string, repo: string, labelName: string, token: string): Promise<boolean> {
+async function labelExists(owner, repo, labelName, token) {
   try {
     const response = await makeGitHubRequest(`/repos/${owner}/${repo}/labels/${labelName}`, 'GET', null, token);
     return response.statusCode === 200;
@@ -125,7 +110,7 @@ async function labelExists(owner: string, repo: string, labelName: string, token
 /**
  * Create label in repository
  */
-async function createLabel(owner: string, repo: string, labelData: LabelData, token: string): Promise<boolean> {
+async function createLabel(owner, repo, labelData, token) {
   try {
     const response = await makeGitHubRequest(`/repos/${owner}/${repo}/labels`, 'POST', labelData, token);
     return response.statusCode === 201;
@@ -138,7 +123,7 @@ async function createLabel(owner: string, repo: string, labelData: LabelData, to
 /**
  * Add label to PR
  */
-async function addLabelToPR(owner: string, repo: string, prNumber: number, labelName: string, token: string): Promise<boolean> {
+async function addLabelToPR(owner, repo, prNumber, labelName, token) {
   try {
     const response = await makeGitHubRequest(
       `/repos/${owner}/${repo}/issues/${prNumber}/labels`, 
@@ -156,7 +141,7 @@ async function addLabelToPR(owner: string, repo: string, prNumber: number, label
 /**
  * Check if PR already has the label
  */
-async function prHasLabel(owner: string, repo: string, prNumber: number, labelName: string, token: string): Promise<boolean> {
+async function prHasLabel(owner, repo, prNumber, labelName, token) {
   try {
     const response = await makeGitHubRequest(`/repos/${owner}/${repo}/issues/${prNumber}/labels`, 'GET', null, token);
     
@@ -165,7 +150,7 @@ async function prHasLabel(owner: string, repo: string, prNumber: number, labelNa
     }
 
     const labels = JSON.parse(response.body);
-    return labels.some((label: any) => label.name === labelName);
+    return labels.some(label => label.name === labelName);
   } catch (error) {
     return false;
   }
@@ -228,7 +213,7 @@ async function main() {
     if (!exists) {
       console.log(`Creating '${labelName}' label in repository...`);
       
-      const labelData: LabelData = {
+      const labelData = {
         name: labelName,
         color: '0366d6', // Neutral blue color
         description: 'Contract-related changes requiring review'
@@ -275,4 +260,4 @@ if (require.main === module) {
   main();
 }
 
-export { addLabelToPR, createLabel, labelExists };
+module.exports = { addLabelToPR, createLabel, labelExists };
