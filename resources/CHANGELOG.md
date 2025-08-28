@@ -15,9 +15,37 @@
 
 
 All notable changes to the BondMCP Python SDK will be documented in this file.
+All notable changes to the BondMCP platform and SDKs will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+## [2.1.0] - 2025-08-24
+
+### Added
+- **MCP Discovery Endpoints**: New `/.well-known/mcp-configuration` and `/.well-known/mcp-manifest.json` endpoints for dynamic capability discovery
+- **MCP Component Schemas**: Added `MCPConfiguration`, `MCPCapability`, and `MCPManifest` schemas for structured capability management
+- **Bearer Authentication**: Added `BearerAuth` security scheme supporting JWT tokens alongside existing API key authentication
+- **Standardized Error Envelope**: Implemented consistent error response format with `{ "error": { "code": string, "message": string } }` structure
+- **Rate Limit Header Exposure**: All responses now include standardized rate limiting headers (`X-RateLimit-Limit`, `X-RateLimit-Remaining`, `X-RateLimit-Reset`)
+- **Capability Versioning**: Introduced `:v1` suffix policy for endpoint versioning with deprecation tracking
+- **Cryptographic Verification**: SHA256 hashes for capability integrity verification
+- **Comprehensive MCP Documentation**: Added detailed guides for MCP overview and consuming capabilities with language-specific examples
+
+### Changed
+- **OpenAPI Version**: Bumped specification version from 1.0.0 to 2.1.0
+- **SDK Versions**: Updated JavaScript and Python SDKs to version 2.1.0 for alignment with MCP features
+- **Error Handling**: Enhanced error responses for auth endpoints with standardized envelope format
+
+### Enhanced
+- **Discovery Flow**: Applications can now dynamically discover available endpoints instead of hardcoding endpoint lists
+- **Integration Patterns**: Improved support for future-proof integrations with automatic capability detection
+- **Security**: Added manifest hash verification for automated clients to detect potential tampering
+
+### Backward Compatibility
+- All existing endpoints and schemas remain unchanged - this is an additive-only release
+- Existing API key authentication continues to work alongside new bearer token support
+- Success response formats are unchanged; only error response format standardization may affect error handling code
 
 ## [1.0.0] - 2025-06-03
 
