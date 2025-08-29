@@ -81,5 +81,6 @@ For questions or migration assistance:
 ---
 
 **Related Issues**: 
-- Migration tracking: [Issue #TBD - Remove legacy OpenAPI generator Q4 2025]
+- Migration tracking: [Issue #TBD-legacy-removal - Remove legacy OpenAPI generator Q4 2025]
+- Signature verification: [Issue #TBD-signature-verification - Implement sigstore/cosign signing]
 - ADR Document: `docs/ADR-002-automated-openapi-pipeline.md`

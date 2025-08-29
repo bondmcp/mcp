@@ -158,7 +158,9 @@ async function main() {
       }
       
       // TODO: Add signature verification when sigstore/cosign is implemented
-      // console.log('🔐 TODO: Signature verification (sigstore/cosign)');
+      // Issue: https://github.com/bondmcp/mcp/issues/TBD-signature-verification
+      // console.log('🔐 Signature verification: PASSED');
+      console.log('🔐 TODO: Signature verification (sigstore/cosign - see issue #TBD)');
       
       process.exit(0);
     } else {
