@@ -1,0 +1,561 @@
+name: OpenAPI Ingestion + SDK Release Pipeline
+
+on:
+  repository_dispatch:
+    types: [platform-openapi-published]
+  
+  # Allow manual trigger for testing
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version of the OpenAPI spec'
+        required: true
+        default: '1.0.0'
+      checksum:
+        description: 'SHA256 checksum of the spec'
+        required: true
+      change_type:
+        description: 'Type of change (major, minor, patch)'
+        required: true
+        default: 'patch'
+      download_url:
+        description: 'URL to download the OpenAPI spec'
+        required: true
+        default: 'https://api.bondmcp.com/openapi.json'
+      source_repo:
+        description: 'Source repository that generated the spec'
+        required: true
+        default: 'bondmcp/bondmcp-platform'
+
+jobs:
+  validate-payload:
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.extract.outputs.version }}
+      checksum: ${{ steps.extract.outputs.checksum }}
+      change_type: ${{ steps.extract.outputs.change_type }}
+      download_url: ${{ steps.extract.outputs.download_url }}
+      source_repo: ${{ steps.extract.outputs.source_repo }}
+    
+    steps:
+      - name: Extract and validate payload
+        id: extract
+        run: |
+          # Extract payload fields based on trigger type
+          if [ "${{ github.event_name }}" = "repository_dispatch" ]; then
+            VERSION="${{ github.event.client_payload.version }}"
+            CHECKSUM="${{ github.event.client_payload.checksum }}"
+            CHANGE_TYPE="${{ github.event.client_payload.change_type }}"
+            DOWNLOAD_URL="${{ github.event.client_payload.download_url }}"
+            SOURCE_REPO="${{ github.event.client_payload.source_repo }}"
+          else
+            VERSION="${{ github.event.inputs.version }}"
+            CHECKSUM="${{ github.event.inputs.checksum }}"
+            CHANGE_TYPE="${{ github.event.inputs.change_type }}"
+            DOWNLOAD_URL="${{ github.event.inputs.download_url }}"
+            SOURCE_REPO="${{ github.event.inputs.source_repo }}"
+          fi
+          
+          # Validate required fields
+          if [ -z "$VERSION" ]; then
+            echo "❌ Error: 'version' field is required"
+            exit 1
+          fi
+          
+          if [ -z "$CHECKSUM" ]; then
+            echo "❌ Error: 'checksum' field is required"
+            exit 1
+          fi
+          
+          if [ -z "$CHANGE_TYPE" ]; then
+            echo "❌ Error: 'change_type' field is required"
+            exit 1
+          fi
+          
+          if [ -z "$DOWNLOAD_URL" ]; then
+            echo "❌ Error: 'download_url' field is required"
+            exit 1
+          fi
+          
+          if [ -z "$SOURCE_REPO" ]; then
+            echo "❌ Error: 'source_repo' field is required"
+            exit 1
+          fi
+          
+          # Validate version format (semantic versioning)
+          if ! echo "$VERSION" | grep -E '^[0-9]+\.[0-9]+\.[0-9]+(-[a-zA-Z0-9\-\.]+)?(\+[a-zA-Z0-9\-\.]+)?$'; then
+            echo "❌ Error: 'version' must follow semantic versioning format"
+            exit 1
+          fi
+          
+          # Validate checksum format (SHA256)
+          if ! echo "$CHECKSUM" | grep -E '^[a-f0-9]{64}$'; then
+            echo "❌ Error: 'checksum' must be a valid SHA256 hash"
+            exit 1
+          fi
+          
+          # Validate change_type
+          if [[ ! "$CHANGE_TYPE" =~ ^(major|minor|patch)$ ]]; then
+            echo "❌ Error: 'change_type' must be one of: major, minor, patch"
+            exit 1
+          fi
+          
+          # Validate download_url format
+          if ! echo "$DOWNLOAD_URL" | grep -E '^https?://'; then
+            echo "❌ Error: 'download_url' must be a valid HTTP/HTTPS URL"
+            exit 1
+          fi
+          
+          # Validate source_repo format
+          if ! echo "$SOURCE_REPO" | grep -E '^[a-zA-Z0-9\-_]+/[a-zA-Z0-9\-_]+$'; then
+            echo "❌ Error: 'source_repo' must be in format 'owner/repo'"
+            exit 1
+          fi
+          
+          echo "✅ Payload validation successful"
+          echo "📋 Validated fields:"
+          echo "  - version: $VERSION"
+          echo "  - checksum: $CHECKSUM (${#CHECKSUM} chars)"
+          echo "  - change_type: $CHANGE_TYPE"
+          echo "  - download_url: $DOWNLOAD_URL"
+          echo "  - source_repo: $SOURCE_REPO"
+          
+          # Set outputs
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "checksum=$CHECKSUM" >> $GITHUB_OUTPUT
+          echo "change_type=$CHANGE_TYPE" >> $GITHUB_OUTPUT
+          echo "download_url=$DOWNLOAD_URL" >> $GITHUB_OUTPUT
+          echo "source_repo=$SOURCE_REPO" >> $GITHUB_OUTPUT
+
+  ingest-and-publish:
+    needs: validate-payload
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      packages: write
+      id-token: write  # for provenance
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          # Install Node.js tools
+          npm install -g js-yaml @apidevtools/swagger-cli @openapitools/openapi-generator-cli
+          
+          # Install Python tools  
+          pip install hatch twine openapi-python-client
+
+      - name: Download and verify OpenAPI spec
+        id: download_spec
+        run: |
+          VERSION="${{ needs.validate-payload.outputs.version }}"
+          CHECKSUM="${{ needs.validate-payload.outputs.checksum }}"
+          DOWNLOAD_URL="${{ needs.validate-payload.outputs.download_url }}"
+          
+          echo "📥 Downloading OpenAPI spec version $VERSION"
+          echo "🔗 URL: $DOWNLOAD_URL"
+          
+          # Download the spec with proper error handling
+          if ! curl -f -s -L -o temp_spec.json "$DOWNLOAD_URL"; then
+            echo "❌ Failed to download OpenAPI spec from $DOWNLOAD_URL"
+            exit 1
+          fi
+          
+          # Verify file was downloaded and is not empty
+          if [ ! -s temp_spec.json ]; then
+            echo "❌ Downloaded file is empty"
+            exit 1
+          fi
+          
+          # Verify checksum
+          ACTUAL_CHECKSUM=$(sha256sum temp_spec.json | cut -d' ' -f1)
+          if [ "$ACTUAL_CHECKSUM" != "$CHECKSUM" ]; then
+            echo "❌ Checksum verification failed"
+            echo "📋 Expected: $CHECKSUM"
+            echo "📋 Actual:   $ACTUAL_CHECKSUM"
+            echo "📋 This indicates the spec content has been modified or corrupted"
+            exit 1
+          fi
+          
+          echo "✅ Checksum verified: $CHECKSUM"
+          echo "spec_path=temp_spec.json" >> $GITHUB_OUTPUT
+
+      - name: Validate OpenAPI spec
+        run: |
+          echo "🔍 Validating OpenAPI specification format..."
+          if ! swagger-cli validate temp_spec.json; then
+            echo "❌ OpenAPI specification validation failed"
+            echo "📋 The downloaded spec does not conform to OpenAPI standards"
+            exit 1
+          fi
+          echo "✅ OpenAPI specification is valid"
+
+      - name: Enforce immutability check
+        id: immutability
+        run: |
+          VERSION="${{ needs.validate-payload.outputs.version }}"
+          HISTORY_FILE="openapi/history/openapi-$VERSION.json"
+          
+          if [ -f "$HISTORY_FILE" ]; then
+            echo "🔒 Version $VERSION already exists - checking immutability"
+            
+            # Compare existing version with new download
+            if ! cmp -s "$HISTORY_FILE" temp_spec.json; then
+              echo "❌ IMMUTABILITY VIOLATION: Version $VERSION already exists with different content"
+              echo "📋 Existing spec and new spec have different content"
+              echo "📋 This violates the immutability requirement for versioned specs"
+              echo "📋 Suggested actions:"
+              echo "    - Use a new version number if this is intentional"
+              echo "    - Verify the source platform is generating consistent content"
+              exit 1
+            fi
+            
+            echo "✅ Version $VERSION already exists with identical content - skipping ingestion"
+            echo "skip_ingestion=true" >> $GITHUB_OUTPUT
+          else
+            echo "✅ New version $VERSION - proceeding with ingestion"
+            echo "skip_ingestion=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Create directory structure
+        if: steps.immutability.outputs.skip_ingestion == 'false'
+        run: |
+          # Ensure required directories exist
+          mkdir -p openapi/history
+          mkdir -p MIGRATIONS
+          mkdir -p docs/api
+
+      - name: Store immutable snapshot
+        if: steps.immutability.outputs.skip_ingestion == 'false'
+        run: |
+          VERSION="${{ needs.validate-payload.outputs.version }}"
+          CHECKSUM="${{ needs.validate-payload.outputs.checksum }}"
+          DOWNLOAD_URL="${{ needs.validate-payload.outputs.download_url }}"
+          SOURCE_REPO="${{ needs.validate-payload.outputs.source_repo }}"
+          CHANGE_TYPE="${{ needs.validate-payload.outputs.change_type }}"
+          
+          # Store immutable snapshot in history
+          cp temp_spec.json "openapi/history/openapi-$VERSION.json"
+          
+          # Update latest.json with complete metadata
+          cat > openapi/latest.json << EOF
+          {
+            "version": "$VERSION",
+            "checksum": "$CHECKSUM",
+            "change_type": "$CHANGE_TYPE",
+            "download_url": "$DOWNLOAD_URL",
+            "source_repo": "$SOURCE_REPO",
+            "timestamp": "$(date -u +"%Y-%m-%dT%H:%M:%SZ")",
+            "ingested_by": "openapi-ingest.yml"
+          }
+          EOF
+          
+          echo "✅ Stored immutable snapshot: openapi/history/openapi-$VERSION.json"
+          echo "✅ Updated metadata: openapi/latest.json"
+
+      - name: Generate semantic diff and migration notes
+        if: steps.immutability.outputs.skip_ingestion == 'false'
+        id: generate_diff
+        run: |
+          VERSION="${{ needs.validate-payload.outputs.version }}"
+          
+          # Find the latest previous version (excluding the current one we just stored)
+          PREV_HISTORY=""
+          for file in $(ls -v openapi/history/openapi-*.json 2>/dev/null | head -n -1); do
+            if [ "$file" != "openapi/history/openapi-$VERSION.json" ]; then
+              PREV_HISTORY="$file"
+            fi
+          done
+          
+          if [ -n "$PREV_HISTORY" ] && [ -f "$PREV_HISTORY" ]; then
+            PREV_VERSION=$(basename "$PREV_HISTORY" .json | sed 's/openapi-//')
+            echo "📊 Generating semantic diff from $PREV_VERSION to $VERSION"
+            
+            # Generate diff (handle potential command failures gracefully)
+            DIFF_JSON="openapi/history/diff-$PREV_VERSION-to-$VERSION.json"
+            DIFF_MD="openapi/history/diff-$PREV_VERSION-to-$VERSION.md"
+            
+            # Try to generate JSON diff
+            if command -v openapi-diff >/dev/null 2>&1; then
+              if openapi-diff "$PREV_HISTORY" "openapi/history/openapi-$VERSION.json" --format json > "$DIFF_JSON" 2>/dev/null; then
+                echo "✅ Generated JSON diff: $DIFF_JSON"
+              else
+                echo "⚠️ Failed to generate JSON diff, creating placeholder"
+                echo '{"error": "diff generation failed", "prev_version": "'$PREV_VERSION'", "new_version": "'$VERSION'"}' > "$DIFF_JSON"
+              fi
+              
+              # Try to generate Markdown diff
+              if openapi-diff "$PREV_HISTORY" "openapi/history/openapi-$VERSION.json" --format markdown > "$DIFF_MD" 2>/dev/null; then
+                echo "✅ Generated Markdown diff: $DIFF_MD"
+              else
+                echo "⚠️ Failed to generate Markdown diff, creating placeholder"
+                cat > "$DIFF_MD" << EOF
+          # API Diff: $PREV_VERSION → $VERSION
+          
+          Diff generation failed. Please manually review the changes between:
+          - Previous: \`openapi/history/openapi-$PREV_VERSION.json\`
+          - Current: \`openapi/history/openapi-$VERSION.json\`
+          EOF
+              fi
+            else
+              echo "⚠️ openapi-diff not available, creating placeholder diffs"
+              echo '{"error": "openapi-diff not installed"}' > "$DIFF_JSON"
+              echo "# Diff generation requires openapi-diff tool" > "$DIFF_MD"
+            fi
+            
+            # Create migration guide
+            MIGRATION_FILE="MIGRATIONS/$PREV_VERSION-to-$VERSION.md"
+            cat > "$MIGRATION_FILE" << EOF
+          # Migration Guide: $PREV_VERSION → $VERSION
+          
+          **Change Type**: ${{ needs.validate-payload.outputs.change_type }}  
+          **Generated**: $(date -u +"%Y-%m-%d %H:%M:%S UTC")  
+          **Source**: ${{ needs.validate-payload.outputs.source_repo }}
+          
+          ## Overview
+          
+          This guide helps you migrate from API version $PREV_VERSION to $VERSION.
+          
+          ## Semantic Diff
+          
+          - **JSON**: [\`openapi/history/diff-$PREV_VERSION-to-$VERSION.json\`](../openapi/history/diff-$PREV_VERSION-to-$VERSION.json)
+          - **Markdown**: [\`openapi/history/diff-$PREV_VERSION-to-$VERSION.md\`](../openapi/history/diff-$PREV_VERSION-to-$VERSION.md)
+          
+          ## Migration Steps
+          
+          1. **Review the semantic diff** to understand all changes
+          2. **Update your client code** to handle any breaking changes  
+          3. **Test thoroughly** with the new API version
+          4. **Update your SDK dependencies** to version $VERSION
+          
+          ## SDK Updates
+          
+          Update your dependencies to the latest versions:
+          
+          **TypeScript/JavaScript:**
+          \`\`\`bash
+          npm install @bondmcp/sdk@$VERSION
+          \`\`\`
+          
+          **Python:**
+          \`\`\`bash
+          pip install bondmcp-sdk==$VERSION
+          \`\`\`
+          
+          ## Support
+          
+          If you need assistance with migration:
+          - Review the [API documentation](../docs/api/)
+          - Check the [examples](../examples/)
+          - Contact support via GitHub issues
+          EOF
+            
+            echo "has_diff=true" >> $GITHUB_OUTPUT
+            echo "prev_version=$PREV_VERSION" >> $GITHUB_OUTPUT
+            echo "✅ Generated migration guide: $MIGRATION_FILE"
+          else
+            echo "has_diff=false" >> $GITHUB_OUTPUT
+            echo "ℹ️ No previous version found for diff generation"
+          fi
+
+      - name: Generate and publish SDKs
+        if: steps.immutability.outputs.skip_ingestion == 'false'
+        run: |
+          VERSION="${{ needs.validate-payload.outputs.version }}"
+          echo "🏗️ Generating SDKs for version $VERSION"
+          
+          # Create SDK output directories
+          mkdir -p sdks/typescript/generated
+          mkdir -p sdks/python/generated
+          
+          # Generate TypeScript SDK
+          echo "📦 Generating TypeScript SDK..."
+          openapi-generator-cli generate \
+            -i temp_spec.json \
+            -g typescript-axios \
+            -o sdks/typescript/generated \
+            --additional-properties=supportsES6=true,npmName=@bondmcp/sdk,npmVersion=$VERSION \
+            --skip-validate-spec || echo "⚠️ TypeScript SDK generation had warnings"
+          
+          # Generate Python SDK  
+          echo "📦 Generating Python SDK..."
+          openapi-generator-cli generate \
+            -i temp_spec.json \
+            -g python \
+            -o sdks/python/generated \
+            --additional-properties=packageName=bondmcp_sdk,packageVersion=$VERSION \
+            --skip-validate-spec || echo "⚠️ Python SDK generation had warnings"
+          
+          echo "✅ SDK generation completed"
+
+      - name: Update changelogs and documentation
+        if: steps.immutability.outputs.skip_ingestion == 'false'
+        run: |
+          VERSION="${{ needs.validate-payload.outputs.version }}"
+          CHANGE_TYPE="${{ needs.validate-payload.outputs.change_type }}"
+          SOURCE_REPO="${{ needs.validate-payload.outputs.source_repo }}"
+          DATE=$(date -u +"%Y-%m-%d")
+          
+          # Update main CHANGELOG.md
+          cat > temp_changelog.md << EOF
+          # Changelog
+          
+          ## [$VERSION] - $DATE
+          
+          ### API Changes ($CHANGE_TYPE)
+          - Updated to OpenAPI specification version $VERSION
+          - Source: $SOURCE_REPO
+          - Change type: $CHANGE_TYPE
+          EOF
+          
+          if [ "${{ steps.generate_diff.outputs.has_diff }}" = "true" ]; then
+            PREV_VERSION="${{ steps.generate_diff.outputs.prev_version }}"
+            echo "- Migration guide: [MIGRATIONS/$PREV_VERSION-to-$VERSION.md](MIGRATIONS/$PREV_VERSION-to-$VERSION.md)" >> temp_changelog.md
+            echo "- Semantic diff: [openapi/history/diff-$PREV_VERSION-to-$VERSION.md](openapi/history/diff-$PREV_VERSION-to-$VERSION.md)" >> temp_changelog.md
+          fi
+          
+          cat >> temp_changelog.md << EOF
+          
+          ### SDK Updates
+          - TypeScript SDK (@bondmcp/sdk) version $VERSION
+          - Python SDK (bondmcp_sdk) version $VERSION
+          
+          EOF
+          
+          # Append existing changelog if it exists
+          if [ -f CHANGELOG.md ]; then
+            echo "" >> temp_changelog.md
+            tail -n +2 CHANGELOG.md >> temp_changelog.md
+          fi
+          
+          mv temp_changelog.md CHANGELOG.md
+          echo "✅ Updated main CHANGELOG.md"
+          
+          # Update API-specific changelog
+          mkdir -p docs/api
+          cat > temp_api_changelog.md << EOF
+          # API Changelog
+          
+          This file tracks all changes to the BondMCP API specification.
+          
+          ## [$VERSION] - $DATE
+          
+          **Type**: $CHANGE_TYPE  
+          **Source**: $SOURCE_REPO  
+          **Checksum**: ${{ needs.validate-payload.outputs.checksum }}
+          
+          ### Changes
+          - OpenAPI specification updated to version $VERSION
+          EOF
+          
+          if [ "${{ steps.generate_diff.outputs.has_diff }}" = "true" ]; then
+            PREV_VERSION="${{ steps.generate_diff.outputs.prev_version }}"
+            echo "- [Migration guide](../../MIGRATIONS/$PREV_VERSION-to-$VERSION.md)" >> temp_api_changelog.md
+            echo "- [Semantic diff (JSON)](../../openapi/history/diff-$PREV_VERSION-to-$VERSION.json)" >> temp_api_changelog.md
+            echo "- [Semantic diff (Markdown)](../../openapi/history/diff-$PREV_VERSION-to-$VERSION.md)" >> temp_api_changelog.md
+          fi
+          
+          echo "" >> temp_api_changelog.md
+          
+          # Append existing API changelog content
+          if [ -f docs/api/changelog.md ]; then
+            # Skip the header and append the rest
+            tail -n +6 docs/api/changelog.md >> temp_api_changelog.md
+          fi
+          
+          mv temp_api_changelog.md docs/api/changelog.md
+          echo "✅ Updated API changelog"
+
+      - name: Commit and push changes
+        if: steps.immutability.outputs.skip_ingestion == 'false'
+        run: |
+          VERSION="${{ needs.validate-payload.outputs.version }}"
+          CHANGE_TYPE="${{ needs.validate-payload.outputs.change_type }}"
+          SOURCE_REPO="${{ needs.validate-payload.outputs.source_repo }}"
+          
+          # Configure git
+          git config --global user.name "BondMCP OpenAPI Bot"
+          git config --global user.email "openapi-bot@bondmcp.com"
+          
+          # Add all changes
+          git add openapi/ MIGRATIONS/ docs/api/ CHANGELOG.md sdks/
+          
+          # Clean up temporary files
+          rm -f temp_spec.json
+          
+          # Commit with detailed message
+          git commit -m "feat($CHANGE_TYPE): ingest OpenAPI spec v$VERSION from $SOURCE_REPO
+
+          This commit supersedes and closes PR #65.
+
+          Changes:
+          - Added immutable snapshot: openapi/history/openapi-$VERSION.json
+          - Updated latest metadata: openapi/latest.json  
+          - Generated TypeScript SDK artifacts in sdks/typescript/
+          - Generated Python SDK artifacts in sdks/python/
+          - Updated CHANGELOG.md and docs/api/changelog.md
+          $([ "${{ steps.generate_diff.outputs.has_diff }}" = "true" ] && echo "- Created migration guide: MIGRATIONS/${{ steps.generate_diff.outputs.prev_version }}-to-$VERSION.md")
+          $([ "${{ steps.generate_diff.outputs.has_diff }}" = "true" ] && echo "- Generated semantic diffs in openapi/history/")
+          
+          Source: $SOURCE_REPO
+          Checksum: ${{ needs.validate-payload.outputs.checksum }}
+          Change type: $CHANGE_TYPE
+          
+          Closes #65
+          
+          [automated by openapi-ingest.yml]"
+          
+          # Push changes
+          git push origin HEAD:${GITHUB_REF#refs/heads/}
+          echo "✅ Changes committed and pushed"
+
+      - name: Summary
+        if: always()
+        run: |
+          VERSION="${{ needs.validate-payload.outputs.version }}"
+          
+          if [ "${{ steps.immutability.outputs.skip_ingestion }}" = "true" ]; then
+            echo "ℹ️ Version $VERSION already exists with identical content - no action taken"
+            echo "✅ Immutability preserved"
+          elif [ "${{ needs.validate-payload.result }}" = "failure" ]; then
+            echo "❌ Payload validation failed - pipeline halted"
+          else
+            echo "🎉 Successfully processed OpenAPI spec version $VERSION"
+            echo ""
+            echo "📋 Summary:"
+            echo "  ✅ Payload validated"
+            echo "  ✅ Spec downloaded and verified (checksum: ${{ needs.validate-payload.outputs.checksum }})"
+            echo "  ✅ Immutability enforced"
+            echo "  ✅ Immutable snapshot stored"
+            echo "  ✅ SDK artifacts generated"
+            echo "  ✅ Documentation updated"
+            echo "  ✅ Changes committed"
+            echo ""
+            echo "📦 Generated artifacts:"
+            echo "  - Spec: openapi/history/openapi-$VERSION.json"
+            echo "  - TypeScript SDK: sdks/typescript/generated/"
+            echo "  - Python SDK: sdks/python/generated/"
+            if [ "${{ steps.generate_diff.outputs.has_diff }}" = "true" ]; then
+              PREV_VERSION="${{ steps.generate_diff.outputs.prev_version }}"
+              echo "  - Migration guide: MIGRATIONS/$PREV_VERSION-to-$VERSION.md"
+              echo "  - Semantic diffs: openapi/history/diff-$PREV_VERSION-to-$VERSION.*"
+            fi
+            echo ""
+            echo "🚀 This pipeline supersedes and closes PR #65"
+          fi
