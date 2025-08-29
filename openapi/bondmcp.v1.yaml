@@ -1,0 +1,795 @@
+openapi: 3.1.0
+info:
+  title: BondMCP Healthcare Platform API
+  version: "1.0.0"
+  description: |
+    Comprehensive healthcare AI and MCP platform with security-focused architecture.
+    
+    The BondMCP API provides access to advanced healthcare AI capabilities including:
+    - Health question answering and analysis
+    - Lab result interpretation
+    - Medical imaging analysis
+    - Drug interaction checking
+    - Symptom analysis
+    - Medical research queries
+    - Patient data management
+    - Billing and subscription management
+    
+    ## Authentication
+    
+    All API endpoints require authentication using one of the following methods:
+    - API Key in header: `X-API-Key: your-api-key`
+    - Bearer token in header: `Authorization: Bearer your-token`
+    
+    ## Rate Limiting
+    
+    API requests are rate limited per API key:
+    - Free tier: 100 requests/hour
+    - Pro tier: 1000 requests/hour
+    - Enterprise: Custom limits
+    
+    ## Error Handling
+    
+    All API responses follow a standard error format with correlation IDs for debugging.
+    
+  contact:
+    name: BondMCP Support
+    url: https://www.bondmcp.com/support
+    email: support@bondmcp.com
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+  x-logo:
+    url: https://www.bondmcp.com/assets/logo.png
+    altText: BondMCP Logo
+
+servers:
+  - url: https://api.bondmcp.com/v1
+    description: Production server
+  - url: https://staging-api.bondmcp.com/v1
+    description: Staging server
+    x-internal: true
+
+security:
+  - ApiKeyAuth: []
+  - BearerAuth: []
+
+tags:
+  - name: Authentication
+    description: User authentication and session management
+  - name: API Keys
+    description: API key management and usage statistics
+  - name: Health AI
+    description: Core health AI capabilities and medical analysis
+  - name: Data Management
+    description: Health data import, export, and management
+  - name: Research
+    description: Medical research and literature integration
+  - name: Billing
+    description: Subscription management and billing
+  - name: System
+    description: System health and monitoring endpoints
+
+paths:
+  # System endpoints
+  /health:
+    get:
+      tags:
+        - System
+      summary: Health check endpoint
+      description: Returns API health status and system information
+      operationId: getHealthStatus
+      security: []
+      responses:
+        "200":
+          description: Service is healthy
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HealthStatus"
+        "503":
+          description: Service unavailable
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  # Authentication endpoints
+  /auth/register:
+    post:
+      tags:
+        - Authentication
+      summary: Register new user
+      description: Create a new user account
+      operationId: registerUser
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UserRegistrationRequest"
+      responses:
+        "201":
+          description: User registered successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserRegistrationResponse"
+        "400":
+          description: Invalid request data
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "409":
+          description: User already exists
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /auth/login:
+    post:
+      tags:
+        - Authentication
+      summary: User login
+      description: Authenticate user and obtain access token
+      operationId: loginUser
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UserLoginRequest"
+      responses:
+        "200":
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserLoginResponse"
+        "401":
+          description: Invalid credentials
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /auth/logout:
+    post:
+      tags:
+        - Authentication
+      summary: User logout
+      description: Invalidate user session and access token
+      operationId: logoutUser
+      security:
+        - BearerAuth: []
+      responses:
+        "200":
+          description: Logout successful
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SuccessResponse"
+        "401":
+          description: Invalid or expired token
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /auth/refresh:
+    post:
+      tags:
+        - Authentication
+      summary: Refresh access token
+      description: Get a new access token using refresh token
+      operationId: refreshToken
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TokenRefreshRequest"
+      responses:
+        "200":
+          description: Token refreshed successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TokenRefreshResponse"
+        "401":
+          description: Invalid refresh token
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /auth/verify:
+    get:
+      tags:
+        - Authentication
+      summary: Verify email address
+      description: Verify user email address using verification token
+      operationId: verifyEmail
+      security: []
+      parameters:
+        - name: token
+          in: query
+          required: true
+          description: Email verification token
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Email verified successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SuccessResponse"
+        "400":
+          description: Invalid or expired token
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /auth/reset:
+    post:
+      tags:
+        - Authentication
+      summary: Reset password
+      description: Initiate password reset process
+      operationId: resetPassword
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PasswordResetRequest"
+      responses:
+        "200":
+          description: Password reset email sent
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SuccessResponse"
+        "404":
+          description: User not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  # API Key management endpoints
+  /apikeys/generate:
+    post:
+      tags:
+        - API Keys
+      summary: Generate new API key
+      description: Create a new API key for the authenticated user
+      operationId: generateApiKey
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ApiKeyGenerateRequest"
+      responses:
+        "201":
+          description: API key generated successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiKeyResponse"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /health/ask:
+    post:
+      tags:
+        - Health AI
+      summary: Health AI question answering
+      description: Ask health-related questions and get AI-powered responses
+      operationId: askHealthQuestion
+      security:
+        - ApiKeyAuth: []
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/HealthQuestionRequest"
+      responses:
+        "200":
+          description: Health question answered successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HealthQuestionResponse"
+        "400":
+          description: Invalid request data
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "429":
+          description: Rate limit exceeded
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+components:
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-API-Key
+      description: API key for authentication
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: JWT bearer token for authentication
+    OAuth2:
+      type: oauth2
+      description: OAuth2 authentication (future implementation)
+      x-beta: true
+      flows:
+        authorizationCode:
+          authorizationUrl: https://api.bondmcp.com/oauth2/authorize
+          tokenUrl: https://api.bondmcp.com/oauth2/token
+          scopes:
+            read: Read access to user data
+            write: Write access to user data
+            admin: Administrative access
+
+  schemas:
+    # Standard error model
+    ErrorResponse:
+      type: object
+      required:
+        - error
+      properties:
+        error:
+          type: object
+          required:
+            - code
+            - message
+          properties:
+            code:
+              type: string
+              description: Error code for programmatic handling
+              example: "VALIDATION_ERROR"
+            message:
+              type: string
+              description: Human-readable error message
+              example: "The provided email address is invalid"
+            correlationId:
+              type: string
+              description: Unique identifier for debugging purposes
+              example: "req_123456789"
+            details:
+              type: object
+              description: Additional error details
+              additionalProperties: true
+              example:
+                field: "email"
+                rejectedValue: "invalid-email"
+
+    SuccessResponse:
+      type: object
+      required:
+        - success
+        - message
+      properties:
+        success:
+          type: boolean
+          example: true
+        message:
+          type: string
+          example: "Operation completed successfully"
+        correlationId:
+          type: string
+          description: Unique identifier for request tracking
+          example: "req_123456789"
+
+    # System schemas
+    HealthStatus:
+      type: object
+      required:
+        - status
+        - version
+        - timestamp
+      properties:
+        status:
+          type: string
+          enum: [healthy, degraded, unhealthy]
+          example: "healthy"
+        version:
+          type: string
+          example: "1.0.0"
+        timestamp:
+          type: string
+          format: date-time
+          example: "2024-01-01T00:00:00Z"
+        environment:
+          type: string
+          enum: [production, staging, development]
+          example: "production"
+        services:
+          type: object
+          additionalProperties:
+            type: object
+            properties:
+              status:
+                type: string
+                enum: [healthy, degraded, unhealthy]
+              responseTime:
+                type: number
+                description: Response time in milliseconds
+          example:
+            database:
+              status: "healthy"
+              responseTime: 15
+            ai_service:
+              status: "healthy"
+              responseTime: 250
+
+    # Authentication schemas
+    UserRegistrationRequest:
+      type: object
+      required:
+        - email
+        - password
+        - firstName
+        - lastName
+      properties:
+        email:
+          type: string
+          format: email
+          example: "user@example.com"
+        password:
+          type: string
+          minLength: 8
+          example: "SecurePassword123!"
+        firstName:
+          type: string
+          minLength: 1
+          maxLength: 50
+          example: "John"
+        lastName:
+          type: string
+          minLength: 1
+          maxLength: 50
+          example: "Doe"
+        agreeToTerms:
+          type: boolean
+          description: User must agree to terms of service
+          example: true
+
+    UserRegistrationResponse:
+      type: object
+      required:
+        - userId
+        - email
+        - message
+      properties:
+        userId:
+          type: string
+          example: "user_123456789"
+        email:
+          type: string
+          format: email
+          example: "user@example.com"
+        message:
+          type: string
+          example: "Account created successfully. Please check your email for verification."
+        verificationRequired:
+          type: boolean
+          example: true
+
+    UserLoginRequest:
+      type: object
+      required:
+        - email
+        - password
+      properties:
+        email:
+          type: string
+          format: email
+          example: "user@example.com"
+        password:
+          type: string
+          example: "SecurePassword123!"
+        rememberMe:
+          type: boolean
+          description: Extend session duration
+          example: false
+
+    UserLoginResponse:
+      type: object
+      required:
+        - accessToken
+        - refreshToken
+        - expiresIn
+        - user
+      properties:
+        accessToken:
+          type: string
+          description: JWT access token
+          example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+        refreshToken:
+          type: string
+          description: Refresh token for obtaining new access tokens
+          example: "rt_123456789abcdef"
+        expiresIn:
+          type: integer
+          description: Access token expiration time in seconds
+          example: 3600
+        tokenType:
+          type: string
+          example: "Bearer"
+        user:
+          $ref: "#/components/schemas/UserProfile"
+
+    TokenRefreshRequest:
+      type: object
+      required:
+        - refreshToken
+      properties:
+        refreshToken:
+          type: string
+          example: "rt_123456789abcdef"
+
+    TokenRefreshResponse:
+      type: object
+      required:
+        - accessToken
+        - expiresIn
+      properties:
+        accessToken:
+          type: string
+          example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+        expiresIn:
+          type: integer
+          example: 3600
+        tokenType:
+          type: string
+          example: "Bearer"
+
+    PasswordResetRequest:
+      type: object
+      required:
+        - email
+      properties:
+        email:
+          type: string
+          format: email
+          example: "user@example.com"
+
+    UserProfile:
+      type: object
+      required:
+        - userId
+        - email
+        - firstName
+        - lastName
+      properties:
+        userId:
+          type: string
+          example: "user_123456789"
+        email:
+          type: string
+          format: email
+          example: "user@example.com"
+        firstName:
+          type: string
+          example: "John"
+        lastName:
+          type: string
+          example: "Doe"
+        isEmailVerified:
+          type: boolean
+          example: true
+        createdAt:
+          type: string
+          format: date-time
+          example: "2024-01-01T00:00:00Z"
+        lastLoginAt:
+          type: string
+          format: date-time
+          example: "2024-01-01T12:00:00Z"
+        plan:
+          type: string
+          enum: [free, pro, enterprise]
+          example: "free"
+
+    # API Key schemas
+    ApiKeyGenerateRequest:
+      type: object
+      required:
+        - name
+      properties:
+        name:
+          type: string
+          description: Friendly name for the API key
+          example: "Production API Key"
+        description:
+          type: string
+          description: Optional description
+          example: "API key for production application"
+        permissions:
+          type: array
+          items:
+            type: string
+            enum: [read, write, admin]
+          example: ["read", "write"]
+        expiresAt:
+          type: string
+          format: date-time
+          description: Optional expiration date
+          example: "2025-01-01T00:00:00Z"
+
+    ApiKeyResponse:
+      type: object
+      required:
+        - keyId
+        - name
+        - apiKey
+        - createdAt
+      properties:
+        keyId:
+          type: string
+          example: "key_123456789"
+        name:
+          type: string
+          example: "Production API Key"
+        apiKey:
+          type: string
+          description: The actual API key (only returned on creation)
+          example: "bmcp_123456789abcdef"
+        permissions:
+          type: array
+          items:
+            type: string
+          example: ["read", "write"]
+        createdAt:
+          type: string
+          format: date-time
+          example: "2024-01-01T00:00:00Z"
+        expiresAt:
+          oneOf:
+            - type: "null"
+            - type: string
+              format: date-time
+          examples: [null, "2025-01-01T00:00:00Z"]
+        lastUsedAt:
+          oneOf:
+            - type: "null"
+            - type: string
+              format: date-time
+          examples: [null, "2024-01-01T12:00:00Z"]
+
+    # Health AI schemas
+    HealthQuestionRequest:
+      type: object
+      required:
+        - message
+      properties:
+        message:
+          type: string
+          description: The health question to ask
+          example: "What are the symptoms of diabetes?"
+        context:
+          type: object
+          description: Additional context for the question
+          properties:
+            age:
+              type: integer
+              minimum: 0
+              maximum: 150
+              example: 35
+            gender:
+              type: string
+              enum: [male, female, other, prefer_not_to_say]
+              example: "female"
+            medicalHistory:
+              type: array
+              items:
+                type: string
+              example: ["hypertension", "diabetes_family_history"]
+            medications:
+              type: array
+              items:
+                type: string
+              example: ["metformin", "lisinopril"]
+        includeReferences:
+          type: boolean
+          description: Include medical references in response
+          default: false
+          example: true
+        maxResults:
+          type: integer
+          minimum: 1
+          maximum: 10
+          default: 1
+          example: 3
+
+    HealthQuestionResponse:
+      type: object
+      required:
+        - response
+        - confidence
+        - queryId
+      properties:
+        response:
+          type: string
+          description: AI-generated response to the health question
+          example: "Diabetes symptoms include increased thirst, frequent urination, unexplained weight loss, fatigue, and blurred vision. It's important to consult with a healthcare professional for proper diagnosis and treatment."
+        confidence:
+          type: number
+          minimum: 0
+          maximum: 1
+          description: Confidence score for the response
+          example: 0.92
+        queryId:
+          type: string
+          description: Unique identifier for this query
+          example: "query_123456789"
+        references:
+          type: array
+          items:
+            $ref: "#/components/schemas/MedicalReference"
+        disclaimers:
+          type: array
+          items:
+            type: string
+          example: ["This information is for educational purposes only and should not replace professional medical advice"]
+        timestamp:
+          type: string
+          format: date-time
+          example: "2024-01-01T12:00:00Z"
+
+    MedicalReference:
+      type: object
+      required:
+        - title
+        - source
+      properties:
+        title:
+          type: string
+          example: "Diabetes mellitus: diagnosis and management"
+        source:
+          type: string
+          example: "Mayo Clinic"
+        url:
+          type: string
+          format: uri
+          example: "https://www.mayoclinic.org/diseases-conditions/diabetes/symptoms-causes/syc-20371444"
+        type:
+          type: string
+          enum: [clinical_guideline, research_paper, medical_encyclopedia, professional_organization]
+          example: "clinical_guideline"
+        publicationDate:
+          type: string
+          format: date
+          example: "2024-01-01"
+        credibilityScore:
+          type: number
+          minimum: 0
+          maximum: 1
+          description: Credibility score of the reference
+          example: 0.95

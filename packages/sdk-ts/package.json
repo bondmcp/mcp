@@ -1,0 +1,52 @@
+{
+  "name": "@bondmcp/sdk",
+  "version": "1.0.0",
+  "description": "Official TypeScript SDK for BondMCP Healthcare Platform API",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "clean": "rm -rf dist/ src/generated/",
+    "generate": "openapi-generator-cli generate -i ../../openapi/bondmcp.v1.yaml -g typescript-fetch -o src/generated --additional-properties=npmName=@bondmcp/sdk,supportsES6=true",
+    "prepare": "npm run build",
+    "test": "jest",
+    "lint": "eslint src/ --ext .ts"
+  },
+  "keywords": [
+    "bondmcp",
+    "healthcare",
+    "ai",
+    "medical",
+    "api",
+    "sdk",
+    "typescript"
+  ],
+  "author": "BondMCP <support@bondmcp.com>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/bondmcp/mcp.git",
+    "directory": "packages/sdk-ts"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "dependencies": {
+    "node-fetch": "^3.3.2"
+  },
+  "devDependencies": {
+    "@openapitools/openapi-generator-cli": "^2.13.4",
+    "@types/node": "^20.0.0",
+    "typescript": "^5.0.0",
+    "jest": "^29.0.0",
+    "@types/jest": "^29.0.0",
+    "eslint": "^8.0.0",
+    "@typescript-eslint/eslint-plugin": "^6.0.0",
+    "@typescript-eslint/parser": "^6.0.0"
+  },
+  "files": [
+    "dist/",
+    "README.md",
+    "CHANGELOG.md"
+  ]
+}

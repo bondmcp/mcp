@@ -1,0 +1,4 @@
+packages:
+  - 'packages/*'
+  - 'sdk-generator'
+  - 'docs'

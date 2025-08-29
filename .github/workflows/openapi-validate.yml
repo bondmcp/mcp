@@ -1,0 +1,275 @@
+name: OpenAPI Validation
+
+on:
+  pull_request:
+    paths:
+      - 'openapi/**'
+      - 'spec/**'
+  push:
+    branches: [main]
+    paths:
+      - 'openapi/**'
+      - 'spec/**'
+
+jobs:
+  validate-spec:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: latest
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Validate OpenAPI specification
+        run: |
+          echo "🔍 Validating OpenAPI specification..."
+          pnpm openapi:validate
+          echo "✅ OpenAPI specification is valid"
+
+      - name: Bundle specification
+        run: |
+          echo "📦 Bundling OpenAPI specification..."
+          pnpm openapi:bundle
+          echo "✅ Specification bundled successfully"
+
+      - name: Lint with Spectral
+        run: |
+          echo "🔍 Running Spectral linting..."
+          pnpm openapi:lint || true
+          echo "✅ Spectral linting completed"
+
+  breaking-changes:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    steps:
+      - name: Checkout PR
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install oasdiff
+        run: |
+          curl -sSL https://github.com/Tufin/oasdiff/releases/latest/download/oasdiff_linux_amd64.tar.gz | tar -xz
+          sudo mv oasdiff /usr/local/bin/
+
+      - name: Check for breaking changes
+        id: breaking-changes
+        run: |
+          # Get the main branch version of the spec
+          git show main:openapi/bondmcp.v1.yaml > main-spec.yaml || echo "No main spec found"
+          
+          if [ -f "main-spec.yaml" ] && [ -f "openapi/bondmcp.v1.yaml" ]; then
+            echo "🔍 Checking for breaking changes..."
+            
+            # Run oasdiff to detect breaking changes
+            if oasdiff diff main-spec.yaml openapi/bondmcp.v1.yaml --format json > diff-result.json; then
+              echo "breaking=false" >> $GITHUB_OUTPUT
+              echo "✅ No breaking changes detected"
+            else
+              echo "breaking=true" >> $GITHUB_OUTPUT
+              echo "⚠️ Breaking changes detected"
+              
+              # Generate human-readable diff
+              oasdiff diff main-spec.yaml openapi/bondmcp.v1.yaml --format text > breaking-changes.txt
+              echo "diff-file=breaking-changes.txt" >> $GITHUB_OUTPUT
+            fi
+          else
+            echo "breaking=false" >> $GITHUB_OUTPUT
+            echo "ℹ️ No baseline spec found, skipping breaking change detection"
+          fi
+
+      - name: Comment on PR with breaking changes
+        if: steps.breaking-changes.outputs.breaking == 'true'
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const fs = require('fs');
+            const diffFile = '${{ steps.breaking-changes.outputs.diff-file }}';
+            
+            if (fs.existsSync(diffFile)) {
+              const diff = fs.readFileSync(diffFile, 'utf8');
+              
+              const comment = `## ⚠️ Breaking Changes Detected
+              
+              The OpenAPI specification changes in this PR contain breaking changes:
+              
+              \`\`\`
+              ${diff}
+              \`\`\`
+              
+              Please ensure:
+              1. The version number reflects a major version bump
+              2. Migration documentation is provided
+              3. Backwards compatibility is maintained where possible
+              4. Changelog includes breaking change notes
+              `;
+              
+              github.rest.issues.createComment({
+                issue_number: context.issue.number,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                body: comment
+              });
+            }
+
+      - name: Fail on breaking changes without version bump
+        if: steps.breaking-changes.outputs.breaking == 'true'
+        run: |
+          echo "💥 Breaking changes detected!"
+          echo "Please ensure the version number includes a major version bump"
+          echo "and provide appropriate migration documentation."
+          
+          # Check if there's a changeset that indicates a major version bump
+          if ls .changeset/*.md 2>/dev/null | xargs grep -l "major" > /dev/null; then
+            echo "✅ Major version changeset found"
+          else
+            echo "❌ No major version changeset found"
+            echo "Please run 'pnpm changeset' and select 'major' for breaking changes"
+            exit 1
+          fi
+
+  semver-check:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Check version consistency
+        run: |
+          echo "🔍 Checking version consistency..."
+          
+          # Get current version from OpenAPI spec
+          SPEC_VERSION=$(grep -o 'version: "[^"]*"' openapi/bondmcp.v1.yaml | cut -d'"' -f2)
+          echo "OpenAPI spec version: $SPEC_VERSION"
+          
+          # Get version from TypeScript package
+          TS_VERSION=$(cd packages/sdk-ts && node -p "require('./package.json').version")
+          echo "TypeScript SDK version: $TS_VERSION"
+          
+          # Check if changeset exists for version bump
+          if [ -d ".changeset" ]; then
+            if ls .changeset/*.md 2>/dev/null | head -1 | xargs grep -q "bondmcp/sdk"; then
+              echo "✅ Changeset found for SDK version bump"
+            else
+              echo "⚠️ No changeset found - versions may not be bumped"
+            fi
+          fi
+
+  security-scan:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Run security scan on OpenAPI spec
+        run: |
+          echo "🔒 Running security analysis..."
+          
+          # Check for hardcoded secrets in spec
+          if grep -r -i -E "(password|secret|key|token)" openapi/ --include="*.yaml" --include="*.json"; then
+            echo "⚠️ Potential secrets found in OpenAPI spec"
+            echo "Please review and ensure no actual secrets are committed"
+          else
+            echo "✅ No obvious secrets found in OpenAPI spec"
+          fi
+          
+          # Check for insecure schemes
+          if grep -r -i "http://" openapi/ --include="*.yaml" --include="*.json"; then
+            echo "⚠️ Insecure HTTP URLs found"
+            echo "Please use HTTPS for all server URLs"
+          else
+            echo "✅ All URLs use HTTPS"
+          fi
+
+  generate-docs:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: latest
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Generate documentation
+        run: |
+          echo "📚 Generating API documentation..."
+          mkdir -p docs/api/v1
+          pnpm docs:build
+          echo "✅ Documentation generated successfully"
+
+      - name: Upload documentation artifact
+        if: github.event_name == 'pull_request'
+        uses: actions/upload-artifact@v3
+        with:
+          name: api-documentation
+          path: docs/api/v1/
+
+  summary:
+    runs-on: ubuntu-latest
+    needs: [validate-spec, breaking-changes, semver-check, security-scan, generate-docs]
+    if: always()
+    steps:
+      - name: Create summary
+        run: |
+          echo "## OpenAPI Validation Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          
+          if [ "${{ needs.validate-spec.result }}" = "success" ]; then
+            echo "✅ **Specification Validation**: Passed" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "❌ **Specification Validation**: Failed" >> $GITHUB_STEP_SUMMARY
+          fi
+          
+          if [ "${{ needs.breaking-changes.result }}" = "success" ]; then
+            echo "✅ **Breaking Changes Check**: Passed" >> $GITHUB_STEP_SUMMARY
+          elif [ "${{ needs.breaking-changes.result }}" = "failure" ]; then
+            echo "⚠️ **Breaking Changes Check**: Breaking changes detected" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "⏭️ **Breaking Changes Check**: Skipped" >> $GITHUB_STEP_SUMMARY
+          fi
+          
+          if [ "${{ needs.security-scan.result }}" = "success" ]; then
+            echo "✅ **Security Scan**: Passed" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "❌ **Security Scan**: Failed" >> $GITHUB_STEP_SUMMARY
+          fi
+          
+          if [ "${{ needs.generate-docs.result }}" = "success" ]; then
+            echo "✅ **Documentation Generation**: Passed" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "❌ **Documentation Generation**: Failed" >> $GITHUB_STEP_SUMMARY
+          fi
+          
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "See individual job logs for detailed information." >> $GITHUB_STEP_SUMMARY

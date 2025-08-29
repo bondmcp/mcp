@@ -1,0 +1,32 @@
+{
+  "generatorName": "typescript-fetch",
+  "outputDir": "../packages/sdk-ts/src/generated",
+  "inputSpec": "../../openapi/bondmcp.v1.yaml",
+  "templateDir": "",
+  "configOptions": {
+    "npmName": "@bondmcp/sdk",
+    "npmRepository": "https://registry.npmjs.org",
+    "supportsES6": true,
+    "modelPropertyNaming": "camelCase",
+    "enumPropertyNaming": "original",
+    "withoutPrefixEnums": false,
+    "withSeparateModelsAndApi": true,
+    "apiPackage": "api",
+    "modelPackage": "models",
+    "stringEnums": true,
+    "removeOperationIdPrefix": true,
+    "useSingleRequestParameter": false,
+    "ensureUniqueParams": true,
+    "allowUnicodeIdentifiers": false
+  },
+  "globalProperties": {
+    "apis": "",
+    "models": "",
+    "supportingFiles": "Configuration.ts,RequestContext.ts,ResponseContext.ts,base.ts,common.ts,exception.ts,http.ts,index.ts,runtime.ts,servers.ts"
+  },
+  "additionalProperties": {
+    "typescriptThreePlus": "true",
+    "withNodeImports": "true",
+    "snapshot": "false"
+  }
+}
