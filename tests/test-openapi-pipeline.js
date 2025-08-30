@@ -51,8 +51,8 @@ class PayloadValidator {
     }
     
     // Validate download_url format
-    if (payload.download_url && !/^https?:\/\//.test(payload.download_url)) {
-      errors.push("'download_url' must be a valid HTTP/HTTPS URL");
+    if (payload.download_url && !/^https:\/\//.test(payload.download_url)) {
+      errors.push("'download_url' must be a valid HTTPS URL (starting with 'https://')");
     }
     
     // Validate source_repo format
