@@ -126,6 +126,27 @@ console.log(response.answer);
 - **[Mobile Apps](guides/mobile-apps.md)** - Mobile application guide
 - **[CLI Documentation](sdks/cli/README.md)** - Command-line interface guide
 
+## 🔄 **OpenAPI & SDK Pipeline**
+
+BondMCP uses an **automated OpenAPI ingestion and SDK publishing pipeline** for reliable, versioned API specifications and automatically generated SDKs.
+
+### Key Features
+- ✅ **Immutable Versioning**: Complete audit trail of API changes
+- ✅ **Automated SDK Publishing**: TypeScript and Python SDKs auto-published on spec changes
+- ✅ **Semantic Diff Generation**: Detailed change analysis between versions
+- ✅ **Quality Assurance**: Comprehensive validation and testing pipeline
+
+### Developer Resources
+- **[Integration Lifecycle](docs/integration-lifecycle.md)** - End-to-end pipeline documentation
+- **[SDK Release Runbook](docs/runbooks/sdk-release.md)** - Manual procedures and troubleshooting
+- **[OpenAPI Examples](docs/openapi-examples.md)** - Usage examples and testing
+- **[Contributing Guide](CONTRIBUTING.md)** - Contract change workflow
+
+### Migration from Legacy
+⚠️ **Deprecation Notice**: The legacy dynamic OpenAPI generator has been deprecated and quarantined in `legacy/openapi-generator/`. 
+
+**New Process**: Use the automated repository_dispatch workflow (`.github/workflows/openapi-ingestion.yml`) triggered by the platform team. See [ADR-002](docs/ADR-002-automated-openapi-pipeline.md) for full details.
+
 ## 🔧 **CLI Commands**
 
 ### Authentication

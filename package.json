@@ -8,6 +8,7 @@
     "openapi:bundle": "redocly bundle openapi/bondmcp.v1.yaml --output openapi/bundled.yaml",
     "openapi:mock": "prism mock openapi/bondmcp.v1.yaml",
     "openapi:validate": "redocly lint openapi/bondmcp.v1.yaml",
+    "openapi:validate-local": "node scripts/validate_openapi.mjs openapi/bondmcp.v1.yaml",
     "contract:normalize": "npx ts-node scripts/contract/normalize_spec.ts",
     "contract:preflight": "npx ts-node scripts/contract/publish_preflight.ts",
     "contract:label": "npx ts-node scripts/contract/apply_label.ts",
@@ -18,7 +19,12 @@
     "docs:build": "npx redoc-cli build openapi/bondmcp.v1.yaml --output docs/api/v1/index.html",
     "changeset": "changeset",
     "changeset:version": "changeset version",
-    "changeset:publish": "changeset publish"
+    "changeset:publish": "changeset publish",
+    "prepublishOnly": "npm run openapi:validate-local && node scripts/check_legacy_quarantine.js",
+    "pipeline:check": "node scripts/check_legacy_quarantine.js && npm run openapi:validate-local",
+    "pipeline:diff": "node scripts/generate_spec_diff.mjs --latest",
+    "pipeline:changelog": "node scripts/update_changelog.mjs",
+    "pipeline:validate-dispatch": "node scripts/validate_platform_dispatch.mjs"
   },
   "dependencies": {
     "axios": "^1.6.0"

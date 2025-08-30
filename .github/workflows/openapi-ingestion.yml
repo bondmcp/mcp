@@ -52,6 +52,12 @@ jobs:
           # Install Python tools
           pip install hatch twine openapi-python-client
 
+      - name: Check legacy quarantine
+        run: |
+          echo "🔍 Checking legacy OpenAPI generator quarantine..."
+          node scripts/check_legacy_quarantine.js
+          echo "✅ Legacy quarantine check passed"
+
       - name: Extract event data
         id: event_data
         run: |
@@ -59,11 +65,35 @@ jobs:
             echo "version=${{ github.event.client_payload.version }}" >> $GITHUB_OUTPUT
             echo "checksum=${{ github.event.client_payload.checksum }}" >> $GITHUB_OUTPUT
             echo "spec_url=${{ github.event.client_payload.spec_url }}" >> $GITHUB_OUTPUT
+            echo "change_type=${{ github.event.client_payload.change_type }}" >> $GITHUB_OUTPUT
+            echo "source_repo=${{ github.event.client_payload.source_repo }}" >> $GITHUB_OUTPUT
           else
             echo "version=${{ github.event.inputs.spec_version }}" >> $GITHUB_OUTPUT
             echo "checksum=${{ github.event.inputs.checksum }}" >> $GITHUB_OUTPUT
             echo "spec_url=${{ github.event.inputs.spec_url }}" >> $GITHUB_OUTPUT
+            echo "change_type=manual" >> $GITHUB_OUTPUT
+            echo "source_repo=manual" >> $GITHUB_OUTPUT
           fi
+
+      - name: Validate platform dispatch payload
+        run: |
+          echo "🔍 Validating repository_dispatch payload..."
+          
+          # Create payload file for validation
+          cat > payload.json << EOF
+          {
+            "version": "${{ steps.event_data.outputs.version }}",
+            "checksum": "${{ steps.event_data.outputs.checksum }}",
+            "change_type": "${{ steps.event_data.outputs.change_type }}",
+            "download_url": "${{ steps.event_data.outputs.spec_url }}",
+            "source_repo": "${{ steps.event_data.outputs.source_repo }}"
+          }
+          EOF
+          
+          # Validate using our validation script
+          node scripts/validate_platform_dispatch.mjs payload.json
+          
+          echo "✅ Payload validation passed"
 
       - name: Download and verify OpenAPI spec
         id: download_spec
@@ -92,8 +122,14 @@ jobs:
       - name: Validate OpenAPI spec
         run: |
           echo "Validating OpenAPI specification..."
+          
+          # Use swagger-cli for basic validation
           swagger-cli validate temp_spec.json
-          echo "✅ OpenAPI specification is valid"
+          
+          # Use our enhanced validation script
+          node scripts/validate_openapi.mjs temp_spec.json
+          
+          echo "✅ OpenAPI specification validation passed"
 
       - name: Check if version already exists
         id: check_version
@@ -144,42 +180,10 @@ jobs:
             PREV_VERSION=$(basename "$LATEST_HISTORY" .json | sed 's/openapi-//')
             echo "Generating semantic diff from $PREV_VERSION to $VERSION"
             
-            # Generate diff JSON
-            openapi-diff "$LATEST_HISTORY" "openapi/history/openapi-$VERSION.json" \
-              --format json > "openapi/history/diff-$PREV_VERSION-to-$VERSION.json"
+            # Use our enhanced diff generation script
+            node scripts/generate_spec_diff.mjs "$PREV_VERSION" "$VERSION" markdown
+            node scripts/generate_spec_diff.mjs "$PREV_VERSION" "$VERSION" json
             
-            # Generate diff Markdown
-            openapi-diff "$LATEST_HISTORY" "openapi/history/openapi-$VERSION.json" \
-              --format markdown > "openapi/history/diff-$PREV_VERSION-to-$VERSION.md"
-            
-            # Create migration notes stub
-            cat > "MIGRATIONS/$PREV_VERSION-to-$VERSION.md" << EOF
-          # Migration Guide: $PREV_VERSION to $VERSION
-          
-          ## Overview
-          
-          This guide helps you migrate from API version $PREV_VERSION to $VERSION.
-          
-          ## Breaking Changes
-          
-          *Review the semantic diff for detailed changes.*
-          
-          ## New Features
-          
-          *Check the API changelog for new endpoints and features.*
-          
-          ## Migration Steps
-          
-          1. Review the semantic diff: \`openapi/history/diff-$PREV_VERSION-to-$VERSION.md\`
-          2. Update your code to handle breaking changes
-          3. Test with the new API version
-          4. Update your SDK version
-          
-          ## Support
-          
-          If you need help with migration, contact support@bondmcp.com
-          EOF
-          
             echo "has_diff=true" >> $GITHUB_OUTPUT
             echo "prev_version=$PREV_VERSION" >> $GITHUB_OUTPUT
             echo "✅ Generated semantic diff and migration notes"
@@ -278,33 +282,20 @@ jobs:
         if: steps.check_version.outputs.version_exists == 'false'
         run: |
           VERSION="${{ steps.event_data.outputs.version }}"
-          DATE=$(date -u +"%Y-%m-%d")
+          CHANGE_TYPE="${{ steps.event_data.outputs.change_type }}"
           
-          # Create new changelog entry
-          cat > temp_changelog.md << EOF
-          # Changelog
+          # Prepare changelog options
+          CHANGELOG_OPTIONS="$VERSION $CHANGE_TYPE"
           
-          ## [$VERSION] - $DATE
-          
-          ### API Changes
-          - Updated to OpenAPI specification version $VERSION
-          - See \`MIGRATIONS/\` for migration guides if applicable
-          - View semantic diff in \`openapi/history/\`
-          
-          ### SDK Updates
-          - TypeScript SDK (@bondmcp/sdk) version $VERSION
-          - Python SDK (bondmcp_sdk) version $VERSION
-          
-          EOF
-          
-          # Append existing changelog if it exists
-          if [ -f CHANGELOG.md ]; then
-            echo "" >> temp_changelog.md
-            tail -n +2 CHANGELOG.md >> temp_changelog.md
+          if [ "${{ steps.generate_diff.outputs.has_diff }}" = "true" ]; then
+            PREV_VERSION="${{ steps.generate_diff.outputs.prev_version }}"
+            CHANGELOG_OPTIONS="$CHANGELOG_OPTIONS --migration MIGRATIONS/$PREV_VERSION-to-$VERSION.md --diff openapi/history/diff-$PREV_VERSION-to-$VERSION.md"
           fi
           
-          mv temp_changelog.md CHANGELOG.md
-          echo "✅ Updated CHANGELOG.md"
+          # Use our changelog automation script
+          node scripts/update_changelog.mjs $CHANGELOG_OPTIONS
+          
+          echo "✅ Updated CHANGELOG.md using automation script"
 
       - name: Update API changelog
         if: steps.check_version.outputs.version_exists == 'false'
@@ -363,7 +354,7 @@ jobs:
           git add openapi/ MIGRATIONS/ docs/api/ CHANGELOG.md javascript/ python/ pyproject.toml
           
           # Clean up temporary files
-          rm -f temp_spec.json javascript/generated python/generated
+          rm -f temp_spec.json payload.json javascript/generated python/generated
           
           # Commit changes
           git commit -m "feat: ingest OpenAPI spec v$VERSION and publish SDKs
@@ -379,6 +370,20 @@ jobs:
           git push origin HEAD:${GITHUB_REF#refs/heads/}
           
           echo "✅ Changes committed and pushed"
+
+      - name: Create frontend dependency bump PR
+        if: steps.check_version.outputs.version_exists == 'false'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          VERSION="${{ steps.event_data.outputs.version }}"
+          
+          echo "🔄 Creating frontend dependency bump PR..."
+          
+          # Use our stub script to create/prepare frontend PR
+          node scripts/create_frontend_bump_pr.mjs "$VERSION"
+          
+          echo "✅ Frontend bump PR creation completed (check output for manual steps if needed)"
 
       - name: Summary
         if: always()
