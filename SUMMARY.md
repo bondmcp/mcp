@@ -1,61 +1,43 @@
 # Table of Contents
 
 ## Getting Started
-* **Introduction** 
-* **Quick Start** 
-* **Authentication Setup** 
-* **First API Call** 
+* [Introduction](getting-started/introduction.md)
+* [Quick Start](getting-started/quick-start.md)
+* [Authentication Setup](getting-started/authentication-setup.md)
+* [First API Call](getting-started/first-api-call.md)
 
 ## API Reference
-* **API Overview** 
-* [Endpoints](../endpoints/README.md)
-* **Authentication** 
-* **Error Handling** 
-* **Rate Limiting** 
-* **OpenAPI Specification** 
+* [API Overview](api-reference/api-overview.md)
+* [Endpoints](api-reference/endpoints.md)
+* [Authentication](api-reference/authentication.md)
+* [Error Handling](api-reference/error-handling.md)
+* [Rate Limiting](api-reference/rate-limiting.md)
+* [OpenAPI Specification](api-reference/openapi-specification.md)
 
 ## SDKs & Tools
-* **SDK Overview** 
-* **Python SDK** 
-  * **Installation** 
-  * **Quick Start** 
-  * **API Reference** 
-  * **Examples** 
-* **JavaScript SDK** 
-  * **Installation** 
-  * **Quick Start** 
-  * **API Reference** 
-  * **Examples** 
-* **CLI Tools** 
-  * **Installation** 
-  * **Commands** 
-  * **Configuration** 
-* **Go SDK** 
-  * **Installation** 
-  * **Quick Start** 
-  * **API Reference** 
+* [SDK Overview](sdks/README.md)
+* [Python SDK](sdks/python/README.md)
+* [JavaScript SDK](sdks/javascript/README.md)
+* [CLI Tools](sdks/cli/README.md)
+* [Go SDK](sdks/go/README.md)
 
 ## Integration Guides
-* **Health AI Integration** 
-* **Billing Setup** 
-* **Webhook Configuration** 
-* **Migration Guide** 
-* **API Playground** (Use CLI: `bondmcp --help`)
-* **Troubleshooting** 
+* [Health AI Integration](guides/health-ai-integration.md)
+* [Billing Setup](guides/billing-setup.md)
+* [Webhook Configuration](guides/webhook-configuration.md)
 
 ## Examples
-* **Health AI Examples** 
-* **Authentication Examples** 
-* **Billing Examples** 
-* **Full Applications** 
+* [Code Examples](examples/README.md)
+* [Use Cases](examples/use-cases.md)
+* [Best Practices](examples/best-practices.md)
 
 ## Resources
-* **Changelog** 
-* **API Status** 
-* **Postman Collection** 
+* [Changelog](resources/changelog.md)
+* [Status Page](resources/status.md)
+* [Troubleshooting](resources/troubleshooting.md)
+* [FAQ](resources/faq.md)
 
 ## Contributing
-* **Contributing Guide** 
-* **Development Setup** 
-* **API Pipeline** 
-* **Best Practices** 
+* [Development Guide](contributing/README.md)
+* [API Guidelines](contributing/api-guidelines.md)
+* [Documentation Style](contributing/docs-style.md)

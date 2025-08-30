@@ -4,126 +4,61 @@ structure:
   readme: README.md
   summary: SUMMARY.md
 
-# Enhanced GitBook configuration for optimal user experience
 plugins:
-  - openapi
-  - swagger
   - search-pro
   - page-toc
   - code
-  - analytics
-  - sitemap
-  - theme-api
+  - mermaid
+  - katex
+  - hints
   - expandable-chapters
   - github
   - edit-link
-  - back-to-top-button
-  - copy-code-button
-  - prism
-  - advanced-emoji
-  - katex
-  - mermaid
+  - analytics
+  - sitemap
+  - canonical-link
+  - meta
+  - favicon
+  - theme-api
 
 pluginsConfig:
-  openapi:
-    expandResponses: all
-    showExtensions: true
-    tryItOutEnabled: true
-    theme: "outline"
-    pathInMiddlePanel: true
-    
-  search-pro:
-    cutWordLib: nodejieba
-    defineWord: 
-      - BondMCP
-      - API
-      - SDK
-      - Health AI
-      - CLI
-      - Authentication
-      - Endpoints
-      - Python
-      - JavaScript
-      - Go
-    searchMaxSuggestions: 10
-    searchSortBy: "title"
-    
-  page-toc:
-    selector: ".markdown-section h1, .markdown-section h2, .markdown-section h3, .markdown-section h4"
-    position: "before-first"
-    showByDefault: true
-    addClass: "nav"
-    className: "toc"
-    
-  code:
-    copyButtons: true
-    
-  analytics:
-    google: "G-XXXXXXXXXX"  # Replace with actual Google Analytics ID
-    
-  sitemap:
-    hostname: "https://www.bondmcp.com"
-    
-  theme-api:
-    languages:
-      - lang: "bash"
-        name: "cURL"
-      - lang: "python"
-        name: "Python"
-      - lang: "javascript"
-        name: "JavaScript"
-      - lang: "go"
-        name: "Go"
-    split: false
-    
-  expandable-chapters:
-    deep: true
-    
   github:
-    url: "https://github.com/bondmcp/mcp"
-    
+    url: https://github.com/bondmcp/mcp
   edit-link:
-    base: "https://github.com/bondmcp/mcp/edit/main"
-    label: "Edit This Page"
-    
-  back-to-top-button:
-    showLevelIcon: false
-    
-  copy-code-button:
-    copyTitle: "Copy to clipboard"
-    copySuccessful: "Copied!"
-    
-  prism:
-    css:
-      - "prismjs/themes/prism-okaidia.css"
-    lang:
-      - "bash"
-      - "python"
-      - "javascript"
-      - "json"
-      - "yaml"
-      - "go"
-      - "curl"
+    base: https://github.com/bondmcp/mcp/edit/main
+    label: Edit This Page
+  analytics:
+    google: UA-XXXXXXXX-X
+  sitemap:
+    hostname: https://www.bondmcp.com
+  meta:
+    data:
+      - name: description
+        content: BondMCP Health AI Platform - Complete AI-powered healthcare platform with advanced health insights, medical research, and clinical decision support.
+      - name: keywords
+        content: health AI, medical AI, healthcare platform, clinical decision support, health insights, medical research
+      - property: og:title
+        content: BondMCP Health AI Platform
+      - property: og:description
+        content: Complete AI-powered healthcare platform with advanced health insights and clinical decision support
+      - property: og:image
+        content: https://www.bondmcp.com/assets/bondmcp-og-image.png
+  favicon:
+    shortcut: assets/favicon.ico
+    bookmark: assets/favicon.ico
+    appleTouch: assets/apple-touch-icon.png
+    appleTouchMore:
+      120x120: assets/apple-touch-icon-120x120.png
+      180x180: assets/apple-touch-icon-180x180.png
 
-# PDF export configuration
 pdf:
   fontSize: 12
-  fontFamily: "Arial"
-  paperSize: "a4"
-  chapterMark: "pagebreak"
-  pageBreaksBefore: "/"
+  footerTemplate: '<div style="text-align:center;"><span class="pageNumber"></span></div>'
+  headerTemplate: '<div style="text-align:center;">BondMCP Health AI Platform Documentation</div>'
   margin:
     top: 56
     bottom: 56
     right: 62
     left: 62
-
-# Variables for content customization
-variables:
-  api_base_url: "https://api.bondmcp.com/v1"
-  website_url: "https://www.bondmcp.com"
-  github_repo: "https://github.com/bondmcp/mcp"
-  cli_package: "bondmcp-cli"
-  python_package: "bondmcp-python"
-  js_package: "@bondmcp/sdk"
-  go_package: "github.com/bondmcp/bondmcp-go"
+  pageNumbers: true
+  paperSize: a4
