@@ -1,795 +1,2607 @@
 openapi: 3.1.0
 info:
-  title: BondMCP Healthcare Platform API
-  version: "1.0.0"
-  description: |
-    Comprehensive healthcare AI and MCP platform with security-focused architecture.
-    
-    The BondMCP API provides access to advanced healthcare AI capabilities including:
-    - Health question answering and analysis
-    - Lab result interpretation
-    - Medical imaging analysis
-    - Drug interaction checking
-    - Symptom analysis
-    - Medical research queries
-    - Patient data management
-    - Billing and subscription management
-    
-    ## Authentication
-    
-    All API endpoints require authentication using one of the following methods:
-    - API Key in header: `X-API-Key: your-api-key`
-    - Bearer token in header: `Authorization: Bearer your-token`
-    
-    ## Rate Limiting
-    
-    API requests are rate limited per API key:
-    - Free tier: 100 requests/hour
-    - Pro tier: 1000 requests/hour
-    - Enterprise: Custom limits
-    
-    ## Error Handling
-    
-    All API responses follow a standard error format with correlation IDs for debugging.
-    
-  contact:
-    name: BondMCP Support
-    url: https://www.bondmcp.com/support
-    email: support@bondmcp.com
-  license:
-    name: MIT
-    url: https://opensource.org/licenses/MIT
-  x-logo:
-    url: https://www.bondmcp.com/assets/logo.png
-    altText: BondMCP Logo
-
-servers:
-  - url: https://api.bondmcp.com/v1
-    description: Production server
-  - url: https://staging-api.bondmcp.com/v1
-    description: Staging server
-    x-internal: true
-
-security:
-  - ApiKeyAuth: []
-  - BearerAuth: []
-
-tags:
-  - name: Authentication
-    description: User authentication and session management
-  - name: API Keys
-    description: API key management and usage statistics
-  - name: Health AI
-    description: Core health AI capabilities and medical analysis
-  - name: Data Management
-    description: Health data import, export, and management
-  - name: Research
-    description: Medical research and literature integration
-  - name: Billing
-    description: Subscription management and billing
-  - name: System
-    description: System health and monitoring endpoints
-
+  title: BondMCP Platform API
+  description: Comprehensive Healthcare AI and MCP Platform
+  version: 2.1.0
 paths:
-  # System endpoints
+  /api/v1/auth/register:
+    post:
+      tags:
+      - Authentication
+      - Authentication
+      summary: Register User
+      description: User registration endpoint
+      operationId: register_user_api_v1_auth_register_post
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+  /api/v1/auth/login:
+    post:
+      tags:
+      - Authentication
+      - Authentication
+      summary: Login User
+      description: User login endpoint
+      operationId: login_user_api_v1_auth_login_post
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+  /api/v1/auth/logout:
+    post:
+      tags:
+      - Authentication
+      - Authentication
+      summary: Logout User
+      description: User logout endpoint
+      operationId: logout_user_api_v1_auth_logout_post
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+      security:
+      - HTTPBearer: []
+  /api/v1/auth/refresh:
+    post:
+      tags:
+      - Authentication
+      - Authentication
+      summary: Refresh Token
+      description: Refresh JWT token
+      operationId: refresh_token_api_v1_auth_refresh_post
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+      security:
+      - HTTPBearer: []
+  /api/v1/auth/verify:
+    post:
+      tags:
+      - Authentication
+      - Authentication
+      summary: Verify Token
+      description: Verify token validity
+      operationId: verify_token_api_v1_auth_verify_post
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+      security:
+      - HTTPBearer: []
+  /api/v1/auth/me:
+    get:
+      tags:
+      - Authentication
+      - Authentication
+      summary: Get User Profile
+      description: Get current user profile
+      operationId: get_user_profile_api_v1_auth_me_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+      security:
+      - HTTPBearer: []
+  /api/v1/health:
+    get:
+      tags:
+      - Health
+      - Core
+      summary: Health Check
+      description: Basic liveness check endpoint - returns if API is running
+      operationId: health_check_api_v1_health_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+  /api/v1/ready:
+    get:
+      tags:
+      - Health
+      - Core
+      summary: Readiness Check
+      description: "Readiness check with comprehensive dependency validation\n\nChecks:\n\
+        - Database connectivity\n- Cache availability  \n- External service health\n\
+        - Configuration validity"
+      operationId: readiness_check_api_v1_ready_get
+      parameters:
+      - name: include_dependencies
+        in: query
+        required: false
+        schema:
+          type: boolean
+          default: false
+          title: Include Dependencies
+      - name: timeout
+        in: query
+        required: false
+        schema:
+          type: number
+          default: 30.0
+          title: Timeout
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/version:
+    get:
+      tags:
+      - Health
+      - Core
+      summary: Version Info
+      description: Version endpoint with git SHA and build time information
+      operationId: version_info_api_v1_version_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+  /api/v1/:
+    get:
+      tags:
+      - Health
+      - Core
+      summary: Root
+      description: Root endpoint with API information
+      operationId: root_api_v1__get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+  /api/v1/health/status:
+    get:
+      tags:
+      - Health
+      - Health AI
+      summary: Health Ai Status
+      description: Get Health AI service status
+      operationId: health_ai_status_api_v1_health_status_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+  /api/v1/appointments:
+    post:
+      tags:
+      - Appointments
+      - Appointments
+      summary: Create Appointment
+      description: Create a new appointment with conflict detection.
+      operationId: create_appointment_api_v1_appointments_post
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AppointmentCreate'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AppointmentInfo'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    get:
+      tags:
+      - Appointments
+      - Appointments
+      summary: List Appointments
+      description: List appointments with filtering by patient, provider, date range,
+        and status.
+      operationId: list_appointments_api_v1_appointments_get
+      parameters:
+      - name: provider_id
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: Filter by provider ID
+          title: Provider Id
+        description: Filter by provider ID
+      - name: status
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: Filter by appointment status
+          title: Status
+        description: Filter by appointment status
+      - name: appointment_type
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: Filter by appointment type
+          title: Appointment Type
+        description: Filter by appointment type
+      - name: patient_id
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Patient Id
+      - name: start_date
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Start Date
+      - name: end_date
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: End Date
+      - name: limit
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          default: 20
+          title: Limit
+      - name: cursor
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Cursor
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedResponse_AppointmentInfo_'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/appointments/{appointment_id}:
+    get:
+      tags:
+      - Appointments
+      - Appointments
+      summary: Get Appointment By Id
+      description: Get appointment details by ID.
+      operationId: get_appointment_by_id_api_v1_appointments__appointment_id__get
+      parameters:
+      - name: appointment_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Appointment Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AppointmentInfo'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    put:
+      tags:
+      - Appointments
+      - Appointments
+      summary: Update Appointment
+      description: Update an existing appointment.
+      operationId: update_appointment_api_v1_appointments__appointment_id__put
+      parameters:
+      - name: appointment_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Appointment Id
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AppointmentUpdate'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AppointmentInfo'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    delete:
+      tags:
+      - Appointments
+      - Appointments
+      summary: Cancel Appointment
+      description: Cancel an appointment.
+      operationId: cancel_appointment_api_v1_appointments__appointment_id__delete
+      parameters:
+      - name: appointment_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Appointment Id
+      - name: cancellation_reason
+        in: query
+        required: true
+        schema:
+          type: string
+          description: Reason for cancellation
+          title: Cancellation Reason
+        description: Reason for cancellation
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/reference/labs/{code}:
+    get:
+      tags:
+      - Lab Reference
+      - Lab Reference
+      summary: Get Lab Reference By Code
+      description: 'Get lab metadata (units, normal ranges) by LOINC code.
+
+
+        Required by labResultExplainTool for proper interpretation.'
+      operationId: get_lab_reference_by_code_api_v1_reference_labs__code__get
+      parameters:
+      - name: code
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Code
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LabReferenceInfo'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/reference/labs:
+    get:
+      tags:
+      - Lab Reference
+      - Lab Reference
+      summary: List Lab References
+      description: List available lab reference data with filtering and pagination.
+      operationId: list_lab_references_api_v1_reference_labs_get
+      parameters:
+      - name: category
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: Filter by lab category
+          title: Category
+        description: Filter by lab category
+      - name: specimen_type
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: Filter by specimen type
+          title: Specimen Type
+        description: Filter by specimen type
+      - name: search
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: Search in name or description
+          title: Search
+        description: Search in name or description
+      - name: limit
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          default: 20
+          title: Limit
+      - name: cursor
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Cursor
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedResponse_LabReferenceInfo_'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/medical-records:
+    get:
+      tags:
+      - Medical Records
+      - Medical Records
+      summary: List Medical Records
+      description: List medical records with optional lab result integration.
+      operationId: list_medical_records_api_v1_medical_records_get
+      parameters:
+      - name: record_type
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: Filter by record type
+          title: Record Type
+        description: Filter by record type
+      - name: provider_id
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: Filter by provider
+          title: Provider Id
+        description: Filter by provider
+      - name: include_labs
+        in: query
+        required: false
+        schema:
+          type: boolean
+          description: Include related lab results
+          default: true
+          title: Include Labs
+        description: Include related lab results
+      - name: patient_id
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Patient Id
+      - name: start_date
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Start Date
+      - name: end_date
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: End Date
+      - name: limit
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          default: 20
+          title: Limit
+      - name: cursor
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Cursor
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedResponse_MedicalRecordSummary_'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/medical-records/{record_id}:
+    get:
+      tags:
+      - Medical Records
+      - Medical Records
+      summary: Get Medical Record By Id
+      description: Get detailed medical record with related lab results.
+      operationId: get_medical_record_by_id_api_v1_medical_records__record_id__get
+      parameters:
+      - name: record_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Record Id
+      - name: include_labs
+        in: query
+        required: false
+        schema:
+          type: boolean
+          description: Include related lab results
+          default: true
+          title: Include Labs
+        description: Include related lab results
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MedicalRecordSummary'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/medical-records/patients/{patient_id}/summary:
+    get:
+      tags:
+      - Medical Records
+      - Medical Records
+      summary: Get Patient Comprehensive Summary
+      description: 'Get comprehensive patient summary with medical records and lab
+        results.
+
+        Enhanced version of the existing digital summary endpoint.'
+      operationId: get_patient_comprehensive_summary_api_v1_medical_records_patients__patient_id__summary_get
+      parameters:
+      - name: patient_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Patient Id
+      - name: days_back
+        in: query
+        required: false
+        schema:
+          type: integer
+          maximum: 365
+          minimum: 1
+          description: Number of days to look back for data
+          default: 90
+          title: Days Back
+        description: Number of days to look back for data
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PatientSummaryExtended'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/patients/search:
+    get:
+      tags:
+      - Patients
+      - Patients
+      summary: Search Patients
+      description: 'Search patients by name, DOB, or MRN with rate limiting.
+
+
+        Returns minimal patient information to prevent enumeration attacks.
+
+        Requires at least one search parameter.'
+      operationId: search_patients_api_v1_patients_search_get
+      parameters:
+      - name: name
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Name
+      - name: first_name
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: First Name
+      - name: last_name
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Last Name
+      - name: date_of_birth
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+            format: date
+          - type: 'null'
+          title: Date Of Birth
+      - name: mrn
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Mrn
+      - name: limit
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          default: 20
+          title: Limit
+      - name: cursor
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Cursor
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedResponse_PatientBasicInfo_'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/patients/{patient_id}:
+    get:
+      tags:
+      - Patients
+      - Patients
+      summary: Get Patient By Id
+      description: 'Get detailed patient information by ID.
+
+
+        Includes comprehensive patient data for authorized users.'
+      operationId: get_patient_by_id_api_v1_patients__patient_id__get
+      parameters:
+      - name: patient_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Patient Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PatientDetailedInfo'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/prescriptions/active:
+    get:
+      tags:
+      - Prescriptions
+      - Prescriptions
+      summary: List Active Prescriptions
+      description: List active prescriptions for patients with refill information.
+      operationId: list_active_prescriptions_api_v1_prescriptions_active_get
+      parameters:
+      - name: patient_id
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Patient Id
+      - name: limit
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          default: 20
+          title: Limit
+      - name: cursor
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Cursor
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedResponse_PrescriptionRefillInfo_'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/prescriptions/{prescription_id}/refill-eligibility:
+    get:
+      tags:
+      - Prescriptions
+      - Prescriptions
+      summary: Check Refill Eligibility
+      description: Check if a prescription is eligible for refill.
+      operationId: check_refill_eligibility_api_v1_prescriptions__prescription_id__refill_eligibility_get
+      parameters:
+      - name: prescription_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Prescription Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RefillEligibilityCheck'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/prescriptions/{prescription_id}/refill:
+    post:
+      tags:
+      - Prescriptions
+      - Prescriptions
+      summary: Request Prescription Refill
+      description: Request a prescription refill if eligible.
+      operationId: request_prescription_refill_api_v1_prescriptions__prescription_id__refill_post
+      parameters:
+      - name: prescription_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Prescription Id
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RefillRequest'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/v1/prescriptions:
+    get:
+      tags:
+      - Prescriptions
+      - Prescriptions
+      summary: List Prescriptions
+      description: List all prescriptions with comprehensive filtering.
+      operationId: list_prescriptions_api_v1_prescriptions_get
+      parameters:
+      - name: prescription_status
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: Filter by prescription status
+          title: Prescription Status
+        description: Filter by prescription status
+      - name: has_refills
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          description: Filter by refill availability
+          title: Has Refills
+        description: Filter by refill availability
+      - name: patient_id
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Patient Id
+      - name: start_date
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Start Date
+      - name: end_date
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: End Date
+      - name: limit
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          default: 20
+          title: Limit
+      - name: cursor
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Cursor
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedResponse_PrescriptionRefillInfo_'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /:
+    get:
+      tags:
+      - System
+      summary: Root
+      operationId: root__get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
   /health:
     get:
       tags:
-        - System
-      summary: Health check endpoint
-      description: Returns API health status and system information
-      operationId: getHealthStatus
-      security: []
+      - System
+      summary: Health Check
+      operationId: health_check_health_get
       responses:
-        "200":
-          description: Service is healthy
+        '200':
+          description: Successful Response
           content:
             application/json:
-              schema:
-                $ref: "#/components/schemas/HealthStatus"
-        "503":
-          description: Service unavailable
+              schema: {}
+  /ready:
+    get:
+      tags:
+      - System
+      summary: Readiness Check
+      operationId: readiness_check_ready_get
+      responses:
+        '200':
+          description: Successful Response
           content:
             application/json:
-              schema:
-                $ref: "#/components/schemas/ErrorResponse"
-
-  # Authentication endpoints
+              schema: {}
+  /info:
+    get:
+      tags:
+      - System
+      summary: Get Info
+      operationId: get_info_info_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+  /config:
+    get:
+      tags:
+      - System
+      summary: Get Config
+      operationId: get_config_config_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
   /auth/register:
     post:
       tags:
-        - Authentication
-      summary: Register new user
-      description: Create a new user account
-      operationId: registerUser
-      security: []
+      - Authentication
+      summary: Register User
+      operationId: register_user_auth_register_post
       requestBody:
-        required: true
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/UserRegistrationRequest"
+              $ref: '#/components/schemas/Body_register_user_auth_register_post'
+        required: true
       responses:
-        "201":
-          description: User registered successfully
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/UserRegistrationResponse"
-        "400":
-          description: Invalid request data
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ErrorResponse"
-        "409":
-          description: User already exists
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ErrorResponse"
-
+                $ref: '#/components/schemas/HTTPValidationError'
   /auth/login:
     post:
       tags:
-        - Authentication
-      summary: User login
-      description: Authenticate user and obtain access token
-      operationId: loginUser
-      security: []
+      - Authentication
+      summary: Login User
+      operationId: login_user_auth_login_post
       requestBody:
-        required: true
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/UserLoginRequest"
+              $ref: '#/components/schemas/Body_login_user_auth_login_post'
+        required: true
       responses:
-        "200":
-          description: Login successful
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/UserLoginResponse"
-        "401":
-          description: Invalid credentials
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ErrorResponse"
-
-  /auth/logout:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /auth/api-keys:
     post:
       tags:
-        - Authentication
-      summary: User logout
-      description: Invalidate user session and access token
-      operationId: logoutUser
+      - API Keys
+      summary: Create Api Key
+      operationId: create_api_key_auth_api_keys_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Body_create_api_key_auth_api_keys_post'
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
       security:
-        - BearerAuth: []
-      responses:
-        "200":
-          description: Logout successful
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/SuccessResponse"
-        "401":
-          description: Invalid or expired token
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ErrorResponse"
-
-  /auth/refresh:
+      - HTTPBearer: []
+  /ask:
     post:
       tags:
-        - Authentication
-      summary: Refresh access token
-      description: Get a new access token using refresh token
-      operationId: refreshToken
-      security: []
+      - Health AI
+      summary: Ask Health Question
+      operationId: ask_health_question_ask_post
       requestBody:
-        required: true
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/TokenRefreshRequest"
-      responses:
-        "200":
-          description: Token refreshed successfully
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/TokenRefreshResponse"
-        "401":
-          description: Invalid refresh token
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ErrorResponse"
-
-  /auth/verify:
-    get:
-      tags:
-        - Authentication
-      summary: Verify email address
-      description: Verify user email address using verification token
-      operationId: verifyEmail
-      security: []
-      parameters:
-        - name: token
-          in: query
-          required: true
-          description: Email verification token
-          schema:
-            type: string
-      responses:
-        "200":
-          description: Email verified successfully
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/SuccessResponse"
-        "400":
-          description: Invalid or expired token
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ErrorResponse"
-
-  /auth/reset:
-    post:
-      tags:
-        - Authentication
-      summary: Reset password
-      description: Initiate password reset process
-      operationId: resetPassword
-      security: []
-      requestBody:
+              $ref: '#/components/schemas/Body_ask_health_question_ask_post'
         required: true
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/PasswordResetRequest"
       responses:
-        "200":
-          description: Password reset email sent
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/SuccessResponse"
-        "404":
-          description: User not found
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ErrorResponse"
-
-  # API Key management endpoints
-  /apikeys/generate:
-    post:
-      tags:
-        - API Keys
-      summary: Generate new API key
-      description: Create a new API key for the authenticated user
-      operationId: generateApiKey
+                $ref: '#/components/schemas/HTTPValidationError'
       security:
-        - BearerAuth: []
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/ApiKeyGenerateRequest"
-      responses:
-        "201":
-          description: API key generated successfully
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ApiKeyResponse"
-        "401":
-          description: Unauthorized
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ErrorResponse"
-
+      - HTTPBearer: []
   /health/ask:
     post:
       tags:
-        - Health AI
-      summary: Health AI question answering
-      description: Ask health-related questions and get AI-powered responses
-      operationId: askHealthQuestion
+      - Health AI
+      summary: Ask Health Question Alt
+      description: Alternative endpoint for health questions
+      operationId: ask_health_question_alt_health_ask_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Body_ask_health_question_alt_health_ask_post'
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
       security:
-        - ApiKeyAuth: []
-        - BearerAuth: []
+      - HTTPBearer: []
+  /labs:
+    post:
+      tags:
+      - Health AI
+      summary: Analyze Lab Results
+      operationId: analyze_lab_results_labs_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              additionalProperties: true
+              type: object
+              title: Lab Data
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - HTTPBearer: []
+  /nutrition:
+    post:
+      tags:
+      - Health AI
+      summary: Nutrition Analysis
+      operationId: nutrition_analysis_nutrition_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              additionalProperties: true
+              type: object
+              title: Food Data
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - HTTPBearer: []
+  /supplements:
+    get:
+      tags:
+      - Health AI
+      summary: Get Supplement Info
+      operationId: get_supplement_info_supplements_get
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: supplement
+        in: query
+        required: true
+        schema:
+          type: string
+          description: Supplement name to research
+          title: Supplement
+        description: Supplement name to research
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /billing/plans:
+    get:
+      tags:
+      - Billing
+      summary: Get Billing Plans
+      operationId: get_billing_plans_billing_plans_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+  /billing/upgrade:
+    post:
+      tags:
+      - Billing
+      summary: Upgrade Subscription
+      operationId: upgrade_subscription_billing_upgrade_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Body_upgrade_subscription_billing_upgrade_post'
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - HTTPBearer: []
+  /healthcare/prescriptions/digital:
+    post:
+      tags:
+      - Healthcare
+      summary: Create Digital Prescription
+      operationId: create_digital_prescription_healthcare_prescriptions_digital_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              additionalProperties: true
+              type: object
+              title: Prescription Data
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - HTTPBearer: []
+  /healthcare/patients/{patient_id}/prescriptions:
+    get:
+      tags:
+      - Healthcare
+      summary: Get Patient Prescriptions
+      operationId: get_patient_prescriptions_healthcare_patients__patient_id__prescriptions_get
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: patient_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Patient Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /healthcare/programs:
+    get:
+      tags:
+      - Healthcare
+      summary: Get Healthcare Programs
+      operationId: get_healthcare_programs_healthcare_programs_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+  /healthcare/programs/{program_id}/enroll:
+    post:
+      tags:
+      - Healthcare
+      summary: Enroll In Program
+      operationId: enroll_in_program_healthcare_programs__program_id__enroll_post
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: program_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Program Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /healthcare/patients/{patient_id}/digital-summary:
+    get:
+      tags:
+      - Healthcare
+      summary: Get Patient Digital Summary
+      operationId: get_patient_digital_summary_healthcare_patients__patient_id__digital_summary_get
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: patient_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Patient Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /vendors/register:
+    post:
+      tags:
+      - Vendors
+      summary: Register Vendor
+      operationId: register_vendor_vendors_register_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              additionalProperties: true
+              type: object
+              title: Vendor Data
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - HTTPBearer: []
+  /vendors/{vendor_id}/patients/{patient_id}/data:
+    get:
+      tags:
+      - Vendors
+      summary: Get Vendor Patient Data
+      operationId: get_vendor_patient_data_vendors__vendor_id__patients__patient_id__data_get
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: vendor_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Vendor Id
+      - name: patient_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Patient Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /vendors/{vendor_id}/webhooks:
+    post:
+      tags:
+      - Vendors
+      summary: Create Vendor Webhook
+      operationId: create_vendor_webhook_vendors__vendor_id__webhooks_post
+      security:
+      - HTTPBearer: []
+      parameters:
+      - name: vendor_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Vendor Id
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/HealthQuestionRequest"
-      responses:
-        "200":
-          description: Health question answered successfully
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/HealthQuestionResponse"
-        "400":
-          description: Invalid request data
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ErrorResponse"
-        "429":
-          description: Rate limit exceeded
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ErrorResponse"
-
-components:
-  securitySchemes:
-    ApiKeyAuth:
-      type: apiKey
-      in: header
-      name: X-API-Key
-      description: API key for authentication
-    BearerAuth:
-      type: http
-      scheme: bearer
-      bearerFormat: JWT
-      description: JWT bearer token for authentication
-    OAuth2:
-      type: oauth2
-      description: OAuth2 authentication (future implementation)
-      x-beta: true
-      flows:
-        authorizationCode:
-          authorizationUrl: https://api.bondmcp.com/oauth2/authorize
-          tokenUrl: https://api.bondmcp.com/oauth2/token
-          scopes:
-            read: Read access to user data
-            write: Write access to user data
-            admin: Administrative access
-
-  schemas:
-    # Standard error model
-    ErrorResponse:
-      type: object
-      required:
-        - error
-      properties:
-        error:
-          type: object
-          required:
-            - code
-            - message
-          properties:
-            code:
-              type: string
-              description: Error code for programmatic handling
-              example: "VALIDATION_ERROR"
-            message:
-              type: string
-              description: Human-readable error message
-              example: "The provided email address is invalid"
-            correlationId:
-              type: string
-              description: Unique identifier for debugging purposes
-              example: "req_123456789"
-            details:
               type: object
-              description: Additional error details
               additionalProperties: true
-              example:
-                field: "email"
-                rejectedValue: "invalid-email"
-
-    SuccessResponse:
-      type: object
-      required:
-        - success
-        - message
+              title: Webhook Data
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /.well-known/mcp-configuration:
+    get:
+      tags:
+      - MCP
+      summary: Get Mcp Configuration
+      operationId: get_mcp_configuration__well_known_mcp_configuration_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+  /.well-known/mcp-manifest.json:
+    get:
+      tags:
+      - MCP
+      summary: Get Mcp Manifest
+      operationId: get_mcp_manifest__well_known_mcp_manifest_json_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+components:
+  schemas:
+    AppointmentCreate:
       properties:
-        success:
-          type: boolean
-          example: true
-        message:
+        patient_id:
           type: string
-          example: "Operation completed successfully"
-        correlationId:
+          title: Patient Id
+        provider_id:
           type: string
-          description: Unique identifier for request tracking
-          example: "req_123456789"
-
-    # System schemas
-    HealthStatus:
-      type: object
-      required:
-        - status
-        - version
-        - timestamp
-      properties:
-        status:
+          title: Provider Id
+        appointment_type:
           type: string
-          enum: [healthy, degraded, unhealthy]
-          example: "healthy"
-        version:
-          type: string
-          example: "1.0.0"
-        timestamp:
-          type: string
-          format: date-time
-          example: "2024-01-01T00:00:00Z"
-        environment:
-          type: string
-          enum: [production, staging, development]
-          example: "production"
-        services:
-          type: object
-          additionalProperties:
-            type: object
-            properties:
-              status:
-                type: string
-                enum: [healthy, degraded, unhealthy]
-              responseTime:
-                type: number
-                description: Response time in milliseconds
-          example:
-            database:
-              status: "healthy"
-              responseTime: 15
-            ai_service:
-              status: "healthy"
-              responseTime: 250
-
-    # Authentication schemas
-    UserRegistrationRequest:
-      type: object
-      required:
-        - email
-        - password
-        - firstName
-        - lastName
-      properties:
-        email:
-          type: string
-          format: email
-          example: "user@example.com"
-        password:
-          type: string
-          minLength: 8
-          example: "SecurePassword123!"
-        firstName:
-          type: string
+          maxLength: 100
           minLength: 1
-          maxLength: 50
-          example: "John"
-        lastName:
-          type: string
-          minLength: 1
-          maxLength: 50
-          example: "Doe"
-        agreeToTerms:
-          type: boolean
-          description: User must agree to terms of service
-          example: true
-
-    UserRegistrationResponse:
-      type: object
-      required:
-        - userId
-        - email
-        - message
-      properties:
-        userId:
-          type: string
-          example: "user_123456789"
-        email:
-          type: string
-          format: email
-          example: "user@example.com"
-        message:
-          type: string
-          example: "Account created successfully. Please check your email for verification."
-        verificationRequired:
-          type: boolean
-          example: true
-
-    UserLoginRequest:
-      type: object
-      required:
-        - email
-        - password
-      properties:
-        email:
-          type: string
-          format: email
-          example: "user@example.com"
-        password:
-          type: string
-          example: "SecurePassword123!"
-        rememberMe:
-          type: boolean
-          description: Extend session duration
-          example: false
-
-    UserLoginResponse:
-      type: object
-      required:
-        - accessToken
-        - refreshToken
-        - expiresIn
-        - user
-      properties:
-        accessToken:
-          type: string
-          description: JWT access token
-          example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
-        refreshToken:
-          type: string
-          description: Refresh token for obtaining new access tokens
-          example: "rt_123456789abcdef"
-        expiresIn:
-          type: integer
-          description: Access token expiration time in seconds
-          example: 3600
-        tokenType:
-          type: string
-          example: "Bearer"
-        user:
-          $ref: "#/components/schemas/UserProfile"
-
-    TokenRefreshRequest:
-      type: object
-      required:
-        - refreshToken
-      properties:
-        refreshToken:
-          type: string
-          example: "rt_123456789abcdef"
-
-    TokenRefreshResponse:
-      type: object
-      required:
-        - accessToken
-        - expiresIn
-      properties:
-        accessToken:
-          type: string
-          example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
-        expiresIn:
-          type: integer
-          example: 3600
-        tokenType:
-          type: string
-          example: "Bearer"
-
-    PasswordResetRequest:
-      type: object
-      required:
-        - email
-      properties:
-        email:
-          type: string
-          format: email
-          example: "user@example.com"
-
-    UserProfile:
-      type: object
-      required:
-        - userId
-        - email
-        - firstName
-        - lastName
-      properties:
-        userId:
-          type: string
-          example: "user_123456789"
-        email:
-          type: string
-          format: email
-          example: "user@example.com"
-        firstName:
-          type: string
-          example: "John"
-        lastName:
-          type: string
-          example: "Doe"
-        isEmailVerified:
-          type: boolean
-          example: true
-        createdAt:
-          type: string
-          format: date-time
-          example: "2024-01-01T00:00:00Z"
-        lastLoginAt:
-          type: string
-          format: date-time
-          example: "2024-01-01T12:00:00Z"
-        plan:
-          type: string
-          enum: [free, pro, enterprise]
-          example: "free"
-
-    # API Key schemas
-    ApiKeyGenerateRequest:
-      type: object
-      required:
-        - name
-      properties:
-        name:
-          type: string
-          description: Friendly name for the API key
-          example: "Production API Key"
-        description:
-          type: string
-          description: Optional description
-          example: "API key for production application"
-        permissions:
-          type: array
-          items:
-            type: string
-            enum: [read, write, admin]
-          example: ["read", "write"]
-        expiresAt:
-          type: string
-          format: date-time
-          description: Optional expiration date
-          example: "2025-01-01T00:00:00Z"
-
-    ApiKeyResponse:
-      type: object
-      required:
-        - keyId
-        - name
-        - apiKey
-        - createdAt
-      properties:
-        keyId:
-          type: string
-          example: "key_123456789"
-        name:
-          type: string
-          example: "Production API Key"
-        apiKey:
-          type: string
-          description: The actual API key (only returned on creation)
-          example: "bmcp_123456789abcdef"
-        permissions:
-          type: array
-          items:
-            type: string
-          example: ["read", "write"]
-        createdAt:
-          type: string
-          format: date-time
-          example: "2024-01-01T00:00:00Z"
-        expiresAt:
-          oneOf:
-            - type: "null"
-            - type: string
-              format: date-time
-          examples: [null, "2025-01-01T00:00:00Z"]
-        lastUsedAt:
-          oneOf:
-            - type: "null"
-            - type: string
-              format: date-time
-          examples: [null, "2024-01-01T12:00:00Z"]
-
-    # Health AI schemas
-    HealthQuestionRequest:
-      type: object
-      required:
-        - message
-      properties:
-        message:
-          type: string
-          description: The health question to ask
-          example: "What are the symptoms of diabetes?"
-        context:
-          type: object
-          description: Additional context for the question
-          properties:
-            age:
-              type: integer
-              minimum: 0
-              maximum: 150
-              example: 35
-            gender:
-              type: string
-              enum: [male, female, other, prefer_not_to_say]
-              example: "female"
-            medicalHistory:
-              type: array
-              items:
-                type: string
-              example: ["hypertension", "diabetes_family_history"]
-            medications:
-              type: array
-              items:
-                type: string
-              example: ["metformin", "lisinopril"]
-        includeReferences:
-          type: boolean
-          description: Include medical references in response
-          default: false
-          example: true
-        maxResults:
-          type: integer
-          minimum: 1
-          maximum: 10
-          default: 1
-          example: 3
-
-    HealthQuestionResponse:
-      type: object
-      required:
-        - response
-        - confidence
-        - queryId
-      properties:
-        response:
-          type: string
-          description: AI-generated response to the health question
-          example: "Diabetes symptoms include increased thirst, frequent urination, unexplained weight loss, fatigue, and blurred vision. It's important to consult with a healthcare professional for proper diagnosis and treatment."
-        confidence:
-          type: number
-          minimum: 0
-          maximum: 1
-          description: Confidence score for the response
-          example: 0.92
-        queryId:
-          type: string
-          description: Unique identifier for this query
-          example: "query_123456789"
-        references:
-          type: array
-          items:
-            $ref: "#/components/schemas/MedicalReference"
-        disclaimers:
-          type: array
-          items:
-            type: string
-          example: ["This information is for educational purposes only and should not replace professional medical advice"]
-        timestamp:
-          type: string
-          format: date-time
-          example: "2024-01-01T12:00:00Z"
-
-    MedicalReference:
-      type: object
-      required:
-        - title
-        - source
-      properties:
+          title: Appointment Type
         title:
           type: string
-          example: "Diabetes mellitus: diagnosis and management"
-        source:
+          maxLength: 255
+          minLength: 1
+          title: Title
+        description:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Description
+        scheduled_start:
           type: string
-          example: "Mayo Clinic"
-        url:
+          format: date-time
+          title: Scheduled Start
+        scheduled_end:
           type: string
-          format: uri
-          example: "https://www.mayoclinic.org/diseases-conditions/diabetes/symptoms-causes/syc-20371444"
-        type:
+          format: date-time
+          title: Scheduled End
+        location_type:
           type: string
-          enum: [clinical_guideline, research_paper, medical_encyclopedia, professional_organization]
-          example: "clinical_guideline"
-        publicationDate:
+          pattern: ^(in-person|telemedicine|phone)$
+          title: Location Type
+          default: in-person
+        location_details:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Location Details
+        duration_minutes:
+          anyOf:
+          - type: integer
+            maximum: 480.0
+            minimum: 5.0
+          - type: 'null'
+          title: Duration Minutes
+          default: 30
+        booking_notes:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Booking Notes
+      type: object
+      required:
+      - patient_id
+      - provider_id
+      - appointment_type
+      - title
+      - scheduled_start
+      - scheduled_end
+      title: AppointmentCreate
+      description: Appointment creation request
+    AppointmentInfo:
+      properties:
+        id:
+          type: string
+          title: Id
+        patient_id:
+          type: string
+          title: Patient Id
+        provider_id:
+          type: string
+          title: Provider Id
+        appointment_type:
+          type: string
+          title: Appointment Type
+        title:
+          type: string
+          title: Title
+        description:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Description
+        scheduled_start:
+          type: string
+          format: date-time
+          title: Scheduled Start
+        scheduled_end:
+          type: string
+          format: date-time
+          title: Scheduled End
+        actual_start:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Actual Start
+        actual_end:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Actual End
+        location_type:
+          type: string
+          title: Location Type
+        location_details:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Location Details
+        status:
+          type: string
+          title: Status
+        duration_minutes:
+          type: integer
+          title: Duration Minutes
+        booking_notes:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Booking Notes
+        provider_notes:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Provider Notes
+        created_at:
+          type: string
+          format: date-time
+          title: Created At
+        updated_at:
+          type: string
+          format: date-time
+          title: Updated At
+      type: object
+      required:
+      - id
+      - patient_id
+      - provider_id
+      - appointment_type
+      - title
+      - scheduled_start
+      - scheduled_end
+      - location_type
+      - status
+      - duration_minutes
+      - created_at
+      - updated_at
+      title: AppointmentInfo
+      description: Appointment information
+    AppointmentUpdate:
+      properties:
+        title:
+          anyOf:
+          - type: string
+            maxLength: 255
+            minLength: 1
+          - type: 'null'
+          title: Title
+        description:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Description
+        scheduled_start:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Scheduled Start
+        scheduled_end:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Scheduled End
+        location_type:
+          anyOf:
+          - type: string
+            pattern: ^(in-person|telemedicine|phone)$
+          - type: 'null'
+          title: Location Type
+        location_details:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Location Details
+        status:
+          anyOf:
+          - type: string
+            pattern: ^(scheduled|confirmed|checked-in|in-progress|completed|cancelled|no-show)$
+          - type: 'null'
+          title: Status
+        provider_notes:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Provider Notes
+      type: object
+      title: AppointmentUpdate
+      description: Appointment update request
+    Body_ask_health_question_alt_health_ask_post:
+      properties:
+        question:
+          type: string
+          title: Question
+      type: object
+      required:
+      - question
+      title: Body_ask_health_question_alt_health_ask_post
+    Body_ask_health_question_ask_post:
+      properties:
+        question:
+          type: string
+          title: Question
+      type: object
+      required:
+      - question
+      title: Body_ask_health_question_ask_post
+    Body_create_api_key_auth_api_keys_post:
+      properties:
+        name:
+          type: string
+          title: Name
+      type: object
+      required:
+      - name
+      title: Body_create_api_key_auth_api_keys_post
+    Body_login_user_auth_login_post:
+      properties:
+        email:
+          type: string
+          title: Email
+        password:
+          type: string
+          title: Password
+      type: object
+      required:
+      - email
+      - password
+      title: Body_login_user_auth_login_post
+    Body_register_user_auth_register_post:
+      properties:
+        email:
+          type: string
+          title: Email
+        password:
+          type: string
+          title: Password
+        name:
+          type: string
+          title: Name
+      type: object
+      required:
+      - email
+      - password
+      - name
+      title: Body_register_user_auth_register_post
+    Body_upgrade_subscription_billing_upgrade_post:
+      properties:
+        plan_id:
+          type: string
+          title: Plan Id
+      type: object
+      required:
+      - plan_id
+      title: Body_upgrade_subscription_billing_upgrade_post
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    LabReferenceInfo:
+      properties:
+        id:
+          type: string
+          title: Id
+        code:
+          type: string
+          title: Code
+        name:
+          type: string
+          title: Name
+        display_name:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Display Name
+        category:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Category
+        description:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Description
+        default_unit:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Default Unit
+        methodology:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Methodology
+        specimen_type:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Specimen Type
+        reference_ranges:
+          anyOf:
+          - items:
+              additionalProperties: true
+              type: object
+            type: array
+          - type: 'null'
+          title: Reference Ranges
+        interpretation_guidelines:
+          anyOf:
+          - items:
+              additionalProperties: true
+              type: object
+            type: array
+          - type: 'null'
+          title: Interpretation Guidelines
+        critical_values:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Critical Values
+        clinical_significance:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Clinical Significance
+        is_active:
+          type: boolean
+          title: Is Active
+      type: object
+      required:
+      - id
+      - code
+      - name
+      - is_active
+      title: LabReferenceInfo
+      description: Lab reference information
+    LabResultSummary:
+      properties:
+        id:
+          type: string
+          title: Id
+        test_code:
+          type: string
+          title: Test Code
+        test_name:
+          type: string
+          title: Test Name
+        test_category:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Test Category
+        value_numeric:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: Value Numeric
+        value_text:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Value Text
+        unit:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Unit
+        abnormal_flag:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Abnormal Flag
+        reference_range_text:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Reference Range Text
+        collection_date:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Collection Date
+        result_date:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Result Date
+        critical_flag:
+          type: boolean
+          title: Critical Flag
+      type: object
+      required:
+      - id
+      - test_code
+      - test_name
+      - critical_flag
+      title: LabResultSummary
+      description: Lab result summary for medical record context
+    MedicalRecordSummary:
+      properties:
+        id:
+          type: string
+          title: Id
+        patient_id:
+          type: string
+          title: Patient Id
+        record_type:
+          type: string
+          title: Record Type
+        title:
+          type: string
+          title: Title
+        chief_complaint:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Chief Complaint
+        history_present_illness:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: History Present Illness
+        assessment:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Assessment
+        plan:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Plan
+        clinical_notes:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Clinical Notes
+        diagnoses:
+          anyOf:
+          - items:
+              additionalProperties: true
+              type: object
+            type: array
+          - type: 'null'
+          title: Diagnoses
+        procedures:
+          anyOf:
+          - items:
+              additionalProperties: true
+              type: object
+            type: array
+          - type: 'null'
+          title: Procedures
+        vital_signs:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Vital Signs
+        provider_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Provider Id
+        encounter_date:
+          type: string
+          format: date-time
+          title: Encounter Date
+        encounter_type:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Encounter Type
+        department:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Department
+        document_status:
+          type: string
+          title: Document Status
+        related_lab_results:
+          items:
+            $ref: '#/components/schemas/LabResultSummary'
+          type: array
+          title: Related Lab Results
+          default: []
+        created_at:
+          type: string
+          format: date-time
+          title: Created At
+        updated_at:
+          type: string
+          format: date-time
+          title: Updated At
+      type: object
+      required:
+      - id
+      - patient_id
+      - record_type
+      - title
+      - encounter_date
+      - document_status
+      - created_at
+      - updated_at
+      title: MedicalRecordSummary
+      description: Comprehensive medical record with related labs
+    PaginatedResponse_AppointmentInfo_:
+      properties:
+        data:
+          items:
+            $ref: '#/components/schemas/AppointmentInfo'
+          type: array
+          title: Data
+          description: Array of items
+        next_cursor:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Next Cursor
+          description: Cursor for next page
+        total_count:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Total Count
+          description: Total count if available (may be None for performance)
+        has_more:
+          type: boolean
+          title: Has More
+          description: Whether more items are available
+          default: false
+      type: object
+      required:
+      - data
+      title: PaginatedResponse[AppointmentInfo]
+    PaginatedResponse_LabReferenceInfo_:
+      properties:
+        data:
+          items:
+            $ref: '#/components/schemas/LabReferenceInfo'
+          type: array
+          title: Data
+          description: Array of items
+        next_cursor:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Next Cursor
+          description: Cursor for next page
+        total_count:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Total Count
+          description: Total count if available (may be None for performance)
+        has_more:
+          type: boolean
+          title: Has More
+          description: Whether more items are available
+          default: false
+      type: object
+      required:
+      - data
+      title: PaginatedResponse[LabReferenceInfo]
+    PaginatedResponse_MedicalRecordSummary_:
+      properties:
+        data:
+          items:
+            $ref: '#/components/schemas/MedicalRecordSummary'
+          type: array
+          title: Data
+          description: Array of items
+        next_cursor:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Next Cursor
+          description: Cursor for next page
+        total_count:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Total Count
+          description: Total count if available (may be None for performance)
+        has_more:
+          type: boolean
+          title: Has More
+          description: Whether more items are available
+          default: false
+      type: object
+      required:
+      - data
+      title: PaginatedResponse[MedicalRecordSummary]
+    PaginatedResponse_PatientBasicInfo_:
+      properties:
+        data:
+          items:
+            $ref: '#/components/schemas/PatientBasicInfo'
+          type: array
+          title: Data
+          description: Array of items
+        next_cursor:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Next Cursor
+          description: Cursor for next page
+        total_count:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Total Count
+          description: Total count if available (may be None for performance)
+        has_more:
+          type: boolean
+          title: Has More
+          description: Whether more items are available
+          default: false
+      type: object
+      required:
+      - data
+      title: PaginatedResponse[PatientBasicInfo]
+    PaginatedResponse_PrescriptionRefillInfo_:
+      properties:
+        data:
+          items:
+            $ref: '#/components/schemas/PrescriptionRefillInfo'
+          type: array
+          title: Data
+          description: Array of items
+        next_cursor:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Next Cursor
+          description: Cursor for next page
+        total_count:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Total Count
+          description: Total count if available (may be None for performance)
+        has_more:
+          type: boolean
+          title: Has More
+          description: Whether more items are available
+          default: false
+      type: object
+      required:
+      - data
+      title: PaginatedResponse[PrescriptionRefillInfo]
+    PatientBasicInfo:
+      properties:
+        id:
+          type: string
+          title: Id
+        first_name:
+          type: string
+          title: First Name
+        last_name:
+          type: string
+          title: Last Name
+        date_of_birth:
           type: string
           format: date
-          example: "2024-01-01"
-        credibilityScore:
-          type: number
-          minimum: 0
-          maximum: 1
-          description: Credibility score of the reference
-          example: 0.95
+          title: Date Of Birth
+        mrn:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Mrn
+        gender:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Gender
+        phone_primary:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Phone Primary
+        email:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Email
+      type: object
+      required:
+      - id
+      - first_name
+      - last_name
+      - date_of_birth
+      title: PatientBasicInfo
+      description: Basic patient information for search results
+    PatientDetailedInfo:
+      properties:
+        id:
+          type: string
+          title: Id
+        first_name:
+          type: string
+          title: First Name
+        last_name:
+          type: string
+          title: Last Name
+        date_of_birth:
+          type: string
+          format: date
+          title: Date Of Birth
+        mrn:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Mrn
+        gender:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Gender
+        phone_primary:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Phone Primary
+        email:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Email
+        middle_name:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Middle Name
+        ssn_last4:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Ssn Last4
+        phone_secondary:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Phone Secondary
+        address_line1:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Address Line1
+        address_line2:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Address Line2
+        city:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: City
+        state:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: State
+        zip_code:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Zip Code
+        primary_language:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Primary Language
+        emergency_contact_name:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Emergency Contact Name
+        emergency_contact_phone:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Emergency Contact Phone
+        status:
+          type: string
+          title: Status
+        created_at:
+          type: string
+          format: date-time
+          title: Created At
+        updated_at:
+          type: string
+          format: date-time
+          title: Updated At
+      type: object
+      required:
+      - id
+      - first_name
+      - last_name
+      - date_of_birth
+      - status
+      - created_at
+      - updated_at
+      title: PatientDetailedInfo
+      description: Detailed patient information
+    PatientSummaryExtended:
+      properties:
+        patient_id:
+          type: string
+          title: Patient Id
+        recent_records:
+          items:
+            $ref: '#/components/schemas/MedicalRecordSummary'
+          type: array
+          title: Recent Records
+          default: []
+        recent_lab_results:
+          items:
+            $ref: '#/components/schemas/LabResultSummary'
+          type: array
+          title: Recent Lab Results
+          default: []
+        total_records:
+          type: integer
+          title: Total Records
+        total_lab_results:
+          type: integer
+          title: Total Lab Results
+        date_range_covered:
+          anyOf:
+          - additionalProperties:
+              type: string
+              format: date-time
+            type: object
+          - type: 'null'
+          title: Date Range Covered
+        critical_results:
+          items:
+            $ref: '#/components/schemas/LabResultSummary'
+          type: array
+          title: Critical Results
+          default: []
+        abnormal_results:
+          items:
+            $ref: '#/components/schemas/LabResultSummary'
+          type: array
+          title: Abnormal Results
+          default: []
+      type: object
+      required:
+      - patient_id
+      - total_records
+      - total_lab_results
+      title: PatientSummaryExtended
+      description: Extended patient summary with medical records and labs
+    PrescriptionRefillInfo:
+      properties:
+        id:
+          type: string
+          title: Id
+        patient_id:
+          type: string
+          title: Patient Id
+        program_id:
+          type: string
+          title: Program Id
+        prescriber_id:
+          type: string
+          title: Prescriber Id
+        status:
+          type: string
+          title: Status
+        prescription_status:
+          type: string
+          title: Prescription Status
+        start_date:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Start Date
+        end_date:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: End Date
+        goals:
+          anyOf:
+          - items:
+              type: string
+            type: array
+          - type: 'null'
+          title: Goals
+        instructions:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Instructions
+        total_refills_allowed:
+          type: integer
+          title: Total Refills Allowed
+        remaining_refills:
+          type: integer
+          title: Remaining Refills
+        last_dispensed_at:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Last Dispensed At
+        refill_eligibility_date:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Refill Eligibility Date
+        days_supply:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Days Supply
+        quantity_prescribed:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: Quantity Prescribed
+        created_at:
+          type: string
+          format: date-time
+          title: Created At
+        updated_at:
+          type: string
+          format: date-time
+          title: Updated At
+      type: object
+      required:
+      - id
+      - patient_id
+      - program_id
+      - prescriber_id
+      - status
+      - prescription_status
+      - total_refills_allowed
+      - remaining_refills
+      - created_at
+      - updated_at
+      title: PrescriptionRefillInfo
+      description: Prescription with refill information
+    RefillEligibilityCheck:
+      properties:
+        prescription_id:
+          type: string
+          title: Prescription Id
+        is_eligible:
+          type: boolean
+          title: Is Eligible
+        reason:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Reason
+        next_eligible_date:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Next Eligible Date
+        remaining_refills:
+          type: integer
+          title: Remaining Refills
+        days_until_eligible:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Days Until Eligible
+      type: object
+      required:
+      - prescription_id
+      - is_eligible
+      - remaining_refills
+      title: RefillEligibilityCheck
+      description: Refill eligibility check result
+    RefillRequest:
+      properties:
+        prescription_id:
+          type: string
+          title: Prescription Id
+        quantity_requested:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: Quantity Requested
+        pickup_date:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Pickup Date
+        notes:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Notes
+      type: object
+      required:
+      - prescription_id
+      title: RefillRequest
+      description: Prescription refill request
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+  securitySchemes:
+    HTTPBearer:
+      type: http
+      scheme: bearer

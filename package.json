@@ -1,6 +1,6 @@
 {
   "name": "bondmcp-node-sdk",
-  "version": "0.1.0",
+  "version": "2.1.0",
   "main": "bondmcp_sdk/bondmcp-node.js",
   "scripts": {
     "test": "node --test tests/test_bondmcp_node.js",
@@ -39,5 +39,6 @@
     "redoc-cli": "^0.13.21",
     "ts-node": "^10.9.2",
     "typescript": "^5.9.2"
-  }
+  },
+  "description": "BondMCP Platform SDK with comprehensive Health AI endpoints"
 }
