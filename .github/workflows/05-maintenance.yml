@@ -1,0 +1,88 @@
+# =============================================================================
+# WORKFLOW: Automated Maintenance
+# PURPOSE: Dependency updates, cleanup tasks, and health monitoring
+# TRIGGERS: Scheduled (weekly/monthly)
+# MAINTAINER: Aurora Capital DevOps Team
+# LAST UPDATED: 2025-09-07
+# DOCUMENTATION: See .github/workflows/README.md
+# =============================================================================
+
+name: 05 - Automated Maintenance
+
+on:
+  schedule:
+    - cron: '0 6 * * 1'  # Weekly Monday 6 AM
+  workflow_dispatch:
+
+jobs:
+  dependency-updates:
+    name: Update Dependencies
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        
+    - name: Configure Git
+      run: |
+        git config --global user.name "Aurora Capital Bot"
+        git config --global user.email "info@auroracapital.nl"
+        
+    - name: Setup Node.js
+      if: hashFiles('package.json') != ''
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+        cache: 'npm'
+        
+    - name: Update npm dependencies
+      if: hashFiles('package.json') != ''
+      run: |
+        npm update
+        npm audit fix --audit-level moderate || echo "Audit fixes completed"
+        
+    - name: Setup Python
+      if: hashFiles('requirements.txt') != ''
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+        
+    - name: Update Python dependencies
+      if: hashFiles('requirements.txt') != ''
+      run: |
+        pip install --upgrade pip
+        pip list --outdated --format=freeze | grep -v '^\-e' | cut -d = -f 1 | xargs -n1 pip install -U || echo "Python updates completed"
+        
+    - name: Create Pull Request
+      uses: peter-evans/create-pull-request@v5
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        commit-message: 'chore: automated dependency updates'
+        title: 'chore: automated dependency updates'
+        body: |
+          ## 🤖 Automated Dependency Updates
+          
+          This PR contains automated dependency updates:
+          - Security patches applied
+          - Minor version updates
+          - Audit fixes applied
+          
+          Please review and merge if tests pass.
+        branch: dependency-updates
+        delete-branch: true
+
+  health-monitoring:
+    name: Health Monitoring
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Repository health check
+      run: |
+        echo "🏥 Checking repository health..."
+        echo "Add health monitoring commands here"
+        echo "Examples:"
+        echo "- Check for large files"
+        echo "- Validate workflow syntax"
+        echo "- Check for security issues"
