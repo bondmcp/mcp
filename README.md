@@ -6,11 +6,11 @@ description: BondMCP Health AI Platform - Complete AI-Powered Healthcare Platfor
 
 ## 🚀 **Live AI Platform**
 
-BondMCP is a **comprehensive health AI platform** providing intelligent health insights through multiple access methods including web interface, mobile apps, CLI tools, and direct API integration.
+BondMCP is a **fully operational, enterprise-grade health AI platform** providing validated medical advice through a sophisticated multi-model consensus system. The platform is accessible via a comprehensive REST API, with SDKs available for Python, JavaScript, and Go.
 
 ### Quick Start
 
-1. **Web Access**: Visit [app.bondmcp.com](https://app.bondmcp.com) for full web interface
+1. **Web Access**: Visit [app.bondmcp.com](https://app.bondmcp.com) for the user dashboard and account management.
 2. **Mobile Apps**: Download from App Store or Google Play
 3. **CLI Tools**: `pip install bondmcp-cli` for command-line access
 4. **API Integration**: Direct API access for developers
@@ -50,7 +50,7 @@ bondmcp ask "What should I eat for breakfast?"
 curl -H "Authorization: Bearer YOUR_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{"question": "What are the benefits of exercise?"}' \
-  https://api.bondmcp.com/ask
+  https://api.bondmcp.com/api/v1/health/ask
 ```
 
 ### Using SDKs
@@ -64,7 +64,7 @@ pip install bondmcp-python
 from bondmcp import BondMCP
 
 client = BondMCP(api_key="your-api-key")
-response = client.ask("What are the health benefits of meditation?")
+response = client.health.ask("What are the health benefits of meditation?")
 print(response.answer)
 ```
 
@@ -77,7 +77,7 @@ npm install @bondmcp/sdk
 import { BondMCP } from '@bondmcp/sdk';
 
 const client = new BondMCP({ apiKey: 'your-api-key' });
-const response = await client.ask('What are the health benefits of meditation?');
+const response = await client.health.ask('What are the health benefits of meditation?');
 console.log(response.answer);
 ```
 

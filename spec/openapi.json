@@ -1,90 +1,318 @@
 {
-  "openapi": "3.0.2",
+  "openapi": "3.0.3",
   "info": {
-    "title": "BondMCP API",
-    "version": "1.0.0-2025-08-27",
-    "description": "OpenAPI specification for the BondMCP healthcare API."
+    "title": "BondMCP Health AI API",
+    "version": "2.0.0",
+    "description": "Enterprise-grade health AI platform with multi-model consensus system, hallucination detection, and trust certificate verification.",
+    "contact": {
+      "name": "BondMCP Support",
+      "url": "https://bondmcp.com/support",
+      "email": "support@bondmcp.com"
+    },
+    "license": {
+      "name": "MIT",
+      "url": "https://opensource.org/licenses/MIT"
+    }
   },
   "servers": [
     {
       "url": "https://api.bondmcp.com",
-      "description": "Production"
+      "description": "Production server"
+    },
+    {
+      "url": "http://bondmcp-alb-973799597.us-east-1.elb.amazonaws.com",
+      "description": "AWS fallback server"
+    }
+  ],
+  "security": [
+    {
+      "BearerAuth": []
     }
   ],
   "components": {
     "securitySchemes": {
-      "ApiKeyAuth": {
-        "type": "apiKey",
-        "in": "header",
-        "name": "X-API-Key"
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "description": "JWT token obtained from login endpoint"
       }
     },
     "schemas": {
-      "HealthStatus": {
+      "HealthQuestion": {
+        "type": "object",
+        "required": [
+          "question"
+        ],
+        "properties": {
+          "question": {
+            "type": "string",
+            "description": "The health-related question to ask",
+            "example": "What are the symptoms of diabetes?"
+          },
+          "context": {
+            "type": "string",
+            "description": "Additional context for the question",
+            "example": "For a 45-year-old patient with family history"
+          }
+        }
+      },
+      "HealthResponse": {
         "type": "object",
         "properties": {
-          "status": {
-            "type": "string"
+          "id": {
+            "type": "string",
+            "description": "Unique response identifier"
           },
-          "version": {
-            "type": "string"
+          "answer": {
+            "type": "string",
+            "description": "The AI-generated health answer"
+          },
+          "consensus_score": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1,
+            "description": "Multi-model consensus confidence score"
+          },
+          "trust_certificate": {
+            "type": "string",
+            "description": "Trust certificate ID for verification"
+          },
+          "hallucination_risk": {
+            "type": "string",
+            "enum": [
+              "low",
+              "moderate",
+              "high",
+              "critical"
+            ],
+            "description": "Assessed hallucination risk level"
+          },
+          "medical_safety_score": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1,
+            "description": "Medical safety validation score"
+          },
+          "models_used": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "List of AI models used in consensus"
+          },
+          "timestamp": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Response generation timestamp"
+          }
+        }
+      },
+      "UserRegistration": {
+        "type": "object",
+        "required": [
+          "email",
+          "password",
+          "name"
+        ],
+        "properties": {
+          "email": {
+            "type": "string",
+            "format": "email",
+            "description": "User email address"
+          },
+          "password": {
+            "type": "string",
+            "minLength": 8,
+            "description": "User password (minimum 8 characters)"
+          },
+          "name": {
+            "type": "string",
+            "description": "User full name"
+          },
+          "organization": {
+            "type": "string",
+            "description": "User organization (optional)"
+          }
+        }
+      },
+      "UserLogin": {
+        "type": "object",
+        "required": [
+          "email",
+          "password"
+        ],
+        "properties": {
+          "email": {
+            "type": "string",
+            "format": "email",
+            "description": "User email address"
+          },
+          "password": {
+            "type": "string",
+            "description": "User password"
+          }
+        }
+      },
+      "AuthResponse": {
+        "type": "object",
+        "properties": {
+          "access_token": {
+            "type": "string",
+            "description": "JWT access token"
+          },
+          "token_type": {
+            "type": "string",
+            "example": "bearer"
+          },
+          "expires_in": {
+            "type": "integer",
+            "description": "Token expiration time in seconds"
+          },
+          "user": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "email": {
+                "type": "string"
+              },
+              "name": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      },
+      "ApiKey": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "API key identifier"
+          },
+          "name": {
+            "type": "string",
+            "description": "API key name"
+          },
+          "key": {
+            "type": "string",
+            "description": "API key value (only shown once)"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "expires_at": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "TrustCertificate": {
+        "type": "object",
+        "properties": {
+          "certificate_id": {
+            "type": "string",
+            "description": "Unique certificate identifier"
+          },
+          "response_id": {
+            "type": "string",
+            "description": "Associated response ID"
+          },
+          "consensus_score": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          },
+          "medical_safety_score": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          },
+          "hallucination_risk": {
+            "type": "string",
+            "enum": [
+              "low",
+              "moderate",
+              "high",
+              "critical"
+            ]
+          },
+          "models_consensus": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "model": {
+                  "type": "string"
+                },
+                "confidence": {
+                  "type": "number"
+                }
+              }
+            }
+          },
+          "verification_url": {
+            "type": "string",
+            "description": "URL for certificate verification"
+          },
+          "issued_at": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "Error": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "string",
+            "description": "Error message"
+          },
+          "code": {
+            "type": "string",
+            "description": "Error code"
           },
           "timestamp": {
             "type": "string",
             "format": "date-time"
-          },
-          "environment": {
-            "type": "string"
-          },
-          "services": {
-            "type": "object"
-          }
-        }
-      },
-      "AskRequest": {
-        "type": "object",
-        "properties": {
-          "message": {
-            "type": "string"
-          },
-          "context": {
-            "type": "string"
-          }
-        },
-        "required": [
-          "message"
-        ]
-      },
-      "AskResponse": {
-        "type": "object",
-        "properties": {
-          "request_id": {
-            "type": "string"
-          },
-          "answer": {
-            "type": "string"
-          },
-          "sources": {
-            "type": "array",
-            "items": {
-              "type": "object"
-            }
           }
         }
       }
     }
   },
   "paths": {
-    "/api/v1/health": {
+    "/health": {
       "get": {
-        "summary": "health",
+        "summary": "Health check",
+        "description": "Check the health status of the API",
+        "tags": [
+          "System"
+        ],
+        "security": [],
         "responses": {
           "200": {
-            "description": "health response",
+            "description": "API is healthy",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/HealthStatus"
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "healthy"
+                    },
+                    "timestamp": {
+                      "type": "string",
+                      "format": "date-time"
+                    },
+                    "version": {
+                      "type": "string",
+                      "example": "2.0.0"
+                    }
+                  }
                 }
               }
             }
@@ -92,31 +320,83 @@
         }
       }
     },
-    "/api/v1/ask": {
+    "/api/v1/auth/register": {
       "post": {
-        "summary": "ask",
-        "security": [
-          {
-            "ApiKeyAuth": []
-          }
+        "summary": "Register a new user",
+        "description": "Create a new user account",
+        "tags": [
+          "Authentication"
         ],
+        "security": [],
         "requestBody": {
           "required": true,
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/AskRequest"
+                "$ref": "#/components/schemas/UserRegistration"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "User created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/auth/login": {
+      "post": {
+        "summary": "User login",
+        "description": "Authenticate user and return JWT token",
+        "tags": [
+          "Authentication"
+        ],
+        "security": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserLogin"
               }
             }
           }
         },
         "responses": {
           "200": {
-            "description": "ask response",
+            "description": "Login successful",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/AskResponse"
+                  "$ref": "#/components/schemas/AuthResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Invalid credentials",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
                 }
               }
             }
@@ -124,31 +404,50 @@
         }
       }
     },
-    "/api/v1/orchestrator/multi-llm": {
+    "/api/v1/health/ask": {
       "post": {
-        "summary": "multi-llm",
-        "security": [
-          {
-            "ApiKeyAuth": []
-          }
+        "summary": "Ask a health question",
+        "description": "Submit a health-related question and receive an AI-generated answer with multi-model consensus validation",
+        "tags": [
+          "Health AI"
         ],
         "requestBody": {
           "required": true,
           "content": {
             "application/json": {
               "schema": {
-                "type": "object"
+                "$ref": "#/components/schemas/HealthQuestion"
               }
             }
           }
         },
         "responses": {
           "200": {
-            "description": "multi-llm response",
+            "description": "Health question answered successfully",
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "object"
+                  "$ref": "#/components/schemas/HealthResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid question format",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
                 }
               }
             }
@@ -156,349 +455,58 @@
         }
       }
     },
-    "/api/v1/labs/interpret": {
+    "/api/v1/auth/api-keys": {
       "post": {
-        "summary": "interpret",
-        "security": [
-          {
-            "ApiKeyAuth": []
-          }
+        "summary": "Create API key",
+        "description": "Generate a new API key for programmatic access",
+        "tags": [
+          "API Keys"
         ],
         "requestBody": {
           "required": true,
           "content": {
             "application/json": {
               "schema": {
-                "type": "object"
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "description": "API key name"
+                  }
+                }
               }
             }
           }
         },
         "responses": {
-          "200": {
-            "description": "interpret response",
+          "201": {
+            "description": "API key created successfully",
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "object"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/v1/health-data/analyze": {
-      "post": {
-        "summary": "analyze",
-        "security": [
-          {
-            "ApiKeyAuth": []
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "analyze response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/v1/supplement/recommend": {
-      "post": {
-        "summary": "recommend",
-        "security": [
-          {
-            "ApiKeyAuth": []
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "recommend response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/v1/import/oura": {
-      "post": {
-        "summary": "oura",
-        "security": [
-          {
-            "ApiKeyAuth": []
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "oura response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/v1/import/labs/csv": {
-      "post": {
-        "summary": "csv",
-        "security": [
-          {
-            "ApiKeyAuth": []
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "csv response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/v1/keys": {
-      "get": {
-        "summary": "keys",
-        "security": [
-          {
-            "ApiKeyAuth": []
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "keys response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object"
+                  "$ref": "#/components/schemas/ApiKey"
                 }
               }
             }
           }
         }
       },
-      "post": {
-        "summary": "keys",
-        "security": [
-          {
-            "ApiKeyAuth": []
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "keys response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/v1/keys/{key_id}": {
-      "delete": {
-        "summary": "{key_id}",
-        "security": [
-          {
-            "ApiKeyAuth": []
-          }
-        ],
-        "parameters": [
-          {
-            "in": "path",
-            "name": "key_id",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "{key_id} response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/v1/insights/generate": {
-      "post": {
-        "summary": "generate",
-        "security": [
-          {
-            "ApiKeyAuth": []
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "generate response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/v1/insights/history/{user_id}": {
       "get": {
-        "summary": "{user_id}",
-        "security": [
-          {
-            "ApiKeyAuth": []
-          }
-        ],
-        "parameters": [
-          {
-            "in": "path",
-            "name": "user_id",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
+        "summary": "List API keys",
+        "description": "Get all API keys for the authenticated user",
+        "tags": [
+          "API Keys"
         ],
         "responses": {
           "200": {
-            "description": "{user_id} response",
+            "description": "API keys retrieved successfully",
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "object"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/v1/insights/{insight_id}": {
-      "get": {
-        "summary": "{insight_id}",
-        "security": [
-          {
-            "ApiKeyAuth": []
-          }
-        ],
-        "parameters": [
-          {
-            "in": "path",
-            "name": "insight_id",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "{insight_id} response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object"
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ApiKey"
+                  }
                 }
               }
             }
@@ -506,5 +514,27 @@
         }
       }
     }
-  }
+  },
+  "tags": [
+    {
+      "name": "System",
+      "description": "System health and status endpoints"
+    },
+    {
+      "name": "Authentication",
+      "description": "User authentication and authorization"
+    },
+    {
+      "name": "Health AI",
+      "description": "AI-powered health question answering with consensus validation"
+    },
+    {
+      "name": "API Keys",
+      "description": "API key management for programmatic access"
+    },
+    {
+      "name": "Trust Certificates",
+      "description": "Trust certificate verification system"
+    }
+  ]
 }
