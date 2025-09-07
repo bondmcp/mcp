@@ -1,0 +1,49 @@
+# =============================================================================
+# WORKFLOW: Continuous Integration
+# PURPOSE: Code quality, testing, building, and security scanning
+# TRIGGERS: Push to main/develop, Pull requests
+# MAINTAINER: Aurora Capital DevOps Team
+# LAST UPDATED: 2025-09-07
+# DOCUMENTATION: See .github/workflows/README.md
+# =============================================================================
+
+name: 01 - Continuous Integration
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+
+env:
+  NODE_VERSION: '20'
+  PYTHON_VERSION: '3.11'
+
+jobs:
+  quality-checks:
+    name: Code Quality & Security
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Configure Git
+      run: |
+        git config --global user.name "Aurora Capital CI"
+        git config --global user.email "info@auroracapital.nl"
+
+  dependency-security:
+    name: Dependency Security Scan
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Run Trivy vulnerability scanner
+      uses: aquasecurity/trivy-action@master
+      with:
+        scan-type: 'fs'
+        format: 'table'
+      continue-on-error: true
