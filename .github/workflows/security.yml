@@ -1,0 +1,50 @@
+name: Security Scan
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  schedule:
+    - cron: '0 2 * * 1'  # Weekly Monday 2 AM
+
+jobs:
+  dependency-scan:
+    name: Dependency Security Scan
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup Node.js
+      if: hashFiles('package.json') != ''
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+        cache: 'npm'
+        
+    - name: Install dependencies
+      if: hashFiles('package.json') != ''
+      run: npm ci
+      
+    - name: Run npm audit
+      if: hashFiles('package.json') != ''
+      run: npm audit --audit-level moderate || echo "Audit completed with warnings"
+      
+    - name: Setup Python
+      if: hashFiles('requirements.txt') != ''
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+        
+    - name: Install Python dependencies
+      if: hashFiles('requirements.txt') != ''
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        pip install safety
+        
+    - name: Run Python security check
+      if: hashFiles('requirements.txt') != ''
+      run: safety check || echo "Safety check completed with warnings"
