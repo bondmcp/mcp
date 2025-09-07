@@ -12,7 +12,7 @@ This document provides an overview of the BondMCP public API for developers inte
 Query the AI with health-related questions and receive medically-informed responses with consensus verification.
 
 ```
-POST /api/v1/ask
+POST /api/v1/health/ask
 ```
 
 **Request Body**:
@@ -107,7 +107,7 @@ POST /api/v1/health-data/analyze
 Get detailed trust score information for a previous response.
 
 ```
-GET /api/v1/trust-score/{responseId}
+GET /api/v1/health/trust-score/{responseId}
 ```
 
 **Parameters**:
@@ -138,7 +138,7 @@ GET /api/v1/trust-score/{responseId}
 Create and manage user accounts.
 
 ```
-POST /api/v1/users
+POST /api/v1/auth/register
 ```
 
 **Request Body**:
@@ -167,7 +167,7 @@ POST /api/v1/users
 Create and manage API keys for authentication.
 
 ```
-POST /api/v1/api-keys
+POST /api/v1/auth/api/keys
 ```
 
 **Request Body**:

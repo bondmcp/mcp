@@ -1,6 +1,540 @@
 {
-  "version": "1.0.1",
-  "checksum": "59c5cba74d91f1684aedaa8a0801a13b5dbaeaffc01a8b55bbc3b5a20fb888c1",
-  "timestamp": "2025-08-23T12:06:16Z",
-  "spec_url": "file:///tmp/test_spec_v1.0.1.json"
+  "openapi": "3.0.3",
+  "info": {
+    "title": "BondMCP Health AI API",
+    "version": "2.0.0",
+    "description": "Enterprise-grade health AI platform with multi-model consensus system, hallucination detection, and trust certificate verification.",
+    "contact": {
+      "name": "BondMCP Support",
+      "url": "https://bondmcp.com/support",
+      "email": "support@bondmcp.com"
+    },
+    "license": {
+      "name": "MIT",
+      "url": "https://opensource.org/licenses/MIT"
+    }
+  },
+  "servers": [
+    {
+      "url": "https://api.bondmcp.com",
+      "description": "Production server"
+    },
+    {
+      "url": "http://bondmcp-alb-973799597.us-east-1.elb.amazonaws.com",
+      "description": "AWS fallback server"
+    }
+  ],
+  "security": [
+    {
+      "BearerAuth": []
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "description": "JWT token obtained from login endpoint"
+      }
+    },
+    "schemas": {
+      "HealthQuestion": {
+        "type": "object",
+        "required": [
+          "question"
+        ],
+        "properties": {
+          "question": {
+            "type": "string",
+            "description": "The health-related question to ask",
+            "example": "What are the symptoms of diabetes?"
+          },
+          "context": {
+            "type": "string",
+            "description": "Additional context for the question",
+            "example": "For a 45-year-old patient with family history"
+          }
+        }
+      },
+      "HealthResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Unique response identifier"
+          },
+          "answer": {
+            "type": "string",
+            "description": "The AI-generated health answer"
+          },
+          "consensus_score": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1,
+            "description": "Multi-model consensus confidence score"
+          },
+          "trust_certificate": {
+            "type": "string",
+            "description": "Trust certificate ID for verification"
+          },
+          "hallucination_risk": {
+            "type": "string",
+            "enum": [
+              "low",
+              "moderate",
+              "high",
+              "critical"
+            ],
+            "description": "Assessed hallucination risk level"
+          },
+          "medical_safety_score": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1,
+            "description": "Medical safety validation score"
+          },
+          "models_used": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "List of AI models used in consensus"
+          },
+          "timestamp": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Response generation timestamp"
+          }
+        }
+      },
+      "UserRegistration": {
+        "type": "object",
+        "required": [
+          "email",
+          "password",
+          "name"
+        ],
+        "properties": {
+          "email": {
+            "type": "string",
+            "format": "email",
+            "description": "User email address"
+          },
+          "password": {
+            "type": "string",
+            "minLength": 8,
+            "description": "User password (minimum 8 characters)"
+          },
+          "name": {
+            "type": "string",
+            "description": "User full name"
+          },
+          "organization": {
+            "type": "string",
+            "description": "User organization (optional)"
+          }
+        }
+      },
+      "UserLogin": {
+        "type": "object",
+        "required": [
+          "email",
+          "password"
+        ],
+        "properties": {
+          "email": {
+            "type": "string",
+            "format": "email",
+            "description": "User email address"
+          },
+          "password": {
+            "type": "string",
+            "description": "User password"
+          }
+        }
+      },
+      "AuthResponse": {
+        "type": "object",
+        "properties": {
+          "access_token": {
+            "type": "string",
+            "description": "JWT access token"
+          },
+          "token_type": {
+            "type": "string",
+            "example": "bearer"
+          },
+          "expires_in": {
+            "type": "integer",
+            "description": "Token expiration time in seconds"
+          },
+          "user": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "email": {
+                "type": "string"
+              },
+              "name": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      },
+      "ApiKey": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "API key identifier"
+          },
+          "name": {
+            "type": "string",
+            "description": "API key name"
+          },
+          "key": {
+            "type": "string",
+            "description": "API key value (only shown once)"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "expires_at": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "TrustCertificate": {
+        "type": "object",
+        "properties": {
+          "certificate_id": {
+            "type": "string",
+            "description": "Unique certificate identifier"
+          },
+          "response_id": {
+            "type": "string",
+            "description": "Associated response ID"
+          },
+          "consensus_score": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          },
+          "medical_safety_score": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          },
+          "hallucination_risk": {
+            "type": "string",
+            "enum": [
+              "low",
+              "moderate",
+              "high",
+              "critical"
+            ]
+          },
+          "models_consensus": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "model": {
+                  "type": "string"
+                },
+                "confidence": {
+                  "type": "number"
+                }
+              }
+            }
+          },
+          "verification_url": {
+            "type": "string",
+            "description": "URL for certificate verification"
+          },
+          "issued_at": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "Error": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "string",
+            "description": "Error message"
+          },
+          "code": {
+            "type": "string",
+            "description": "Error code"
+          },
+          "timestamp": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      }
+    }
+  },
+  "paths": {
+    "/health": {
+      "get": {
+        "summary": "Health check",
+        "description": "Check the health status of the API",
+        "tags": [
+          "System"
+        ],
+        "security": [],
+        "responses": {
+          "200": {
+            "description": "API is healthy",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "healthy"
+                    },
+                    "timestamp": {
+                      "type": "string",
+                      "format": "date-time"
+                    },
+                    "version": {
+                      "type": "string",
+                      "example": "2.0.0"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/auth/register": {
+      "post": {
+        "summary": "Register a new user",
+        "description": "Create a new user account",
+        "tags": [
+          "Authentication"
+        ],
+        "security": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserRegistration"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "User created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/auth/login": {
+      "post": {
+        "summary": "User login",
+        "description": "Authenticate user and return JWT token",
+        "tags": [
+          "Authentication"
+        ],
+        "security": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserLogin"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Login successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Invalid credentials",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/health/ask": {
+      "post": {
+        "summary": "Ask a health question",
+        "description": "Submit a health-related question and receive an AI-generated answer with multi-model consensus validation",
+        "tags": [
+          "Health AI"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/HealthQuestion"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Health question answered successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HealthResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid question format",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/auth/api-keys": {
+      "post": {
+        "summary": "Create API key",
+        "description": "Generate a new API key for programmatic access",
+        "tags": [
+          "API Keys"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "description": "API key name"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "API key created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiKey"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "summary": "List API keys",
+        "description": "Get all API keys for the authenticated user",
+        "tags": [
+          "API Keys"
+        ],
+        "responses": {
+          "200": {
+            "description": "API keys retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ApiKey"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "tags": [
+    {
+      "name": "System",
+      "description": "System health and status endpoints"
+    },
+    {
+      "name": "Authentication",
+      "description": "User authentication and authorization"
+    },
+    {
+      "name": "Health AI",
+      "description": "AI-powered health question answering with consensus validation"
+    },
+    {
+      "name": "API Keys",
+      "description": "API key management for programmatic access"
+    },
+    {
+      "name": "Trust Certificates",
+      "description": "Trust certificate verification system"
+    }
+  ]
 }
