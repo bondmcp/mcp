@@ -1,10 +1,12 @@
 ---
-description: BondMCP Health AI Platform - Complete AI-Powered Healthcare Platform
+description: >-
+  BondMCP Health AI Platform - Complete AI-Powered Healthcare Platform With
+  Cryptographic Trust Score Certificates
 ---
 
-# BondMCP - AI Health Answers You Can Trust
+# Welcome to BondMCP
 
-## 🚀 **Live AI Platform**
+## 🚀 Power your app with trusted health answers
 
 BondMCP is a **fully operational, enterprise-grade health AI platform** providing validated medical advice through a sophisticated multi-model consensus system. The platform is accessible via a comprehensive REST API, with SDKs available for Python, JavaScript, and Go.
 
@@ -18,18 +20,22 @@ BondMCP is a **fully operational, enterprise-grade health AI platform** providin
 ## 📋 **Getting Started**
 
 ### Web Platform
+
 Visit [app.bondmcp.com](https://app.bondmcp.com) to:
-- Create your account
-- Access the full dashboard
-- Manage your health data
-- Get AI-powered insights
+
+* Create your account
+* Access the full dashboard
+* Manage your health data
+* Get AI-powered insights
 
 ### CLI Installation
+
 ```bash
 pip install bondmcp-cli
 ```
 
 ### Authentication
+
 ```bash
 # Login with credentials
 bondmcp auth login
@@ -39,6 +45,7 @@ export BONDMCP_API_KEY="your-api-key"
 ```
 
 ### First Health Query
+
 ```bash
 bondmcp ask "What should I eat for breakfast?"
 ```
@@ -46,6 +53,7 @@ bondmcp ask "What should I eat for breakfast?"
 ## 🔑 **API Access**
 
 ### Direct API Calls
+
 ```bash
 curl -H "Authorization: Bearer YOUR_API_KEY" \
   -H "Content-Type: application/json" \
@@ -56,6 +64,7 @@ curl -H "Authorization: Bearer YOUR_API_KEY" \
 ### Using SDKs
 
 #### Python
+
 ```bash
 pip install bondmcp-python
 ```
@@ -69,6 +78,7 @@ print(response.answer)
 ```
 
 #### JavaScript
+
 ```bash
 npm install @bondmcp/sdk
 ```
@@ -84,72 +94,80 @@ console.log(response.answer);
 ## 🎯 **Platform Access Methods**
 
 ### ✅ Available Access Methods
-- **Web Platform**: Full-featured web application at app.bondmcp.com
-- **Mobile Apps**: iOS and Android applications
-- **CLI Tools**: Command-line interface for developers
-- **REST API**: Direct API access for integrations
-- **SDKs**: Python, JavaScript, Go, and CLI libraries
+
+* **Web Platform**: Full-featured web application at app.bondmcp.com
+* **Mobile Apps**: iOS and Android applications
+* **CLI Tools**: Command-line interface for developers
+* **REST API**: Direct API access for integrations
+* **SDKs**: Python, JavaScript, Go, and CLI libraries
 
 ### 🌟 Platform Features
-- **Interactive Dashboard**: Visual health insights and analytics
-- **Health Data Management**: Comprehensive health record management
-- **AI-Powered Analysis**: Advanced health AI with personalized recommendations
-- **Multi-Device Sync**: Access your data across all devices
-- **Team Collaboration**: Share insights with healthcare providers
+
+* **Interactive Dashboard**: Visual health insights and analytics
+* **Health Data Management**: Comprehensive health record management
+* **AI-Powered Analysis**: Advanced health AI with personalized recommendations
+* **Multi-Device Sync**: Access your data across all devices
+* **Team Collaboration**: Share insights with healthcare providers
 
 ## 🧠 **Health AI Capabilities**
 
 ### Core Features
-- **Health Question Answering**: Get evidence-based answers to health questions
-- **Lab Result Analysis**: Interpret blood work and lab results with AI insights
-- **Nutrition Analysis**: Analyze meals and get personalized nutritional guidance
-- **Supplement Recommendations**: AI-powered supplement suggestions
-- **Health Risk Assessment**: Comprehensive health risk evaluation
-- **Symptom Checker**: AI-powered symptom analysis and recommendations
-- **Medication Interactions**: Check drug interactions and side effects
+
+* **Health Question Answering**: Get evidence-based answers to health questions
+* **Lab Result Analysis**: Interpret blood work and lab results with AI insights
+* **Nutrition Analysis**: Analyze meals and get personalized nutritional guidance
+* **Supplement Recommendations**: AI-powered supplement suggestions
+* **Health Risk Assessment**: Comprehensive health risk evaluation
+* **Symptom Checker**: AI-powered symptom analysis and recommendations
+* **Medication Interactions**: Check drug interactions and side effects
 
 ### API Endpoints
-- `/ask` - Health question answering
-- `/labs/interpret` - Lab result analysis
-- `/nutrition/analyze` - Nutrition analysis
-- `/supplements/recommend` - Supplement recommendations
-- `/health` - Health status check
-- `/symptoms/check` - Symptom analysis
-- `/medications/check` - Medication interaction checking
+
+* `/ask` - Health question answering
+* `/labs/interpret` - Lab result analysis
+* `/nutrition/analyze` - Nutrition analysis
+* `/supplements/recommend` - Supplement recommendations
+* `/health` - Health status check
+* `/symptoms/check` - Symptom analysis
+* `/medications/check` - Medication interaction checking
 
 ## 📚 **Documentation**
 
-- **[Getting Started](getting-started/README.md)** - Complete platform guide
-- **[API Reference](api-reference/README.md)** - Full API documentation
-- **[SDKs & Tools](sdks/README.md)** - SDK documentation and examples
-- **[Web Platform Guide](guides/web-platform.md)** - Web application documentation
-- **[Mobile Apps](guides/mobile-apps.md)** - Mobile application guide
-- **[CLI Documentation](sdks/cli/README.md)** - Command-line interface guide
+* [**Getting Started**](getting-started/) - Complete platform guide
+* [**API Reference**](api-reference/) - Full API documentation
+* [**SDKs & Tools**](sdks/) - SDK documentation and examples
+* [**Web Platform Guide**](guides/web-platform.md) - Web application documentation
+* [**Mobile Apps**](guides/mobile-apps.md) - Mobile application guide
+* [**CLI Documentation**](sdks/cli/) - Command-line interface guide
 
 ## 🔄 **OpenAPI & SDK Pipeline**
 
 BondMCP uses an **automated OpenAPI ingestion and SDK publishing pipeline** for reliable, versioned API specifications and automatically generated SDKs.
 
 ### Key Features
-- ✅ **Immutable Versioning**: Complete audit trail of API changes
-- ✅ **Automated SDK Publishing**: TypeScript and Python SDKs auto-published on spec changes
-- ✅ **Semantic Diff Generation**: Detailed change analysis between versions
-- ✅ **Quality Assurance**: Comprehensive validation and testing pipeline
+
+* ✅ **Immutable Versioning**: Complete audit trail of API changes
+* ✅ **Automated SDK Publishing**: TypeScript and Python SDKs auto-published on spec changes
+* ✅ **Semantic Diff Generation**: Detailed change analysis between versions
+* ✅ **Quality Assurance**: Comprehensive validation and testing pipeline
 
 ### Developer Resources
-- **[Integration Lifecycle](docs/integration-lifecycle.md)** - End-to-end pipeline documentation
-- **[SDK Release Runbook](docs/runbooks/sdk-release.md)** - Manual procedures and troubleshooting
-- **[OpenAPI Examples](docs/openapi-examples.md)** - Usage examples and testing
-- **[Contributing Guide](CONTRIBUTING.md)** - Contract change workflow
+
+* [**Integration Lifecycle**](docs/integration-lifecycle.md) - End-to-end pipeline documentation
+* [**SDK Release Runbook**](docs/runbooks/sdk-release.md) - Manual procedures and troubleshooting
+* [**OpenAPI Examples**](docs/openapi-examples.md) - Usage examples and testing
+* [**Contributing Guide**](CONTRIBUTING.md) - Contract change workflow
 
 ### Migration from Legacy
-⚠️ **Deprecation Notice**: The legacy dynamic OpenAPI generator has been deprecated and quarantined in `legacy/openapi-generator/`. 
 
-**New Process**: Use the automated repository_dispatch workflow (`.github/workflows/openapi-ingestion.yml`) triggered by the platform team. See [ADR-002](docs/ADR-002-automated-openapi-pipeline.md) for full details.
+⚠️ **Deprecation Notice**: The legacy dynamic OpenAPI generator has been deprecated and quarantined in `legacy/openapi-generator/`.
+
+**New Process**: Use the automated repository\_dispatch workflow (`.github/workflows/openapi-ingestion.yml`) triggered by the platform team. See [ADR-002](docs/ADR-002-automated-openapi-pipeline.md) for full details.
 
 ## 🔧 **CLI Commands**
 
 ### Authentication
+
 ```bash
 bondmcp auth login          # Login with credentials
 bondmcp auth logout         # Logout
@@ -157,6 +175,7 @@ bondmcp auth status         # Check auth status
 ```
 
 ### API Keys
+
 ```bash
 bondmcp keys create         # Create new API key
 bondmcp keys list           # List all keys
@@ -164,6 +183,7 @@ bondmcp keys revoke         # Revoke a key
 ```
 
 ### Health Queries
+
 ```bash
 bondmcp ask "question"      # Ask health question
 bondmcp analyze --data      # Analyze health data
@@ -173,6 +193,7 @@ bondmcp symptoms --check    # Check symptoms
 ```
 
 ### Data Management
+
 ```bash
 bondmcp data sync           # Sync health data
 bondmcp data export         # Export health records
@@ -181,58 +202,60 @@ bondmcp data import         # Import health data
 
 ## 💳 **Pricing**
 
-- **Free Tier**: 1,000 API calls per month + basic web access
-- **Pro Plan**: $29/month for 50,000 calls + premium features
-- **Enterprise**: Custom pricing for organizations and healthcare providers
+* **Free Tier**: 1,000 API calls per month + basic web access
+* **Pro Plan**: $29/month for 50,000 calls + premium features
+* **Enterprise**: Custom pricing for organizations and healthcare providers
 
 Billing available through web dashboard, mobile apps, or CLI.
 
 ## 🔐 **Security & Compliance**
 
-- **HIPAA Compliant**: Enterprise-grade healthcare security
-- **SOC 2 Type II**: Certified security controls
-- **End-to-End Encryption**: All data encrypted in transit and at rest
-- **Multi-Factor Authentication**: Enhanced account security
-- **API Key Management**: Granular access controls
-- **Audit Logging**: Comprehensive activity tracking
+* **HIPAA Compliant**: Enterprise-grade healthcare security
+* **SOC 2 Type II**: Certified security controls
+* **End-to-End Encryption**: All data encrypted in transit and at rest
+* **Multi-Factor Authentication**: Enhanced account security
+* **API Key Management**: Granular access controls
+* **Audit Logging**: Comprehensive activity tracking
 
 ## 📱 **Platform Integrations**
 
 ### Healthcare Systems
-- **Epic Integration**: Direct EHR integration
-- **Cerner Compatibility**: Healthcare system connectivity
-- **HL7 FHIR Support**: Standard healthcare data exchange
+
+* **Epic Integration**: Direct EHR integration
+* **Cerner Compatibility**: Healthcare system connectivity
+* **HL7 FHIR Support**: Standard healthcare data exchange
 
 ### Wearables & Devices
-- **Apple Health**: iOS health data integration
-- **Google Fit**: Android health data sync
-- **Fitbit**: Activity and health tracking
-- **Oura Ring**: Sleep and recovery data
-- **Continuous Glucose Monitors**: Real-time glucose data
+
+* **Apple Health**: iOS health data integration
+* **Google Fit**: Android health data sync
+* **Fitbit**: Activity and health tracking
+* **Oura Ring**: Sleep and recovery data
+* **Continuous Glucose Monitors**: Real-time glucose data
 
 ### Third-Party Apps
-- **MyFitnessPal**: Nutrition tracking integration
-- **Strava**: Fitness activity data
-- **Headspace**: Meditation and wellness tracking
+
+* **MyFitnessPal**: Nutrition tracking integration
+* **Strava**: Fitness activity data
+* **Headspace**: Meditation and wellness tracking
 
 ## 📞 **Support**
 
-- **Web Support**: Help center at help.bondmcp.com
-- **In-App Support**: Built-in chat support in web and mobile apps
-- **CLI Help**: `bondmcp --help`
-- **API Documentation**: Complete guides and examples
-- **Community Forum**: community.bondmcp.com
-- **Enterprise Support**: Dedicated support for enterprise customers
+* **Web Support**: Help center at help.bondmcp.com
+* **In-App Support**: Built-in chat support in web and mobile apps
+* **CLI Help**: `bondmcp --help`
+* **API Documentation**: Complete guides and examples
+* **Community Forum**: community.bondmcp.com
+* **Enterprise Support**: Dedicated support for enterprise customers
 
 ## 🌟 **What's New**
 
-- **AI Health Assistant**: Advanced conversational AI for health guidance
-- **Predictive Analytics**: AI-powered health trend predictions
-- **Personalized Insights**: Tailored health recommendations
-- **Real-time Monitoring**: Continuous health data analysis
-- **Provider Collaboration**: Share insights with healthcare teams
+* **AI Health Assistant**: Advanced conversational AI for health guidance
+* **Predictive Analytics**: AI-powered health trend predictions
+* **Personalized Insights**: Tailored health recommendations
+* **Real-time Monitoring**: Continuous health data analysis
+* **Provider Collaboration**: Share insights with healthcare teams
 
----
+***
 
 **BondMCP provides comprehensive health AI through web, mobile, CLI, and API access methods. Choose the platform that works best for your needs - from casual health questions to enterprise healthcare integrations.**
-
