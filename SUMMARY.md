@@ -1,6 +1,6 @@
 # Table of contents
 
-* [Welcome to BondMCP](README.md)
+* [Get started with BondMCP](README.md)
 
 ## Getting Started
 
