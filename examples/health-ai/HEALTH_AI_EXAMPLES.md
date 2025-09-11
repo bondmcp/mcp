@@ -1,40 +1,43 @@
-# Health AI Endpoints - Complete Examples
+# Health AI Endpoints - Planned Examples
 
-## 🧠 **Health AI Intelligence - FULLY OPERATIONAL**
+## 🚧 **Health AI Intelligence - IN DEVELOPMENT**
 
-All BondMCP Health AI endpoints are now confirmed **FULLY OPERATIONAL** with comprehensive functionality. Below are real examples with actual API responses.
+All BondMCP Health AI endpoints are currently **IN DEVELOPMENT** and not yet deployed. Below are planned examples showing the intended API interface once the platform is operational.
+
+> **Development Status**: The API infrastructure at api.bondmcp.com is not yet deployed. All examples below show the planned API interface and are not currently functional.
 
 ---
 
-## 🔑 **Authentication Requirements**
+## 🔑 **Planned Authentication Requirements**
 
-**Important**: Health AI endpoints require **JWT tokens** (not API keys) for authentication.
+**Important**: Health AI endpoints will require **JWT tokens** (not API keys) for authentication once deployed.
 
 ```bash
-# Get JWT token after login
+# Planned authentication flow (not yet available)
 curl -X POST "https://api.bondmcp.com/auth/login" \
   -H "Content-Type: application/json" \
   -d '{"email":"your-email@example.com","password":"your-password"}'
 
-# Use JWT token for health AI endpoints
+# Use JWT token for health AI endpoints (planned)
 JWT_TOKEN="your-jwt-token-here"
 ```
 
 ---
 
-## 🏥 **Health Score Analysis**
+## 🏥 **Planned Health Score Analysis**
 
-Generate comprehensive health assessments with personalized recommendations.
+Generate comprehensive health assessments with personalized recommendations (PLANNED).
 
-### **Request**
+### **Planned Request**
 ```bash
+# This will work once the API is deployed
 curl -X POST "https://api.bondmcp.com/health/score" \
   -H "Authorization: Bearer $JWT_TOKEN" \
   -H "Content-Type: application/json" \
   -d '{"data":"test"}'
 ```
 
-### **Response**
+### **Planned Response**
 ```json
 {
   "score_id": "532a0c3a-d293-49ae-a53b-812f15993441",
@@ -244,24 +247,24 @@ curl -X POST "https://api.bondmcp.com/health/{endpoint}" \
 ### **📊 Performance Metrics**
 - **Response Time**: 90-125ms average
 - **Success Rate**: 100% for properly authenticated requests
-- **Data Quality**: Medical-grade accuracy and recommendations
-- **Scalability**: Ready for production traffic
+- **Data Quality**: Medical-grade accuracy and recommendations (PLANNED)
+- **Scalability**: Ready for production traffic (PLANNED)
 
 ---
 
-## 🚀 **Getting Started**
+## 🚧 **Development Progress**
 
-1. **Sign up** at [api.bondmcp.com/auth/register](https://api.bondmcp.com/auth/register)
-2. **Login** to get your JWT token
-3. **Start using** health AI endpoints immediately
-4. **Monitor usage** through billing endpoints
-5. **Scale up** with paid plans as needed
+1. **API Infrastructure**: IN DEVELOPMENT - api.bondmcp.com not yet deployed
+2. **Authentication System**: PLANNED - Not yet available
+3. **Health AI Endpoints**: PLANNED - Being designed and developed
+4. **Billing System**: PLANNED - Not yet available
+5. **Production Deployment**: PLANNED - Target TBD
 
-**The BondMCP Health AI platform is now fully operational and ready for production use!** 🎉
+**The BondMCP Health AI platform is currently in development and not yet available for production use.** 🚧
 
 ---
 
-*Last Updated: August 7, 2025*  
-*Status: All Health AI Endpoints Confirmed Operational*  
-*Authentication: JWT Tokens Required*
+*Last Updated: 2025-01-28*  
+*Status: IN DEVELOPMENT - NOT DEPLOYED*  
+*Authentication: PLANNED - JWT Tokens*
 

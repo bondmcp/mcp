@@ -7,7 +7,9 @@ description: Frequently asked questions about BondMCP Health AI Platform
 ## General Questions
 
 ### What is BondMCP?
-BondMCP is a comprehensive health AI platform that provides advanced medical insights, clinical decision support, and health information services. Our platform combines cutting-edge artificial intelligence with medical expertise to deliver accurate, reliable health information.
+BondMCP is a health AI platform currently in development that will provide advanced medical insights, clinical decision support, and health information services. Our platform will combine cutting-edge artificial intelligence with medical expertise to deliver accurate, reliable health information once deployed.
+
+> **Development Status**: The platform is currently in development and not yet operational.
 
 ### Who can use BondMCP?
 BondMCP serves multiple audiences:
@@ -23,10 +25,13 @@ Yes, BondMCP is designed with healthcare compliance in mind. We implement approp
 ## API and Technical Questions
 
 ### How do I get started with the API?
-1. **Sign up** for a BondMCP account at [app.bondmcp.com](https://app.bondmcp.com)
-2. **Generate an API key** in your dashboard
-3. **Install an SDK** (Python, JavaScript, Go, or CLI)
-4. **Make your first API call** following our [Quick Start guide](../getting-started/quick-start.md)
+The BondMCP API is currently in development:
+1. **Development Status**: API infrastructure at api.bondmcp.com not yet deployed
+2. **Documentation**: Review planned API interface in our documentation
+3. **Updates**: Monitor documentation for deployment announcements
+4. **SDKs**: Planned for Python, JavaScript, Go, and CLI (not yet available)
+
+> **Note**: The API is not yet accessible. All endpoints and SDKs are in development.
 
 ### What are the API rate limits?
 Rate limits vary by plan:
@@ -35,13 +40,13 @@ Rate limits vary by plan:
 - **Enterprise**: Custom limits based on your needs
 
 ### Which programming languages are supported?
-We provide official SDKs for:
-- **Python** (3.7+)
-- **JavaScript/TypeScript** (Node.js and browser)
-- **Go** (1.18+)
-- **CLI** (cross-platform command-line tool)
+We are developing official SDKs for:
+- **Python** (3.7+) - IN DEVELOPMENT
+- **JavaScript/TypeScript** (Node.js and browser) - IN DEVELOPMENT
+- **Go** (1.18+) - IN DEVELOPMENT
+- **CLI** (cross-platform command-line tool) - IN DEVELOPMENT
 
-You can also use our REST API directly from any language that supports HTTP requests.
+You will be able to use our REST API directly from any language that supports HTTP requests once the API is deployed.
 
 ### How accurate is the health information?
 Our AI models are trained on peer-reviewed medical literature and clinical guidelines. However:
@@ -107,11 +112,13 @@ except bondmcp.APIError as e:
 - **Deletion**: You can request data deletion at any time
 
 ### Can I use BondMCP in production?
-Yes, BondMCP is production-ready with:
-- **99.9% uptime SLA** (Enterprise plans)
-- **24/7 monitoring** and support
-- **Scalable infrastructure** handling millions of requests
-- **Global CDN** for low-latency responses
+BondMCP is currently in development and not yet ready for production use:
+- **Development Status**: API infrastructure not yet deployed
+- **Target Availability**: TBD - api.bondmcp.com domain not yet deployed
+- **Planned Features**: Scalable infrastructure for millions of requests
+- **Planned Support**: 24/7 monitoring and support when operational
+
+> **Note**: The platform is in active development. Production availability will be announced once the API infrastructure is deployed.
 
 ## Support and Resources
 
