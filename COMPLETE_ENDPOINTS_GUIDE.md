@@ -1,32 +1,36 @@
 # Complete BondMCP API Endpoints Guide
 
-## 🚀 **Get Started - Sign Up for API Access**
+## 🚧 **Get Started - API Development in Progress**
 
-**Ready to use BondMCP's Health AI?** Get your API key in 2 minutes:
+**BondMCP's Health AI is currently in development.** The API infrastructure is not yet deployed:
 
-1. **[Create Free Account →](https://api.bondmcp.com/auth/register)**
-2. **[Login & Get API Key →](https://api.bondmcp.com/auth/login)**
-3. **[Access Dashboard →](https://api.bondmcp.com/dashboard)**
+1. **API Domain**: api.bondmcp.com (NOT YET DEPLOYED)
+2. **Account Creation**: PLANNED - Not yet available
+3. **API Keys**: PLANNED - Not yet available
+
+> **Development Status**: All endpoints documented below are planned but not yet deployed. The API infrastructure at api.bondmcp.com is currently in development.
 
 ---
 
-## Platform Status: 100% Functional ✅
-- **50/50 endpoints working perfectly**
-- **All authentication and health AI features operational**
-- **Complete platform recovery successful**
-- **30ms average response time**
-- **Deployed on DigitalOcean with optimized performance**
+## Platform Status: In Development ❌
+- **0/50 endpoints deployed (development in progress)**
+- **API infrastructure not yet deployed**
+- **Platform currently in development phase**
+- **Target deployment: TBD**
+- **Development environment being prepared**
 
-## Base URL
+## Base URL (PLANNED)
 ```
-https://api.bondmcp.com
+https://api.bondmcp.com (NOT YET DEPLOYED)
 ```
 
-## Authentication
-All protected endpoints require API key in header:
+## Authentication (PLANNED)
+All protected endpoints will require API key in header:
 ```
 X-API-Key: your-api-key
 ```
+
+> **Note**: Authentication system is not yet deployed. API key generation will be available once the platform is launched.
 
 ---
 
@@ -36,8 +40,8 @@ X-API-Key: your-api-key
 ```http
 POST /auth/register
 ```
-**Status**: ⚠️ Server Error (500)  
-**Description**: Register new user account  
+**Status**: ❌ NOT DEPLOYED  
+**Description**: Register new user account (PLANNED)  
 **Request Body**:
 ```json
 {
@@ -52,8 +56,8 @@ POST /auth/register
 ```http
 POST /auth/login
 ```
-**Status**: ⚠️ Server Error (500)  
-**Description**: Authenticate user and get access token  
+**Status**: ❌ NOT DEPLOYED  
+**Description**: Authenticate user and get access token (PLANNED)  
 **Request Body**:
 ```json
 {
@@ -66,8 +70,8 @@ POST /auth/login
 ```http
 POST /auth/logout
 ```
-**Status**: ✅ Working  
-**Description**: Invalidate user session  
+**Status**: ❌ NOT DEPLOYED  
+**Description**: Invalidate user session (PLANNED)  
 **Headers**: `Authorization: Bearer <token>`
 
 ### 4. Token Refresh
@@ -361,8 +365,8 @@ GET /data/summary
 ```http
 GET /billing/plans
 ```
-**Status**: ✅ Working  
-**Description**: Get all available subscription plans  
+**Status**: ❌ NOT DEPLOYED  
+**Description**: Get all available subscription plans (PLANNED)  
 **Response**:
 ```json
 {
@@ -381,8 +385,8 @@ GET /billing/plans
 ```http
 POST /billing/subscribe
 ```
-**Status**: ✅ Working  
-**Description**: Subscribe to a plan  
+**Status**: ❌ NOT DEPLOYED  
+**Description**: Subscribe to a plan (PLANNED)  
 **Headers**: `Authorization: Bearer <token>`  
 **Request Body**:
 ```json
@@ -396,8 +400,8 @@ POST /billing/subscribe
 ```http
 PUT /billing/update
 ```
-**Status**: ✅ Working  
-**Description**: Update existing subscription  
+**Status**: ❌ NOT DEPLOYED  
+**Description**: Update existing subscription (PLANNED)  
 **Headers**: `Authorization: Bearer <token>`  
 **Request Body**:
 ```json
@@ -411,24 +415,24 @@ PUT /billing/update
 ```http
 DELETE /billing/cancel
 ```
-**Status**: ✅ Working  
-**Description**: Cancel active subscription  
+**Status**: ❌ NOT DEPLOYED  
+**Description**: Cancel active subscription (PLANNED)  
 **Headers**: `Authorization: Bearer <token>`
 
 ### 5. Invoice History
 ```http
 GET /billing/invoices
 ```
-**Status**: ✅ Working  
-**Description**: Get user's invoice history  
+**Status**: ❌ NOT DEPLOYED  
+**Description**: Get user's invoice history (PLANNED)  
 **Headers**: `Authorization: Bearer <token>`
 
 ### 6. Usage Metrics
 ```http
 GET /billing/usage
 ```
-**Status**: ✅ Working  
-**Description**: Get current usage metrics  
+**Status**: ❌ NOT DEPLOYED  
+**Description**: Get current usage metrics (PLANNED)  
 **Headers**: `Authorization: Bearer <token>`
 
 ---

@@ -1,16 +1,20 @@
 # SDK Overview
 
-BondMCP provides official SDKs in multiple languages to help you integrate with our API quickly and easily. These SDKs handle authentication, error handling, rate limiting, and provide a clean interface to all BondMCP endpoints.
+BondMCP is developing official SDKs in multiple languages to help you integrate with our API quickly and easily once deployed. These SDKs will handle authentication, error handling, rate limiting, and provide a clean interface to all BondMCP endpoints.
 
-## Available SDKs
+> **Development Status**: All SDKs are currently in development and not yet available. The API infrastructure at api.bondmcp.com is not yet deployed. The examples below show the planned SDK interfaces.
 
-### Python SDK
+## Planned SDKs
+
+### Python SDK (In Development)
 
 ```bash
+# Will be available when platform launches
 pip install bondmcp
 ```
 
 ```python
+# Planned SDK interface
 from bondmcp import BondMCPClient
 
 # Initialize client with your API key
@@ -33,15 +37,17 @@ recommendations = client.supplement.recommend(health_goals=["joint health", "ene
 print(recommendations.supplements)
 ```
 
-### JavaScript/TypeScript SDK
+### JavaScript/TypeScript SDK (In Development)
 
 ```bash
+# Will be available when platform launches
 npm install bondmcp
 # or
 yarn add bondmcp
 ```
 
 ```javascript
+// Planned SDK interface
 import { BondMCPClient } from 'bondmcp';
 
 // Initialize client with your API key
@@ -66,13 +72,15 @@ const recommendations = await client.supplement.recommend({
 console.log(recommendations.supplements);
 ```
 
-### Go SDK
+### Go SDK (In Development)
 
 ```bash
+# Will be available when platform launches
 go get github.com/bondmcp/bondmcp-go
 ```
 
 ```go
+// Planned SDK interface
 package main
 
 import (
@@ -111,20 +119,21 @@ func main() {
 }
 ```
 
-## Error Handling
+## Planned Error Handling
 
-All SDKs provide consistent error handling patterns. Errors are categorized into:
+All SDKs will provide consistent error handling patterns. Errors will be categorized into:
 
 - **Authentication errors**: Issues with your API key
 - **Validation errors**: Problems with your request parameters
 - **Rate limit errors**: You've exceeded your usage limits
 - **Server errors**: Issues on our end
 
-Each SDK follows the idiomatic error handling pattern for its language.
+Each SDK will follow the idiomatic error handling pattern for its language.
 
-### Python Example
+### Python Example (Planned Interface)
 
 ```python
+# Planned SDK interface
 from bondmcp import BondMCPClient, BondMCPAPIError, BondMCPNetworkError
 
 client = BondMCPClient(api_key="your_api_key")
@@ -175,36 +184,38 @@ Sample output for a missing endpoint:
 API error 404 (not_found): Endpoint not found
 ```
 
-## Pagination
+## Planned Pagination
 
-For endpoints that return large collections of data, our SDKs provide pagination helpers:
+For endpoints that return large collections of data, our SDKs will provide pagination helpers:
 
 ```python
-# Python example
+# Planned Python interface
 all_results = []
 for page in client.health_data.list_all():
     all_results.extend(page.results)
 ```
 
 ```javascript
-// JavaScript example
+// Planned JavaScript interface
 const allResults = [];
 for await (const page of client.healthData.listAll()) {
     allResults.push(...page.results);
 }
 ```
 
-## Advanced Configuration
+## Planned Advanced Configuration
 
-All SDKs support additional configuration options:
+All SDKs will support additional configuration options:
 
 - Custom base URL
 - Request timeouts
 - Retry policies
 - Custom HTTP clients
 
-Refer to each SDK's documentation for language-specific configuration details.
+Refer to each SDK's documentation for language-specific configuration details once available.
 
-## SDK Source Code
+## Planned SDK Source Code
 
-All our SDKs are open source and available in the [BondMCP/mcp](https://github.com/bondmcp/mcp) repository. We welcome contributions and feedback to improve our developer experience.
+All our SDKs will be open source and available in the [BondMCP/mcp](https://github.com/bondmcp/mcp) repository once development is complete. We welcome contributions and feedback to improve our developer experience.
+
+> **Development Status**: SDKs are currently in development and not yet available. All interfaces shown above are planned and subject to change during development.
