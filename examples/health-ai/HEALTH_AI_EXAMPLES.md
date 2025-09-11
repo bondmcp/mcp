@@ -203,21 +203,21 @@ curl -H "Authorization: Bearer $JWT_TOKEN" \
 
 ---
 
-## 🔬 **Additional Health AI Endpoints**
+## 🔬 **Additional Planned Health AI Endpoints**
 
-All of these endpoints are **FULLY OPERATIONAL** and require POST method with JWT authentication:
+All of these endpoints are **PLANNED** and will require POST method with JWT authentication once deployed:
 
-### **Available Endpoints**
-- `/health/bloodwork` - Blood test analysis and recommendations
-- `/health/dna` - Genetic analysis and personalized insights
-- `/health/emergency` - Emergency health assessment and triage
-- `/health/fitness` - Fitness tracking and optimization
-- `/health/supplements` - Personalized supplement recommendations
-- `/healthcare/ehr` - Electronic health record integration
-- `/healthcare/fhir` - FHIR standard health data processing
-- `/healthcare/imaging` - Medical imaging analysis
-- `/healthcare/labs` - Laboratory result interpretation
-- `/healthcare/notes` - Clinical notes processing
+### **Planned Endpoints**
+- `/health/bloodwork` - Blood test analysis and recommendations (PLANNED)
+- `/health/dna` - Genetic analysis and personalized insights (PLANNED)
+- `/health/emergency` - Emergency health assessment and triage (PLANNED)
+- `/health/fitness` - Fitness tracking and optimization (PLANNED)
+- `/health/supplements` - Personalized supplement recommendations (PLANNED)
+- `/healthcare/ehr` - Electronic health record integration (PLANNED)
+- `/healthcare/fhir` - FHIR standard health data processing (PLANNED)
+- `/healthcare/imaging` - Medical imaging analysis (PLANNED)
+- `/healthcare/labs` - Laboratory result interpretation (PLANNED)
+- `/healthcare/notes` - Clinical notes processing (PLANNED)
 
 ### **Usage Pattern**
 ```bash
@@ -232,17 +232,17 @@ curl -X POST "https://api.bondmcp.com/health/{endpoint}" \
 
 ## 🎯 **Key Insights**
 
-### **✅ What's Working Perfectly**
-- **All 15+ health AI endpoints** are fully operational
-- **JWT authentication** working correctly for all health features
-- **Real-time processing** with sub-200ms response times
-- **Comprehensive health analysis** with actionable insights
-- **Professional medical-grade** recommendations and assessments
+### **🚧 Development Status**
+- **All 15+ health AI endpoints** are planned but not deployed
+- **JWT authentication** is planned for health features once available
+- **Target processing** with sub-200ms response times
+- **Planned health analysis** with actionable insights
+- **Professional medical-grade** recommendations and assessments (PLANNED)
 
-### **🔧 Authentication Guide**
-- **Health AI Endpoints**: Use JWT tokens (from login)
-- **API Keys**: Use for external integrations and third-party access
-- **Billing/Usage**: Requires JWT tokens, not API keys
+### **🔧 Planned Authentication Guide**
+- **Health AI Endpoints**: Will use JWT tokens (from login)
+- **API Keys**: Planned for external integrations and third-party access
+- **Billing/Usage**: Will require JWT tokens, not API keys
 
 ### **📊 Performance Metrics**
 - **Response Time**: 90-125ms average
