@@ -1,32 +1,35 @@
-# 🚀 BondMCP API is Now LIVE!
+# 🚧 BondMCP API Development Status
 
-## ✅ Fully Operational
+## ❌ Currently In Development
 
-The BondMCP Health AI API is now **fully deployed and operational** at:
+The BondMCP Health AI API is currently **in development and not yet deployed**:
 
-**Base URL**: `https://api.bondmcp.com`
+**Base URL**: `https://api.bondmcp.com` (NOT YET DEPLOYED)
 
-## 🎉 What's Available Now
+> **Development Status**: The API infrastructure at api.bondmcp.com is not yet deployed. All endpoints and features documented below are planned but not currently accessible.
 
-### Core Health AI Endpoints
-- ✅ **Health Question Answering** - `POST /ask`
-- ✅ **Lab Result Analysis** - `POST /labs`  
-- ✅ **Nutrition Analysis** - `POST /nutrition`
-- ✅ **Supplement Recommendations** - `POST /supplements`
-- ✅ **Health Data Import** - `POST /import/*`
-- ✅ **Health Insights** - `POST /insights`
-- ✅ **API Health Check** - `GET /health`
+## 🚧 Planned Features (In Development)
 
-### Developer Tools
-- ✅ **CLI Tools** - `pip install bondmcp-cli`
-- ✅ **Python SDK** - `pip install bondmcp-python`
-- ✅ **JavaScript SDK** - `npm install @bondmcp/sdk`
-- ✅ **Go SDK** - `go get github.com/bondmcp/bondmcp-go`
+### Core Health AI Endpoints (PLANNED)
+- ❌ **Health Question Answering** - `POST /ask` (NOT DEPLOYED)
+- ❌ **Lab Result Analysis** - `POST /labs` (NOT DEPLOYED)
+- ❌ **Nutrition Analysis** - `POST /nutrition` (NOT DEPLOYED)
+- ❌ **Supplement Recommendations** - `POST /supplements` (NOT DEPLOYED)
+- ❌ **Health Data Import** - `POST /import/*` (NOT DEPLOYED)
+- ❌ **Health Insights** - `POST /insights` (NOT DEPLOYED)
+- ❌ **API Health Check** - `GET /health` (NOT DEPLOYED)
 
-## 🚀 Get Started Immediately
+### Developer Tools (PLANNED)
+- ❌ **CLI Tools** - `pip install bondmcp-cli` (NOT AVAILABLE)
+- ❌ **Python SDK** - `pip install bondmcp-python` (NOT AVAILABLE)
+- ❌ **JavaScript SDK** - `npm install @bondmcp/sdk` (NOT AVAILABLE)
+- ❌ **Go SDK** - `go get github.com/bondmcp/bondmcp-go` (NOT AVAILABLE)
 
-### 1. Install CLI
+## 🚧 Development Progress
+
+### Phase 1: Infrastructure Setup (Current)
 ```bash
+# These commands are not yet available
 pip install bondmcp-cli
 ```
 

@@ -1,73 +1,64 @@
 # BondMCP API Endpoints
 
-This document provides a comprehensive list of all available endpoints for the BondMCP API.
+This document provides a comprehensive list of all planned endpoints for the BondMCP API.
 
-**Base URL**: `https://api.bondmcp.com`
+**Base URL**: `https://api.bondmcp.com` (NOT YET DEPLOYED)
 
-## Authentication
+> **Development Status**: The API infrastructure at api.bondmcp.com is not yet deployed. All endpoints listed below are planned but not currently accessible.
 
-Authentication is required for all endpoints and is handled via JWT tokens. See the [Authentication Guide](authentication.md) for more details.
+## Authentication (Planned)
 
-## Core System
+Authentication will be required for all endpoints and handled via JWT tokens. See the [Authentication Guide](authentication.md) for more details once available.
 
-| Method | Endpoint | Description |
-|---|---|---|
-| GET | /health | System health check |
-| GET | /openapi.json | OpenAPI specification |
+## Core System (Planned)
 
-## Authentication
+| Method | Endpoint | Description | Status |
+|---|---|---|---|
+| GET | /health | System health check | ❌ NOT DEPLOYED |
+| GET | /openapi.json | OpenAPI specification | ❌ NOT DEPLOYED |
 
-| Method | Endpoint | Description |
-|---|---|---|
-| POST | /api/v1/auth/register | User registration |
-| POST | /api/v1/auth/login | User login |
-| POST | /api/v1/auth/logout | User logout |
-| POST | /api/v1/auth/refresh | Refresh authentication token |
-| POST | /api/v1/auth/api-keys | Create a new API key |
-| GET | /api/v1/auth/api-keys | List all API keys for the user |
-| DELETE | /api/v1/auth/api-keys/{key_id} | Revoke an API key |
+## Authentication (Planned)
 
-## Health AI
+| Method | Endpoint | Description | Status |
+|---|---|---|---|
+| POST | /api/v1/auth/register | User registration | ❌ NOT DEPLOYED |
+| POST | /api/v1/auth/login | User login | ❌ NOT DEPLOYED |
+| POST | /api/v1/auth/logout | User logout | ❌ NOT DEPLOYED |
+| POST | /api/v1/auth/refresh | Refresh authentication token | ❌ NOT DEPLOYED |
+| POST | /api/v1/auth/api-keys | Create a new API key | ❌ NOT DEPLOYED |
+| GET | /api/v1/auth/api-keys | List all API keys for the user | ❌ NOT DEPLOYED |
+| DELETE | /api/v1/auth/api-keys/{key_id} | Revoke an API key | ❌ NOT DEPLOYED |
 
-| Method | Endpoint | Description |
-|---|---|---|
-| POST | /api/v1/health/ask | Ask a health-related question |
-| GET | /api/v1/health/trust-score/{response_id} | Get the trust score for a specific response |
-| POST | /api/v1/health/analyze | Analyze health data |
+## Health AI (Planned)
 
-## User Management
+| Method | Endpoint | Description | Status |
+|---|---|---|---|
+| POST | /api/v1/health/ask | Ask a health-related question | ❌ NOT DEPLOYED |
+| GET | /api/v1/health/trust-score/{response_id} | Get the trust score for a specific response | ❌ NOT DEPLOYED |
+| POST | /api/v1/health/analyze | Analyze health data | ❌ NOT DEPLOYED |
 
-| Method | Endpoint | Description |
-|---|---|---|
-| GET | /api/v1/users/me | Get the current user's profile |
-| PUT | /api/v1/users/me | Update the current user's profile |
+## User Management (Planned)
 
-## Billing
+| Method | Endpoint | Description | Status |
+|---|---|---|---|
+| GET | /api/v1/users/me | Get the current user's profile | ❌ NOT DEPLOYED |
+| PUT | /api/v1/users/me | Update the current user's profile | ❌ NOT DEPLOYED |
 
-| Method | Endpoint | Description |
-|---|---|---|
-| GET | /api/v1/billing/plans | Get available billing plans |
-| POST | /api/v1/billing/subscribe | Subscribe to a billing plan |
-| POST | /api/v1/billing/cancel | Cancel a subscription |
-| GET | /api/v1/billing/invoices | Get a list of invoices |
+## Billing (Planned)
 
-## Trust Certificate Verification
+| Method | Endpoint | Description | Status |
+|---|---|---|---|
+| GET | /api/v1/billing/plans | Get available billing plans | ❌ NOT DEPLOYED |
+| POST | /api/v1/billing/subscribe | Subscribe to a billing plan | ❌ NOT DEPLOYED |
+| POST | /api/v1/billing/cancel | Cancel a subscription | ❌ NOT DEPLOYED |
+| GET | /api/v1/billing/invoices | Get a list of invoices | ❌ NOT DEPLOYED |
 
-| Method | Endpoint | Description |
-|---|---|---|
-| GET | /cert/{cert_id} | Get certificate details in JSON format |
-| GET | /cert/{cert_id}/html | Get certificate details in HTML format |
+## Trust Certificate Verification (Planned)
 
+| Method | Endpoint | Description | Status |
+|---|---|---|---|
+| GET | /cert/{cert_id} | Get certificate details in JSON format | ❌ NOT DEPLOYED |
+| GET | /cert/{cert_id}/html | Get certificate details in HTML format | ❌ NOT DEPLOYED |
 
-
-HTML format |
-
-HTML format |
-
-HTML format |
-
-HTML format |
-
-
-... and 80+ more endpoints covering all aspects of the platform.
+> **Development Status**: All endpoints listed above are planned but not yet deployed. The API infrastructure at api.bondmcp.com is currently in development. Additional endpoints are being designed and will be documented as development progresses.
 

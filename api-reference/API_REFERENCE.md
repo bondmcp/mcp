@@ -1,66 +1,69 @@
 # BondMCP API Reference
 
-## 🚀 **Get Your API Key First**
+## 🚧 **API Development in Progress**
 
-**Before using any endpoints, you need an API key:**
+**The BondMCP API is currently in development and not yet deployed:**
 
-1. **[Sign Up →](https://api.bondmcp.com/auth/register)** - Create your free account
-2. **[Login & Get API Key →](https://api.bondmcp.com/auth/login)** - Generate your authentication token
-3. **[Dashboard →](https://api.bondmcp.com/dashboard)** - Manage your account and billing
+1. **API Domain**: api.bondmcp.com (NOT YET DEPLOYED)
+2. **Account Creation**: PLANNED - Not yet available
+3. **API Keys**: PLANNED - Not yet available
+
+> **Development Status**: The API infrastructure at api.bondmcp.com is not yet deployed. All endpoints documented below are planned but not currently accessible.
 
 ---
 
-> **✅ STATUS: FULLY OPERATIONAL**
+> **❌ STATUS: IN DEVELOPMENT**
 > 
-> All 50 endpoints are now functional and tested. Platform recovered and running at full capacity with complete health AI suite. Last verified: August 7, 2025.
+> The API infrastructure is not yet deployed. All 50 endpoints are planned but not currently accessible. Platform is in development phase. 
 
-## Base URL
+## Base URL (Planned)
 
 ```
-https://api.bondmcp.com
+https://api.bondmcp.com (NOT YET DEPLOYED)
 ```
 
-## Authentication
+## Authentication (Planned)
 
-**All endpoints require authentication with your API key:**
+**All endpoints will require authentication with your API key:**
 
 ```bash
 Authorization: Bearer YOUR_API_KEY
 ```
 
-**Get your API key:** [Login to Dashboard →](https://api.bondmcp.com/auth/login)
+**API keys will be available once the platform launches.**
 
 ## Status Overview
 
 | Category | Available | Total | Status |
 |----------|-----------|-------|---------|
-| Core System | 4/4 | 4 | ✅ Complete |
-| Authentication | 6/6 | 6 | ✅ Complete |
-| Health AI | 8/8 | 8 | ✅ Complete |
-| Billing | 6/6 | 6 | ✅ Complete |
-| Research | 4/4 | 4 | ✅ Complete |
-| Healthcare | 5/5 | 5 | ✅ Complete |
-| Admin | 4/4 | 4 | ✅ Complete |
-| API Management | 5/5 | 5 | ✅ Complete |
-| Data Management | 4/4 | 4 | ✅ Complete |
-| Integration & Webhooks | 4/4 | 4 | ✅ Complete |
-| **TOTAL** | **50/50** | **50** | **✅ FULLY OPERATIONAL** |
+| Core System | 0/4 | 4 | ❌ Not Deployed |
+| Authentication | 0/6 | 6 | ❌ Not Deployed |
+| Health AI | 0/8 | 8 | ❌ Not Deployed |
+| Billing | 0/6 | 6 | ❌ Not Deployed |
+| Research | 0/4 | 4 | ❌ Not Deployed |
+| Healthcare | 0/5 | 5 | ❌ Not Deployed |
+| Admin | 0/4 | 4 | ❌ Not Deployed |
+| API Management | 0/5 | 5 | ❌ Not Deployed |
+| Data Management | 0/4 | 4 | ❌ Not Deployed |
+| Integration & Webhooks | 0/4 | 4 | ❌ Not Deployed |
+| **TOTAL** | **0/50** | **50** | **❌ IN DEVELOPMENT** |
 
 ---
 
-## ✅ Available Endpoints
+## ❌ Planned Endpoints (Not Yet Deployed)
 
 ### Core System
 
 #### GET /
-**Status**: ✅ Working  
-**Description**: API root endpoint with basic information
+**Status**: ❌ NOT DEPLOYED  
+**Description**: API root endpoint with basic information (PLANNED)
 
 ```bash
+# Will be available when API is deployed
 curl https://api.bondmcp.com/
 ```
 
-**Response**:
+**Planned Response**:
 ```json
 {
   "message": "BondMCP API",
@@ -70,14 +73,15 @@ curl https://api.bondmcp.com/
 ```
 
 #### GET /health
-**Status**: ✅ Working  
-**Description**: System health check endpoint
+**Status**: ❌ NOT DEPLOYED  
+**Description**: System health check endpoint (PLANNED)
 
 ```bash
+# Will be available when API is deployed
 curl https://api.bondmcp.com/health
 ```
 
-**Response**:
+**Planned Response**:
 ```json
 {
   "status": "healthy",
@@ -87,34 +91,37 @@ curl https://api.bondmcp.com/health
 ```
 
 #### GET /docs
-**Status**: ✅ Working  
-**Description**: Interactive API documentation (Swagger UI)
+**Status**: ❌ NOT DEPLOYED  
+**Description**: Interactive API documentation (Swagger UI) (PLANNED)
 
 ```bash
+# Will be available when API is deployed
 # Access via browser
 https://api.bondmcp.com/docs
 ```
 
 #### GET /openapi.json
-**Status**: ✅ Working  
-**Description**: OpenAPI specification in JSON format
+**Status**: ❌ NOT DEPLOYED  
+**Description**: OpenAPI specification in JSON format (PLANNED)
 
 ```bash
+# Will be available when API is deployed
 curl https://api.bondmcp.com/openapi.json
 ```
 
 ### User Management
 
 #### GET /billing/usage
-**Status**: ✅ Working (Requires Authentication)  
-**Description**: Get current usage statistics
+**Status**: ❌ NOT DEPLOYED  
+**Description**: Get current usage statistics (PLANNED)
 
 ```bash
+# Will be available when API is deployed
 curl -H "Authorization: Bearer YOUR_TOKEN" \
      https://api.bondmcp.com/billing/usage
 ```
 
-**Response**:
+**Planned Response**:
 ```json
 {
   "user_id": "user_123",
@@ -129,19 +136,20 @@ curl -H "Authorization: Bearer YOUR_TOKEN" \
 ```
 
 #### GET /admin/users
-**Status**: ✅ Working (Requires Authentication)  
-**Description**: User administration endpoint
+**Status**: ❌ NOT DEPLOYED  
+**Description**: User administration endpoint (PLANNED)
 
 ```bash
+# Will be available when API is deployed
 curl -H "Authorization: Bearer YOUR_TOKEN" \
      https://api.bondmcp.com/admin/users
 ```
 
 ---
 
-## ⚠️ Endpoints Under Deployment
+## 📋 All Endpoints Under Development
 
-The following endpoints exist in the codebase but are not currently accessible due to deployment constraints:
+All endpoints documented below are planned but not currently deployed due to the API infrastructure not being available:
 
 ### Authentication System (0/6 available)
 - `POST /auth/register` - User registration
@@ -262,28 +270,29 @@ print(f"API Status: {health['status']}")
 
 ---
 
-## Deployment Status Updates
+## Development Status Updates
 
-This documentation will be updated as additional endpoints become available. Check the status overview table for current availability.
+This documentation will be updated as the API infrastructure becomes available and endpoints are deployed.
 
-### Next Expected Deployments
+### Planned Development Phases
 
-1. **Authentication System** - User registration and login
-2. **Health AI Core** - Basic health question answering
-3. **API Key Management** - Self-service API key generation
-4. **Research Integration** - PubMed and clinical trial access
+1. **API Infrastructure Deployment** - Deploy api.bondmcp.com domain
+2. **Core System Endpoints** - Basic health check and documentation endpoints
+3. **Authentication System** - User registration, login, and API key management
+4. **Health AI Core** - Health question answering and analysis features
+5. **Advanced Features** - Billing, research integration, and enterprise features
 
 ---
 
 ## Support
 
-- **Current Issues**: Only report issues with the 6 available endpoints
-- **Feature Requests**: Full feature set is planned and under deployment
-- **Status Updates**: Monitor this documentation for deployment progress
+- **Development Updates**: Monitor this documentation for deployment progress
+- **Questions**: Contact the development team for timeline and feature questions
+- **Issue Reporting**: Report documentation issues via GitHub
 
 ---
 
-*Last Updated: August 4, 2025*  
-*Verified Endpoints: 6/42 functional*  
-*Next Update: When additional endpoints are deployed*
+*Last Updated: 2025-01-28*  
+*API Status: IN DEVELOPMENT - NOT DEPLOYED*  
+*Next Update: When API infrastructure is deployed*
 
