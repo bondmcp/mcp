@@ -1,6 +1,7 @@
 # Table of contents
 
 * [Get started with BondMCP](README.md)
+* [🟢 API Live Status](API_LIVE_STATUS.md)
 
 ## Getting Started
 
