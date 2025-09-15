@@ -40,6 +40,8 @@
 
 ## 📝 Health Blog
 
+* [📝 Blog Home](blog/README.md)
+
 * [📄 Ai Clinical Care Transformation](blog/ai-clinical-care-transformation.md)
 * [📄 Ai Clinical Trial Optimization](blog/ai-clinical-trial-optimization.md)
 * [📄 Ai Drug Development](blog/ai-drug-development.md)
