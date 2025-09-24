@@ -1,0 +1,5 @@
+
+defaults.url=https://sentry.io/
+defaults.org=bondmcp
+defaults.project=bondmcp-docs
+auth.token=your-sentry-auth-token

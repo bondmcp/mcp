@@ -211,8 +211,8 @@ jobs:
         # Generate updated ACTUAL_API_STATUS.md
         content = f"""# Actual BondMCP API Status Report
 
-> **Report Generated**: {datetime.now().strftime('%B %d, %Y at %H:%M UTC')}  
-> **Testing Target**: https://api.bondmcp.com  
+> **Report Generated**: {datetime.now().strftime('%B %d, %Y at %H:%M UTC')}
+> **Testing Target**: https://api.bondmcp.com
 > **Automated Test**: GitHub Actions Workflow
 
 ## Summary

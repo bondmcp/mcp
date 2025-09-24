@@ -24,10 +24,14 @@
     "pipeline:check": "node scripts/check_legacy_quarantine.js && npm run openapi:validate-local",
     "pipeline:diff": "node scripts/generate_spec_diff.mjs --latest",
     "pipeline:changelog": "node scripts/update_changelog.mjs",
-    "pipeline:validate-dispatch": "node scripts/validate_platform_dispatch.mjs"
+    "pipeline:validate-dispatch": "node scripts/validate_platform_dispatch.mjs",
+    "test:coverage": "vitest run --coverage",
+    "coverage:upload": "codecov"
   },
   "dependencies": {
-    "axios": "^1.6.0"
+    "axios": "^1.6.0",
+    "@sentry/react": "^7.100.0",
+    "@sentry/vite-plugin": "^2.14.0"
   },
   "devDependencies": {
     "@changesets/cli": "^2.29.6",
@@ -38,7 +42,9 @@
     "@types/node": "^24.3.0",
     "redoc-cli": "^0.13.21",
     "ts-node": "^10.9.2",
-    "typescript": "^5.9.2"
+    "typescript": "^5.9.2",
+    "@vitest/coverage-v8": "^1.0.0",
+    "codecov": "^3.8.3"
   },
   "description": "BondMCP Platform SDK with comprehensive Health AI endpoints"
 }

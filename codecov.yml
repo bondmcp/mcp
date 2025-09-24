@@ -1,0 +1,15 @@
+comment:
+  behavior: default
+  layout: reach,diff,flags,tree,reach
+  require_changes: false
+coverage:
+  status:
+    patch:
+      default:
+        target: 90%
+        threshold: 5%
+    project:
+      default:
+        base: auto
+        target: auto
+        threshold: 1%
