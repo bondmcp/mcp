@@ -122,12 +122,12 @@ curl -X GET ${BASE_URL}/billing/subscription \
 
 **Bearer Token (JWT)** - Required for most endpoints
 ```
-Authorization: Bearer eyJhbGciOiJIUzI1NiIs...
+Authorization: Bearer eyJREDACTED_JWT_TOKEN
 ```
 
 **API Key** - Alternative for programmatic access
 ```
-X-API-Key: bcp_your_api_key_here
+X-API-Key: bcp_REDACTED_EXAMPLEyour_api_key_here
 ```
 
 ### Token Lifecycle
