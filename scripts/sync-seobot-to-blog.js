@@ -4,7 +4,7 @@ const fs = require('fs').promises;
 const path = require('path');
 const axios = require('axios');
 
-const SEOBOT_API_KEY = process.env.SEOBOT_API_KEY || 'f2bed0bb-b856-4363-b23e-6cb140352fe1';
+const SEOBOT_API_KEY = process.env.SEOBOT_API_KEY;
 const SEOBOT_API_URL = process.env.SEOBOT_API_URL || 'https://api.seobot.io/v1/articles';
 const BLOG_DIR = path.join(__dirname, '../blog');
 const USE_MOCK_DATA = process.env.USE_MOCK_DATA === 'true';
@@ -46,8 +46,12 @@ slug: ${article.slug || slugify(article.title)}
 }
 
 async function fetchArticles() {
-  if (USE_MOCK_DATA) {
-    console.log('Using mock data for testing...');
+  if (USE_MOCK_DATA || !SEOBOT_API_KEY) {
+    if (!SEOBOT_API_KEY) {
+      console.log('⚠️  SEOBOT_API_KEY not set, using mock data...');
+    } else {
+      console.log('Using mock data for testing...');
+    }
     return [
       {
         id: 'mock-1',
