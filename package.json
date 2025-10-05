@@ -17,6 +17,7 @@
     "build:ts": "npx tsc",
     "sdk:generate": "node scripts/sdk-generator.js",
     "docs:build": "npx redoc-cli build openapi/bondmcp.v1.yaml --output docs/api/v1/index.html",
+    "blog:sync": "node scripts/sync-seobot-to-blog.js",
     "changeset": "changeset",
     "changeset:version": "changeset version",
     "changeset:publish": "changeset publish",
