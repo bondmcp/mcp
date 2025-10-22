@@ -38,7 +38,7 @@ Healify is a comprehensive health and wellness platform consisting of three inte
 
 **Deployment Model** (Dual Environment):
 - **Staging**: `dev` branch → LangGraph Cloud Staging
-  - URL: https://langgraph-chat-agent-stagin-ed85467d74085d318fc7738809140f56.us.langgraph.app
+  - URL: https://healify-dev-5bb9d68c511a5d54a723825330974b9c.us.langgraph.app
   - Auto-deploys on push to `dev`
 - **Production**: `main` branch → LangGraph Cloud Production
   - Merged from `dev` when stable
@@ -95,12 +95,12 @@ When implementing features across repos:
 **Dual Deployment Model**:
 - **Staging (dev)**:
   - Platform: LangGraph Cloud Studio
-  - URL: https://langgraph-chat-agent-stagin-ed85467d74085d318fc7738809140f56.us.langgraph.app
+  - URL: https://healify-dev-5bb9d68c511a5d54a723825330974b9c.us.langgraph.app
   - Workflow: Feature PRs → `dev` → Auto-deploy to staging
 
 - **Production (main)**:
   - Platform: LangGraph Cloud Studio
-  - URL: [Production endpoint]
+  - URL: https://healify-main-78d1069f06645ab9a736108dd385cfb5.us.langgraph.app
   - Workflow: `dev` PR → `main` → Auto-deploy to production
 
 **Branching Strategy**:
