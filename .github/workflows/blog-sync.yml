@@ -1,0 +1,55 @@
+name: Blog Sync
+
+on:
+  schedule:
+    # Run daily at 2 AM UTC
+    - cron: '0 2 * * *'
+  workflow_dispatch:
+    # Allow manual triggering
+
+jobs:
+  sync-blog:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+      
+      - name: Install dependencies
+        run: npm ci
+      
+      - name: Run blog sync
+        env:
+          SEOBOT_API_KEY: ${{ secrets.SEOBOT_API_KEY }}
+          SEOBOT_API_URL: ${{ secrets.SEOBOT_API_URL }}
+        run: npm run blog:sync
+      
+      - name: Check for changes
+        id: check_changes
+        run: |
+          if [[ -n $(git status --porcelain) ]]; then
+            echo "changes=true" >> $GITHUB_OUTPUT
+          else
+            echo "changes=false" >> $GITHUB_OUTPUT
+          fi
+      
+      - name: Commit and push changes
+        if: steps.check_changes.outputs.changes == 'true'
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "chore: sync blog articles from SEOBot"
+          commit_user_name: "BondMCP Bot"
+          commit_user_email: "bot@bondmcp.com"
+          commit_author: "BondMCP Bot <bot@bondmcp.com>"
+      
+      - name: No changes detected
+        if: steps.check_changes.outputs.changes == 'false'
+        run: echo "No new blog articles to sync"
